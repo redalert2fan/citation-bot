@@ -3,8 +3,11 @@
 version: 2
 updates:
 - package-ecosystem: "composer"
-  directories: 
-  -"/"
-  -"/.github"
+  directory: "/"
   schedule:
     interval: "daily"
+    
+ - package-ecosystem: "pnpm"
+    directory: "/.github"
+    schedule:
+      interval: "daily"
