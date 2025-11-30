@@ -3,6 +3,8 @@
 version: 2
 updates:
 - package-ecosystem: "composer"
-  directory: "/"
+  directories: 
+  -"/"
+  -".github"
   schedule:
     interval: "daily"
