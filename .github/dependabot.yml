@@ -5,6 +5,6 @@ updates:
 - package-ecosystem: "composer"
   directories: 
   -"/"
-  -".github"
+  -"/.github"
   schedule:
     interval: "daily"
