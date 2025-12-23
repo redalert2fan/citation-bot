@@ -3453,6 +3453,10 @@ final class Template
                     }
                     // Undo some bad bot/human edits
                     if ($this->blank(WORK_ALIASES)) {
+                        // Do not add work parameter to cite book templates
+                        if ($this->wikiname() === 'cite book') {
+                            return;
+                        }
                         $the_url = '';
                         foreach (ALL_URL_TYPES as $thingy) {
                             $the_url .= $this->get($thingy);
