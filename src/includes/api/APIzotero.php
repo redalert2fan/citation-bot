@@ -24,9 +24,6 @@ final class Zotero {
     private const ZOTERO_GIVE_UP = 5;
     private const ZOTERO_SKIPS = 100;
     private const ERROR_DONE = 'ERROR_DONE';
-    private const MIN_TITLE_LENGTH = 10;
-    private const GENERIC_KEYWORD_THRESHOLD = 3;
-    private const GENERIC_KEYWORDS = ['news', 'latest', 'top stories', 'insights', 'updates', 'headlines'];
     private static int $zotero_announced = 0;
     private static CurlHandle $zotero_ch;
     private static int $zotero_failures_count = 0;
@@ -39,9 +36,8 @@ final class Zotero {
     }
 
     /**
-     * Extract title directly from HTML when Zotero returns a generic or suspect title.
-     * This function fetches the HTML and extracts the title from the <title> tag,
-     * preferring it over potentially generic og:title metadata.
+     * Extract title directly from HTML as a fallback when Zotero returns a bad title.
+     * This function fetches the HTML and extracts the title from the <title> tag.
      */
     private static function extract_title_from_html(string $url): ?string {
         static $ch = null; // Reused across calls for efficiency; cleaned up by PHP runtime
@@ -72,55 +68,12 @@ final class Zotero {
             $title = preg_replace('~\s*[' . $quoted_separators . ']\s*[^' . $quoted_separators . ']+$~u', '', $title);
             $title = mb_trim($title);
             
-            if (mb_strlen($title) > 5 && !self::is_generic_title($title)) {
+            if (mb_strlen($title) > 5) {
                 return $title;
             }
         }
         
         return null;
-    }
-
-    /**
-     * Check if a title appears to be generic or a site-wide default.
-     * Generic titles often contain keywords like "news", "home", "welcome", etc.
-     * and lack specific article information.
-     */
-    private static function is_generic_title(string $title): bool {
-        $lower_title = mb_strtolower($title);
-        
-        // Common generic title patterns
-        $generic_patterns = [
-            '~^home\s*$~i',
-            '~^welcome~i',
-            '~^latest\s+news~i',
-            '~^news\s+&\s+~i',
-            '~^top\s+stories~i',
-            '~insights?\s*$~i',
-            '~^loading~i',
-            '~^please\s+wait~i',
-        ];
-        
-        foreach ($generic_patterns as $pattern) {
-            if (preg_match($pattern, $title)) {
-                return true;
-            }
-        }
-        
-        // Check if title is very short (likely generic)
-        if (mb_strlen($title) < self::MIN_TITLE_LENGTH) {
-            return true;
-        }
-        
-        // Check if title contains too many generic news-related keywords
-        $keyword_count = 0;
-        foreach (self::GENERIC_KEYWORDS as $keyword) {
-            if (mb_stripos($lower_title, $keyword) !== false) {
-                $keyword_count++;
-            }
-        }
-        
-        // If title contains GENERIC_KEYWORD_THRESHOLD or more generic keywords, it's likely generic
-        return $keyword_count >= self::GENERIC_KEYWORD_THRESHOLD;
     }
 
     public static function create_ch_zotero(): void {
@@ -527,23 +480,28 @@ final class Zotero {
         if (isset($result->title)) {
             $test_data .= $result->title;
         }
+        $bad_title_found = false;
         foreach (BAD_ZOTERO_TITLES as $bad_title ) {
             if (mb_stripos($test_data, $bad_title) !== false) {
                 report_info("Received invalid title data for URL " . echoable($url . ": " . $test_data));
-                return;
+                $bad_title_found = true;
+                break;
             }
         }
         if ($test_data === '404' || $test_data === '/404') {
-            return;
+            $bad_title_found = true;
         }
         
-        // Check if Zotero returned a generic title and try HTML extraction as fallback
-        if (isset($result->title) && self::is_generic_title((string) $result->title)) {
-            report_info("Zotero returned a potentially generic title, attempting HTML extraction for URL " . echoable($url));
+        // If Zotero returned a bad title, try HTML extraction as fallback
+        if ($bad_title_found && isset($result->title)) {
+            report_info("Attempting HTML extraction as fallback for bad Zotero title");
             $html_title = self::extract_title_from_html($url);
-            if ($html_title !== null && !self::is_generic_title($html_title)) {
-                report_info("Using HTML-extracted title instead of Zotero title");
+            if ($html_title !== null && mb_strlen($html_title) > 5) {
+                report_info("Using HTML-extracted title instead of bad Zotero title");
                 $result->title = $html_title;
+            } else {
+                // No valid HTML title found, reject the bad Zotero data
+                return;
             }
         }
         if (isset($result->bookTitle) && mb_strtolower($result->bookTitle) === 'undefined') {
