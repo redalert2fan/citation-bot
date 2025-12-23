@@ -544,6 +544,7 @@ const BAD_ZOTERO_TITLES = [
     'Account Suspended',
     'An Error Has Occured',
     'an error has occurred',
+    'An error occured',
     'An error occurred',
     'An Error Occurred',
     'Are you a robot',
