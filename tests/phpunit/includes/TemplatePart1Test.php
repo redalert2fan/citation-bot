@@ -2877,4 +2877,18 @@ EP - 999 }}';
         $page = $this->process_page($text);
         $this->assertSame("{{cs1 config|name-list-style=vanc}}<ref>{{cite journal | title=From fibrositis to fibromyalgia to nociplastic pain: How rheumatology helped get us here and where do we go from here? | journal=Annals of the Rheumatic Diseases | date=2024 | volume=83 | issue=11 | pages=1421–1427 | doi=10.1136/ard-2023-225327 | pmid=39107083 | pmc=11503076 | vauthors = Clauw DJ }}</ref>{{cs1 config|name-list-style=vanc}}", $page->parsed_text());
     }
+
+    public function testRemoveNoAccessMessage(): void {
+        $text_in = "{{cite web| url = https://academic.oup.com/gji/article-abstract/230/1/50/6522179#no-access-message}}";
+        $template = $this->make_citation($text_in);
+        $template->tidy_parameter('url');
+        $this->assertSame('https://academic.oup.com/gji/article-abstract/230/1/50/6522179', $template->get2('url'));
+    }
+
+    public function testNoChangeWhenMessageNotPresent(): void {
+        $text_in = "{{cite web| url = https://academic.oup.com/gji/article-abstract/230/1/50/6522179}}";
+        $template = $this->make_citation($text_in);
+        $template->tidy_parameter('url');
+        $this->assertSame('https://academic.oup.com/gji/article-abstract/230/1/50/6522179', $template->get2('url'));
+    }
 }
