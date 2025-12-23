@@ -1,22 +1,22 @@
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/codeql-analysis.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/DesignSecurity.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/DesignSecurity.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/phplint.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/phplint.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/phan.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/phan.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/PHPChecker.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/PHPChecker.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/phpstan.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/phpstan.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/psalm-security.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/psalm-security.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/psalm.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/psalm.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/PHPCodeSniffer.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/PHPCodeSniffer.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/test-suite.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/test-suite.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/ThePHPChecker.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/ThePHPChecker.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/trivy-analysis.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/trivy-analysis.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/codeql-analysis.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/DesignSecurity.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/DesignSecurity.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/phplint.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/phplint.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/phan.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/phan.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/PHPChecker.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/PHPChecker.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/phpstan.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/phpstan.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/psalm-security.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/psalm-security.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/psalm.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/psalm.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/PHPCodeSniffer.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/PHPCodeSniffer.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/test-suite.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/test-suite.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/ThePHPChecker.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/ThePHPChecker.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/trivy-analysis.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/trivy-analysis.yml)
 [![Project Status: Inactive - The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![PHP ](https://img.shields.io/badge/PHP-8.4-blue.svg)](https://www.php.net)
-[![GitHub issues](https://img.shields.io/github/issues/ms609/citation-bot.png)](https://github.com/ms609/citation-bot/issues)
-[![codecov](https://codecov.io/gh/ms609/citation-bot/branch/master/graph/badge.svg)](https://codecov.io/gh/ms609/citation-bot)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/YamlJson.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/YamlJson.yml)
-[![Build Status](https://github.com/ms609/citation-bot/actions/workflows/html5check.yml/badge.svg)](https://github.com/ms609/citation-bot/actions/workflows/html5check.yml)
+[![GitHub issues](https://img.shields.io/github/issues/redalert2fan/citation-bot.png)](https://github.com/redalert2fan/citation-bot/issues)
+[![codecov](https://codecov.io/gh/redalert2fan/citation-bot/branch/master/graph/badge.svg)](https://codecov.io/gh/redalert2fan/citation-bot)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/YamlJson.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/YamlJson.yml)
+[![Build Status](https://github.com/redalert2fan/citation-bot/actions/workflows/html5check.yml/badge.svg)](https://github.com/redalert2fan/citation-bot/actions/workflows/html5check.yml)
 
 
 
@@ -35,9 +35,9 @@ This is more properly a bot-gadget-tool combination. The parts are:
 * Citation Bot, found in `index.html` (web frontend) and `process_page.php` (information is
   POSTed to this and it does the citation expansion; backend). This automatically
   posts a new page revision with expanded citations and thus requires a bot account.
-  All activity takes place on Tool Labs.  Single pages can be GETed.
+  All activity takes place on Toolforge.  Single pages can be GETed.
 * Citation expander (https://en.wikipedia.org/wiki/MediaWiki:Gadget-citations.js) + `gadgetapi.php`. This
-  is comprises an Ajax front-end in the on-wiki gadget and a PHP backend API.
+  comprises an Ajax front-end in the on-wiki gadget and a PHP backend API.
 * `generate_template.php` creates the wiki reference given an identifier (for example: https://citations.toolforge.org/generate_template.php?doi=10.1109/SCAM.2013.6648183)
 
 Bugs and requested changes are listed here: https://en.wikipedia.org/wiki/User_talk:Citation_bot.

@@ -15,7 +15,7 @@ The GitHub provided CodeQL test suite is also enabled, but that just checks the 
 
 ## Submitting changes
 
-Please send a [GitHub Pull Request](https://github.com/ms609/citation-bot/pull/new/master) with a clear list of what you've done (read more about [pull requests](https://help.github.com/articles/about-pull-requests/)).
+Please send a [GitHub Pull Request](https://github.com/redalert2fan/citation-bot/pull/new/master) with a clear list of what you've done (read more about [pull requests](https://help.github.com/articles/about-pull-requests/)).
 Including a test case that demonstrates the bug you are trying to fix in the pull request would be much appreciated, to avoid errors resurfacing.
 Please follow our coding conventions (below) and make sure all of your commits are atomic (one feature per commit).
 
@@ -27,7 +27,7 @@ Always write a clear log message for your commits. One-line messages are fine fo
 
 ## API keys
 
-The test suite detects missing keys and skips test.  A developer should consider getting their own set up keys for development.
+The test suite detects missing keys and skips tests.  A developer should consider getting their own keys set up for development.
 
 ## Coding conventions
 
@@ -38,7 +38,7 @@ The test suite detects missing keys and skips test.  A developer should consider
   * We prefer `elseif` to `else if`
   * We prefer `===` and `!==` to `==` and `!=`
   * We prefer `bool` to `boolean`, and other such deprecated aliases
-  * We prefer `curl` to `file_get_contents` and `get_headers`for easier debugging and greater control.  The curl header size is in bytes not multibyte character length.
+  * We prefer `curl` to `file_get_contents` and `get_headers` for easier debugging and greater control.  The curl header size is in bytes not multibyte character length.
   * We use `echo` and `exit` instead of `print` and `die`
   * `echo` should use commas instead of dots to avoid concatenation overhead
   * All code must be valid PHP 8.4
@@ -48,7 +48,7 @@ The test suite detects missing keys and skips test.  A developer should consider
   * We want 100% code coverage with untestable code flagged in the source -- such as code that handles error conditions.  See the API php files for lots of examples of non-coverage code.
   * All curl_init() should be replaced with bot_curl_init() calls, which sets reasonable defaults.  Also reasonable timeouts should be set depending upon the website.
   * error_reporting(E_ALL) and declare(strict_types=1) are both set
-  * Multi-byte functions should be used (even when the string are obviously not multi-byte for safety and consistency), such as mb_ucwords instead of ucwords (there are a couple of non-standard ones provided within the source code).  Do use for http headers that are byte counts.
+  * Multi-byte functions should be used (even when the strings are obviously not multi-byte for safety and consistency), such as mb_ucwords instead of ucwords (there are a couple of non-standard ones provided within the source code).  Do not use multibyte functions for http headers that are byte counts.
   * Do not use `strtok` since it saves a buffer internally
 
 ## Bot output conventions
