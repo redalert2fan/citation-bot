@@ -26,6 +26,7 @@ final class Zotero {
     private const ERROR_DONE = 'ERROR_DONE';
     private const MIN_TITLE_LENGTH = 10;
     private const GENERIC_KEYWORD_THRESHOLD = 3;
+    private const GENERIC_KEYWORDS = ['news', 'latest', 'top stories', 'insights', 'updates', 'headlines'];
     private static int $zotero_announced = 0;
     private static CurlHandle $zotero_ch;
     private static int $zotero_failures_count = 0;
@@ -67,7 +68,8 @@ final class Zotero {
             
             // Remove site name suffixes that are common patterns
             $separators = '|\-–—';
-            $title = preg_replace('~\s*[' . preg_quote($separators, '~') . ']\s*[^' . preg_quote($separators, '~') . ']+$~u', '', $title);
+            $quoted_separators = preg_quote($separators, '~');
+            $title = preg_replace('~\s*[' . $quoted_separators . ']\s*[^' . $quoted_separators . ']+$~u', '', $title);
             $title = mb_trim($title);
             
             if (mb_strlen($title) > 5 && !self::is_generic_title($title)) {
@@ -111,8 +113,7 @@ final class Zotero {
         
         // Check if title contains too many generic news-related keywords
         $keyword_count = 0;
-        $generic_keywords = ['news', 'latest', 'top stories', 'insights', 'updates', 'headlines'];
-        foreach ($generic_keywords as $keyword) {
+        foreach (self::GENERIC_KEYWORDS as $keyword) {
             if (mb_stripos($lower_title, $keyword) !== false) {
                 $keyword_count++;
             }
