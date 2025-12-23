@@ -501,7 +501,7 @@ final class Zotero {
                 $html_title_lower = mb_strtolower($html_title);
                 $is_bad_title = false;
                 foreach (BAD_TITLES as $bad) {
-                    if (mb_stripos($html_title_lower, $bad) !== false) {
+                    if (mb_stripos($html_title_lower, mb_strtolower($bad)) !== false) {
                         $is_bad_title = true;
                         break;
                     }
