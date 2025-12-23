@@ -650,6 +650,7 @@ const BAD_ZOTERO_TITLES = [
     'YouTube, a Google company',
     'ZbMATH - the first resource for mathematics',
     'Zoeken in over NA',
+    'Anime News, Top Stories & In-Depth Anime Insights',
     'Ой!',
     'страница не найдена',
     'الصفحة غير موجودة',
