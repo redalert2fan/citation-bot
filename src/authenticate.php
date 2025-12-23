@@ -107,14 +107,25 @@ try {
     $host = $_SERVER['HTTP_HOST'];
     $allowedHosts = ['citations.toolforge.org', 'localhost', '127.0.0.1'];
     $isAllowed = false;
-    foreach ($allowedHosts as $allowedHost) {
-        if ($host === $allowedHost || mb_strpos($host, $allowedHost . ':') === 0) {
-            $isAllowed = true;
-            break;
+    
+    // Extract hostname and port
+    $hostParts = explode(':', $host, 2);
+    $hostname = $hostParts[0];
+    
+    // Validate hostname exactly matches one of the allowed hosts
+    if (in_array($hostname, $allowedHosts, true)) {
+        $isAllowed = true;
+        // If port is present, validate it's a valid port number
+        if (isset($hostParts[1])) {
+            $port = $hostParts[1];
+            if (!ctype_digit($port) || (int)$port < 1 || (int)$port > 65535) {
+                $isAllowed = false;
+            }
         }
     }
+    
     if (!$isAllowed) {
-        death_time('Invalid host');
+        death_time('Host not allowed');
     }
     $newcallback = "https://" . $host . $_SERVER['REQUEST_URI'];
     $client->setCallback($newcallback);
