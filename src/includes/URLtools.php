@@ -935,6 +935,11 @@ function clean_existing_urls(Template $template, string $param): void {
         return;
     }
     clean_existing_urls_INSIDE($template, $param);
+    // Remove #no-access-message fragment from citation template URLs.
+    $current_url = $template->get($param);
+    if (mb_stripos($current_url, '#no-access-message') !== false) {
+        $template->set($param, preg_replace("~#no-access-message$~", "", $current_url));
+    }
 }
 
 function clean_existing_urls_INSIDE(Template $template, string $param): void {

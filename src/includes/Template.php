@@ -5160,6 +5160,12 @@ final class Template
                     }
                     // no break
                 case 'url':
+                    $url = $this->get($param);
+                    // Remove #no-access-message if present in the URL.
+                    if (mb_stripos($url, '#no-access-message') !== false) {
+                        $url = preg_replace("~#no-access-message$~", "", $url);
+                    }
+                    $this->set($param, $url);
                     clean_existing_urls($this, $param);
                     return;
 

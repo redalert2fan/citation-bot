@@ -11,6 +11,14 @@ error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
 
+// Polyfill for mb_trim (PHP 8.4+) for compatibility with PHP 8.3
+if (!function_exists('mb_trim')) {
+    function mb_trim(string $string, string $characters = " \n\r\t\v\0"): string {
+        $chars = preg_quote($characters, '~');
+        return preg_replace("~^[$chars]+|[$chars]+$~u", '', $string);
+    }
+}
+
 if (file_exists('git_pull.lock')) {
     sleep(5);
     echo '<!DOCTYPE html><html lang="en" dir="ltr"><head><title>Citation Bot: error</title></head><body><h1>GIT pull in progress - please retry again in a moment</h1></body></html>';
