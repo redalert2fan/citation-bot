@@ -83,7 +83,8 @@ if (is_string(@$_GET['oauth_verifier']) && is_string(@$_SESSION['request_key']) 
             // This could only be tainted input if OAuth server itself was hacked, so flag as safe
             /** @psalm-taint-escape header */
             $where = mb_trim($_GET['return']);
-            if (mb_substr($where, 0, 1) !== '/' || preg_match('~\s+~', $where)) {
+            // Validate return URL: must start with single /, no whitespace, no protocol-relative URLs
+            if (mb_substr($where, 0, 1) !== '/' || mb_substr($where, 0, 2) === '//' || preg_match('~\s+~', $where)) {
                 death_time('Invalid Access URL');
             }
             return_to_sender($where);
@@ -102,7 +103,20 @@ try {
     if (!isset($_SERVER['HTTP_HOST']) || !isset($_SERVER['REQUEST_URI'])) {
         throw new Exception('Webserver URL variables not set');
     }
-    $newcallback = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    // Validate HTTP_HOST to prevent Host Header Injection
+    $host = $_SERVER['HTTP_HOST'];
+    $allowedHosts = ['citations.toolforge.org', 'localhost', '127.0.0.1'];
+    $isAllowed = false;
+    foreach ($allowedHosts as $allowedHost) {
+        if ($host === $allowedHost || mb_strpos($host, $allowedHost . ':') === 0) {
+            $isAllowed = true;
+            break;
+        }
+    }
+    if (!$isAllowed) {
+        death_time('Invalid host');
+    }
+    $newcallback = "https://" . $host . $_SERVER['REQUEST_URI'];
     $client->setCallback($newcallback);
     [$authUrl, $token] = $client->initiate();
     $_SESSION['request_key'] = $token->key;
