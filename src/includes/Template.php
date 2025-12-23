@@ -1232,6 +1232,10 @@ final class Template
             case 'journal':
             case 'newspaper':
             case 'magazine':
+                // Do not add these parameters to cite book templates
+                if ($this->wikiname() === 'cite book') {
+                    return false;
+                }
                 if (in_array($value, ['HEP Lib.Web', 'High Energy Physics Libraries Webzine'])) {
                     return false;
                 }
@@ -2096,6 +2100,10 @@ final class Template
 
             case 'work':
             case 'encyclopedia':
+                // Do not add work parameter to cite book templates
+                if ($this->wikiname() === 'cite book') {
+                    return false;
+                }
                 $value = html_entity_decode($value, ENT_COMPAT | ENT_HTML401, "UTF-8");
                 $value = html_entity_decode($value, ENT_COMPAT | ENT_HTML401, "UTF-8");
                 $value = html_entity_decode($value, ENT_COMPAT | ENT_HTML401, "UTF-8");
@@ -2110,6 +2118,10 @@ final class Template
                 return false;
 
             case 'website':
+                // Do not add website parameter to cite book templates
+                if ($this->wikiname() === 'cite book') {
+                    return false;
+                }
                 if ($this->blank(WORK_ALIASES)) {
                     return $this->add($param_name, $value); // Do NOT Sanitize
                 }

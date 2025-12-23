@@ -2786,6 +2786,56 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertSame('{{cite book}}', $template->parsed_text());
     }
 
+    public function testNoWorkParameterInCiteBook(): void {
+        // Test for issue #4830: Do not add work or its aliases to cite book templates
+        $text = '{{cite book|title=Test Book|author=Test Author}}';
+        $template = $this->make_citation($text);
+        
+        // Try to add work parameter - should be rejected
+        $result = $template->add_if_new('work', 'Test Journal');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('work'));
+        
+        // Try to add journal parameter - should be rejected
+        $result = $template->add_if_new('journal', 'Test Journal');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('journal'));
+        
+        // Try to add newspaper parameter - should be rejected
+        $result = $template->add_if_new('newspaper', 'Test Newspaper');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('newspaper'));
+        
+        // Try to add magazine parameter - should be rejected
+        $result = $template->add_if_new('magazine', 'Test Magazine');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('magazine'));
+        
+        // Try to add website parameter - should be rejected
+        $result = $template->add_if_new('website', 'Test Website');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('website'));
+        
+        // Try to add periodical parameter - should be rejected
+        $result = $template->add_if_new('periodical', 'Test Periodical');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('periodical'));
+        
+        // Verify the template remains unchanged
+        $this->assertSame('{{cite book|title=Test Book|author=Test Author}}', $template->parsed_text());
+    }
+
+    public function testWorkParameterAllowedInCiteJournal(): void {
+        // Verify that work parameters ARE allowed in cite journal (not just blocked everywhere)
+        $text = '{{cite journal|title=Test Article|author=Test Author}}';
+        $template = $this->make_citation($text);
+        
+        // Add journal parameter - should succeed
+        $result = $template->add_if_new('journal', 'Test Journal');
+        $this->assertTrue($result);
+        $this->assertSame('Test Journal', $template->get2('journal'));
+    }
+
     public function testUpdateYear1(): void {
         $text = '{{cite journal|date=2000}}';
         $template = $this->make_citation($text);
