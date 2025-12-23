@@ -44,7 +44,7 @@ The test suite detects missing keys and skips tests.  A developer should conside
   * All code must be valid PHP 8.4
   * We prefer [] to array()
   * in_array should always pass the strict parameter
-  * Directly comparing strings to integer with comparision operators is different in PHP 7 and 8, so they should not be used
+  * Directly comparing strings to integer with comparison operators is different in PHP 7 and 8, so they should not be used
   * We want 100% code coverage with untestable code flagged in the source -- such as code that handles error conditions.  See the API php files for lots of examples of non-coverage code.
   * All curl_init() should be replaced with bot_curl_init() calls, which sets reasonable defaults.  Also reasonable timeouts should be set depending upon the website.
   * error_reporting(E_ALL) and declare(strict_types=1) are both set
@@ -66,8 +66,8 @@ The bot reports its activity to users using:
   We recommend using the "report_" family of functions defined in `user_messages.php` to communicate with the user.
 
 ## Defensive programming is necessary
-  * External data sources that send unexpected data, including wikipedia - be defensive in your programming.
+  * External data sources that send unexpected data, including Wikipedia - be defensive in your programming.
   * External data sources that suddenly change data - we need tests to detect this
-  * CS1/CS2 sometimes changes and what was a good edit yesterday is bad edit today.  Thus the wikipedia talk page for the bot need to be monitored for bugs and suggestions.
+  * CS1/CS2 sometimes changes and what was a good edit yesterday is bad edit today.  Thus the Wikipedia talk page for the bot needs to be monitored for bugs and suggestions.
   * Do not merge changes without running the test suite. At a minimum, run the full test suite and ensure the non-static tests execute beyond initial startup before merging. “Minor changes” are frequently incorrect and must be validated by tests.  Trust us, we have failed.
 
