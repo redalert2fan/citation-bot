@@ -24,6 +24,8 @@ final class Zotero {
     private const ZOTERO_GIVE_UP = 5;
     private const ZOTERO_SKIPS = 100;
     private const ERROR_DONE = 'ERROR_DONE';
+    private const MIN_TITLE_LENGTH = 10;
+    private const GENERIC_KEYWORD_THRESHOLD = 3;
     private static int $zotero_announced = 0;
     private static CurlHandle $zotero_ch;
     private static int $zotero_failures_count = 0;
@@ -41,7 +43,7 @@ final class Zotero {
      * preferring it over potentially generic og:title metadata.
      */
     private static function extract_title_from_html(string $url): ?string {
-        static $ch = null;
+        static $ch = null; // Reused across calls for efficiency; cleaned up by PHP runtime
         if ($ch === null) {
             $ch = bot_curl_init(1.0, []);
         }
@@ -64,7 +66,8 @@ final class Zotero {
             $title = mb_trim($title);
             
             // Remove site name suffixes that are common patterns
-            $title = preg_replace('~\s*[\|\-–—]\s*[^|\-–—]+$~u', '', $title);
+            $separators = '|\-–—';
+            $title = preg_replace('~\s*[' . preg_quote($separators, '~') . ']\s*[^' . preg_quote($separators, '~') . ']+$~u', '', $title);
             $title = mb_trim($title);
             
             if (mb_strlen($title) > 5 && !self::is_generic_title($title)) {
@@ -102,7 +105,7 @@ final class Zotero {
         }
         
         // Check if title is very short (likely generic)
-        if (mb_strlen($title) < 10) {
+        if (mb_strlen($title) < self::MIN_TITLE_LENGTH) {
             return true;
         }
         
@@ -115,8 +118,8 @@ final class Zotero {
             }
         }
         
-        // If title contains 3 or more generic keywords, it's likely generic
-        return $keyword_count >= 3;
+        // If title contains GENERIC_KEYWORD_THRESHOLD or more generic keywords, it's likely generic
+        return $keyword_count >= self::GENERIC_KEYWORD_THRESHOLD;
     }
 
     public static function create_ch_zotero(): void {
