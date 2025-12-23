@@ -494,11 +494,26 @@ final class Zotero {
         
         // If Zotero returned a bad title, try HTML extraction as fallback
         if ($bad_title_found && isset($result->title)) {
-            report_info("Attempting HTML extraction as fallback for bad Zotero title");
+            report_info("Attempting HTML extraction as fallback for bad Zotero title for URL " . echoable($url));
             $html_title = self::extract_title_from_html($url);
             if ($html_title !== null && mb_strlen($html_title) > 5) {
-                report_info("Using HTML-extracted title instead of bad Zotero title");
-                $result->title = $html_title;
+                // Validate that the HTML-extracted title is not also in BAD_TITLES
+                $html_title_lower = mb_strtolower($html_title);
+                $is_bad_title = false;
+                foreach (BAD_TITLES as $bad) {
+                    if (mb_stripos($html_title_lower, $bad) !== false) {
+                        $is_bad_title = true;
+                        break;
+                    }
+                }
+                
+                if (!$is_bad_title) {
+                    report_info("Using HTML-extracted title instead of bad Zotero title");
+                    $result->title = $html_title;
+                } else {
+                    report_info("HTML-extracted title is also in BAD_TITLES list, rejecting");
+                    return;
+                }
             } else {
                 // No valid HTML title found, reject the bad Zotero data
                 return;
