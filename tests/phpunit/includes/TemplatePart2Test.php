@@ -3955,6 +3955,47 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertSame('Test Encyclopedia', $template->get2('encyclopedia'));
     }
 
+    // Tests for issue #4830: Verify normal parameters still work with cite book
+    public function testCiteBookStillAddsISBN(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('isbn', '978-0-123-45678-9');
+        $this->assertTrue($result);
+        $this->assertSame('978-0-123-45678-9', $template->get2('isbn'));
+    }
+
+    public function testCiteBookStillAddsPublisher(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('publisher', 'Test Publisher');
+        $this->assertTrue($result);
+        $this->assertSame('Test Publisher', $template->get2('publisher'));
+    }
+
+    public function testCiteBookStillAddsAuthor(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('last', 'Smith');
+        $this->assertTrue($result);
+        $this->assertSame('Smith', $template->get2('last'));
+    }
+
+    public function testCiteBookStillAddsChapter(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('chapter', 'Test Chapter');
+        $this->assertTrue($result);
+        $this->assertSame('Test Chapter', $template->get2('chapter'));
+    }
+
+    public function testCiteBookStillAddsSeries(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('series', 'Test Series');
+        $this->assertTrue($result);
+        $this->assertSame('Test Series', $template->get2('series'));
+    }
+
     // Tests for issue #4830: When converting TO cite book, remove unsupported blank parameters
     public function testConvertToCiteBookRemovesBlankJournal(): void {
         $text = '{{cite journal|title=Test|journal=}}';
