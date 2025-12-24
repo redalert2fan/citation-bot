@@ -3998,4 +3998,25 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertSame('Some Journal', $template->get2('journal'));
     }
 
+    public function testConvertToCiteBookHandlesWorkAndTitleCorrectly(): void {
+        // Test that the existing logic for converting work+title to chapter+title is preserved
+        $text = '{{cite journal|title=Article Title|work=Journal Name}}';
+        $template = $this->make_citation($text);
+        $template->change_name_to('cite book');
+        $this->assertSame('cite book', $template->wikiname());
+        // work should become title, and title should become chapter
+        $this->assertSame('Journal Name', $template->get2('title'));
+        $this->assertSame('Article Title', $template->get2('chapter'));
+        $this->assertNull($template->get2('work')); // work should be gone after conversion
+    }
+
+    public function testConvertToCiteBookRemovesBlankWork(): void {
+        // If work is blank when converting, it should be removed
+        $text = '{{cite journal|title=Test|work=}}';
+        $template = $this->make_citation($text);
+        $template->change_name_to('cite book');
+        $this->assertSame('cite book', $template->wikiname());
+        $this->assertNull($template->get2('work'));
+    }
+
 }
