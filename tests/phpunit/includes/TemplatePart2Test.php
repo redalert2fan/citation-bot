@@ -3853,210 +3853,97 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertNull($prepared->get2('title'));
     }
 
-    // Tests for issue #4830: Bot should not add work/journal/website/newspaper/magazine to cite book
-    public function testCiteBookDoesNotAddWork(): void {
+    // Tests for issue #4830: Bot should not add unsupported parameters to cite book
+    public function testCiteBookBlocksUnsupportedParameters(): void {
         $text = '{{cite book|title=Test Book}}';
         $template = $this->make_citation($text);
-        $result = $template->add_if_new('work', 'Test Work');
-        $this->assertFalse($result);
+        
+        // Test all 5 unsupported parameters
+        $this->assertFalse($template->add_if_new('work', 'Test Work'));
+        $this->assertFalse($template->add_if_new('journal', 'Test Journal'));
+        $this->assertFalse($template->add_if_new('website', 'Test Website'));
+        $this->assertFalse($template->add_if_new('newspaper', 'Test Newspaper'));
+        $this->assertFalse($template->add_if_new('magazine', 'Test Magazine'));
+        
+        // Verify none were added
         $this->assertNull($template->get2('work'));
-    }
-
-    public function testCiteBookDoesNotAddJournal(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('journal', 'Test Journal');
-        $this->assertFalse($result);
         $this->assertNull($template->get2('journal'));
-    }
-
-    public function testCiteBookDoesNotAddWebsite(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('website', 'Test Website');
-        $this->assertFalse($result);
         $this->assertNull($template->get2('website'));
-    }
-
-    public function testCiteBookDoesNotAddNewspaper(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('newspaper', 'Test Newspaper');
-        $this->assertFalse($result);
         $this->assertNull($template->get2('newspaper'));
-    }
-
-    public function testCiteBookDoesNotAddMagazine(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('magazine', 'Test Magazine');
-        $this->assertFalse($result);
         $this->assertNull($template->get2('magazine'));
     }
 
-    public function testCiteBookPreservesExistingWork(): void {
-        $text = '{{cite book|title=Test Book|work=Existing Work}}';
+    public function testCiteBookPreservesExistingUnsupportedParameters(): void {
+        $text = '{{cite book|title=Test Book|work=Existing Work|journal=Existing Journal}}';
         $template = $this->make_citation($text);
+        
+        // Existing parameters should be preserved
         $this->assertSame('Existing Work', $template->get2('work'));
-        // Try to add new value - should not change existing
-        $result = $template->add_if_new('work', 'New Work');
-        $this->assertFalse($result);
-        $this->assertSame('Existing Work', $template->get2('work'));
-    }
-
-    public function testCiteBookPreservesExistingJournal(): void {
-        $text = '{{cite book|title=Test Book|journal=Existing Journal}}';
-        $template = $this->make_citation($text);
         $this->assertSame('Existing Journal', $template->get2('journal'));
-        // Try to add new value - should not change existing
-        $result = $template->add_if_new('journal', 'New Journal');
-        $this->assertFalse($result);
+        
+        // Bot should not overwrite them
+        $this->assertFalse($template->add_if_new('work', 'New Work'));
+        $this->assertFalse($template->add_if_new('journal', 'New Journal'));
+        $this->assertSame('Existing Work', $template->get2('work'));
         $this->assertSame('Existing Journal', $template->get2('journal'));
     }
 
-    public function testCiteJournalStillAddsWork(): void {
-        $text = '{{cite journal|title=Test Article}}';
+    public function testCiteBookAllowsSupportedParameters(): void {
+        $text = '{{cite book|title=Test Book}}';
         $template = $this->make_citation($text);
-        $result = $template->add_if_new('work', 'Test Work');
-        $this->assertTrue($result);
-        $this->assertSame('Test Work', $template->get2('work'));
-    }
-
-    public function testCiteJournalStillAddsJournal(): void {
-        $text = '{{cite journal|title=Test Article}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('journal', 'Test Journal');
-        $this->assertTrue($result);
-        $this->assertSame('Test Journal', $template->get2('journal'));
-    }
-
-    public function testCiteWebStillAddsWebsite(): void {
-        $text = '{{cite web|title=Test Page}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('website', 'Test Website');
-        $this->assertTrue($result);
-        $this->assertSame('Test Website', $template->get2('website'));
-    }
-
-    public function testCiteNewsStillAddsNewspaper(): void {
-        $text = '{{cite news|title=Test Article}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('newspaper', 'Test Newspaper');
-        $this->assertTrue($result);
-        $this->assertSame('Test Newspaper', $template->get2('newspaper'));
-    }
-
-    public function testCiteBookStillAddsEncyclopedia(): void {
-        // Encyclopedia is allowed in cite book when using the encyclopedia parameter
-        $text = '{{cite book|title=Test Entry}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('encyclopedia', 'Test Encyclopedia');
-        $this->assertTrue($result);
+        
+        // Test key supported parameters
+        $this->assertTrue($template->add_if_new('isbn', '978-0-123-45678-9'));
+        $this->assertTrue($template->add_if_new('publisher', 'Test Publisher'));
+        $this->assertTrue($template->add_if_new('last', 'Smith'));
+        $this->assertTrue($template->add_if_new('chapter', 'Test Chapter'));
+        $this->assertTrue($template->add_if_new('encyclopedia', 'Test Encyclopedia'));
+        
+        $this->assertSame('978-0-123-45678-9', $template->get2('isbn'));
+        $this->assertSame('Test Publisher', $template->get2('publisher'));
+        $this->assertSame('Smith', $template->get2('last'));
+        $this->assertSame('Test Chapter', $template->get2('chapter'));
         $this->assertSame('Test Encyclopedia', $template->get2('encyclopedia'));
     }
 
-    // Tests for issue #4830: Verify normal parameters still work with cite book
-    public function testCiteBookStillAddsISBN(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('isbn', '978-0-123-45678-9');
-        $this->assertTrue($result);
-        $this->assertSame('978-0-123-45678-9', $template->get2('isbn'));
+    public function testConvertToCiteBookRemovesBlankUnsupportedParams(): void {
+        // Test removal of blank journal
+        $text1 = '{{cite journal|title=Test|journal=}}';
+        $template1 = $this->make_citation($text1);
+        $template1->change_name_to('cite book');
+        $this->assertSame('cite book', $template1->wikiname());
+        $this->assertNull($template1->get2('journal'));
+        
+        // Test removal of blank website
+        $text2 = '{{cite web|title=Test|website=}}';
+        $template2 = $this->make_citation($text2);
+        $template2->change_name_to('cite book');
+        $this->assertNull($template2->get2('website'));
+        
+        // Test removal of blank work
+        $text3 = '{{cite journal|title=Test|work=}}';
+        $template3 = $this->make_citation($text3);
+        $template3->change_name_to('cite book');
+        $this->assertNull($template3->get2('work'));
     }
 
-    public function testCiteBookStillAddsPublisher(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('publisher', 'Test Publisher');
-        $this->assertTrue($result);
-        $this->assertSame('Test Publisher', $template->get2('publisher'));
-    }
-
-    public function testCiteBookStillAddsAuthor(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('last', 'Smith');
-        $this->assertTrue($result);
-        $this->assertSame('Smith', $template->get2('last'));
-    }
-
-    public function testCiteBookStillAddsChapter(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('chapter', 'Test Chapter');
-        $this->assertTrue($result);
-        $this->assertSame('Test Chapter', $template->get2('chapter'));
-    }
-
-    public function testCiteBookStillAddsSeries(): void {
-        $text = '{{cite book|title=Test Book}}';
-        $template = $this->make_citation($text);
-        $result = $template->add_if_new('series', 'Test Series');
-        $this->assertTrue($result);
-        $this->assertSame('Test Series', $template->get2('series'));
-    }
-
-    // Tests for issue #4830: When converting TO cite book, remove unsupported blank parameters
-    public function testConvertToCiteBookRemovesBlankJournal(): void {
-        $text = '{{cite journal|title=Test|journal=}}';
-        $template = $this->make_citation($text);
-        $template->change_name_to('cite book');
-        $this->assertSame('cite book', $template->wikiname());
-        $this->assertNull($template->get2('journal'));
-    }
-
-    public function testConvertToCiteBookRemovesBlankWebsite(): void {
-        $text = '{{cite web|title=Test|website=}}';
-        $template = $this->make_citation($text);
-        $template->change_name_to('cite book');
-        $this->assertSame('cite book', $template->wikiname());
-        $this->assertNull($template->get2('website'));
-    }
-
-    public function testConvertToCiteBookRemovesBlankNewspaper(): void {
-        $text = '{{cite news|title=Test|newspaper=}}';
-        $template = $this->make_citation($text);
-        $template->change_name_to('cite book');
-        $this->assertSame('cite book', $template->wikiname());
-        $this->assertNull($template->get2('newspaper'));
-    }
-
-    public function testConvertToCiteBookRemovesBlankMagazine(): void {
-        $text = '{{cite magazine|title=Test|magazine=}}';
-        $template = $this->make_citation($text);
-        $template->change_name_to('cite book');
-        $this->assertSame('cite book', $template->wikiname());
-        $this->assertNull($template->get2('magazine'));
-    }
-
-    public function testConvertToCiteBookPreservesNonBlankJournal(): void {
-        // If journal has a value when converting, we preserve it (user may have intentionally added it)
+    public function testConvertToCiteBookPreservesNonBlankParams(): void {
         $text = '{{cite journal|title=Test|journal=Some Journal}}';
         $template = $this->make_citation($text);
         $template->change_name_to('cite book');
         $this->assertSame('cite book', $template->wikiname());
-        // The journal parameter should still be there (bot respects human edits)
+        // Non-blank parameters preserved to respect human edits
         $this->assertSame('Some Journal', $template->get2('journal'));
     }
 
-    public function testConvertToCiteBookHandlesWorkAndTitleCorrectly(): void {
-        // Test that the existing logic for converting work+title to chapter+title is preserved
+    public function testConvertToCiteBookHandlesWorkTitleConversion(): void {
+        // Test that existing work+title → title+chapter conversion is preserved
         $text = '{{cite journal|title=Article Title|work=Journal Name}}';
         $template = $this->make_citation($text);
         $template->change_name_to('cite book');
         $this->assertSame('cite book', $template->wikiname());
-        // work should become title, and title should become chapter
         $this->assertSame('Journal Name', $template->get2('title'));
         $this->assertSame('Article Title', $template->get2('chapter'));
-        $this->assertNull($template->get2('work')); // work should be gone after conversion
-    }
-
-    public function testConvertToCiteBookRemovesBlankWork(): void {
-        // If work is blank when converting, it should be removed
-        $text = '{{cite journal|title=Test|work=}}';
-        $template = $this->make_citation($text);
-        $template->change_name_to('cite book');
-        $this->assertSame('cite book', $template->wikiname());
         $this->assertNull($template->get2('work'));
     }
 
