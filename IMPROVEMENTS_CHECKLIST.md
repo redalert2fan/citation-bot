@@ -2,49 +2,21 @@
 
 This document lists potential improvements identified during the comprehensive code analysis.
 
-## Priority 1: Critical (Should Address Soon)
+## Priority 1: High (Important for Production)
 
-### 1.1 PHP Version Requirement
-- [ ] Review if PHP 8.4 is truly required
-- [ ] If not using 8.4 features, consider changing to `"php": ">=8.3"`
-- [ ] Update all 14 workflow files if changing requirement
-- [ ] Test on PHP 8.3 to ensure compatibility
-- [ ] Document decision in README or changelog
-
-**Files to modify if downgrading**:
-```
-composer.json (line 16)
-.github/workflows/codeql-analysis.yml
-.github/workflows/DesignSecurity.yml
-.github/workflows/phplint.yml
-.github/workflows/phan.yml
-.github/workflows/PHPChecker.yml
-.github/workflows/phpstan.yml
-.github/workflows/psalm-security.yml
-.github/workflows/psalm.yml
-.github/workflows/PHPCodeSniffer.yml
-.github/workflows/test-suite.yml
-.github/workflows/ThePHPChecker.yml
-.github/workflows/trivy-analysis.yml
-.github/workflows/YamlJson.yml
-.github/workflows/html5check.yml
-```
-
-## Priority 2: High (Important for Production)
-
-### 2.1 Dependency Lock File
-- [ ] Run `composer install` (after resolving PHP version)
+### 1.1 Dependency Lock File
+- [ ] Run `composer install`
 - [ ] Commit `composer.lock` to repository
 - [ ] Ensures reproducible builds across environments
 - [ ] Prevents dependency drift
 
-### 2.2 Missing Configuration Documentation
+### 1.2 Missing Configuration Documentation
 - [ ] Verify all environment variables are documented in env.php.example
 - [ ] Add comments explaining each variable's purpose
 - [ ] Document which variables are required vs optional
 - [ ] Add setup instructions to README for first-time developers
 
-## Priority 3: Medium (Code Quality)
+## Priority 2: Medium (Code Quality)
 
 ### 3.1 Error Suppression Reduction
 **Current**: 139 uses of @ operator  
@@ -150,7 +122,7 @@ if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
 }
 ```
 
-## Priority 4: Low (Nice to Have)
+## Priority 3: Low (Nice to Have)
 
 ### 4.1 Code Documentation
 - [ ] Add PHPDoc comments to public methods without them
@@ -190,7 +162,7 @@ Once dependencies are installed:
 - [ ] Monitor rate limits
 - [ ] Track suspicious activity
 
-## Priority 5: Future Enhancements
+## Priority 4: Future Enhancements
 
 ### 5.1 Security Enhancements
 - [ ] Implement Content Security Policy (CSP) headers
