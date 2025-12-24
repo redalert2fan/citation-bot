@@ -1380,6 +1380,10 @@ final class TemplatePart1Test extends testBaseClass {
         $this->assertNull($expanded->get2('last31'));
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     */
     public function testInPress(): void {
         $this->flush(); // Flaky test - pubmed seems to be annoyed with us sometimes, so take a break
         sleep(5);

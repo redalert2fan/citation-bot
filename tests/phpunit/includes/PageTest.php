@@ -132,12 +132,22 @@ final class PageTest extends testBaseClass {
         $this->assertFaker();
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     * @group shared-pmid-28702423
+     */
     public function testVancNames1(): void {
         $page = $this->process_page('{|}{{cs1 config|name-list-style=vanc}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume = | issue =  | pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | vauthors = }}');
         $this->assertSame(     '{|}{{cs1 config|name-list-style=vanc}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume = 22| issue =  2| pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | vauthors = Jesch ED, Carr TP }}', $page->parsed_text());
         $this->assertSame('Alter: volume, issue. Add: authors 1-2. Removed parameters. | [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. ', $page->edit_summary());
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     * @group shared-pmid-28702423
+     */
     public function testVancNames2(): void {
         sleep(1);
         $page = $this->process_page('{|}{{cs1 config|name-list-style=doggiesandcats}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume = | issue =  | pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | vauthors = }}');
@@ -145,6 +155,11 @@ final class PageTest extends testBaseClass {
         $this->assertSame('Alter: volume, issue. Add: authors 1-2. Removed parameters. | [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. ', $page->edit_summary());
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     * @group shared-pmid-28702423
+     */
     public function testVancNames3(): void {
         sleep(1);
         $page = $this->process_page('{|}{{cs1 config|name-list-style=amp}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume =  | issue = | pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | vauthors = }}');
@@ -152,6 +167,11 @@ final class PageTest extends testBaseClass {
         $this->assertSame('Alter: volume, issue. Add: authors 1-2. Removed parameters. | [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. ', $page->edit_summary());
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     * @group shared-pmid-28702423
+     */
     public function testVancNames4(): void {
         sleep(1); // Reduce failures
         $page = $this->process_page('{|}{{cs1 config|name-list-style=default}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume =  | issue = | pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | vauthors = }}');
@@ -159,6 +179,11 @@ final class PageTest extends testBaseClass {
         $this->assertSame('Alter: volume, issue. Add: authors 1-2. Removed parameters. | [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. ', $page->edit_summary());
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     * @group shared-pmid-28702423
+     */
     public function testVancNames5(): void {
         sleep(1);
         $page = $this->process_page('{|}{{cs1 config|name-list-style=}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume = | issue =  | pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | vauthors = }}');
@@ -166,6 +191,11 @@ final class PageTest extends testBaseClass {
         $this->assertSame('Alter: volume, issue. Add: authors 1-2. Removed parameters. | [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. ', $page->edit_summary());
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     * @group shared-pmid-28702423
+     */
     public function testVancNames6(): void {
         sleep(1);
         $page = $this->process_page('{|}{{cs1 config|name-list-style=vanc}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume = | issue =  | pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | vauthors = <!-- -->}}');
@@ -173,6 +203,11 @@ final class PageTest extends testBaseClass {
         $this->assertSame('Alter: volume, issue. | [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. ', $page->edit_summary());
     }
 
+    /**
+     * @group pubmed-api
+     * @group external-api
+     * @group shared-pmid-28702423
+     */
     public function testVancNames7(): void {
         sleep(1);
         $page = $this->process_page('{|}{{cs1 config|name-list-style=vanc}}<!-- -->{{{|}}}{{cite journal | title = Food Ingredients That Inhibit Cholesterol Absorption | journal = Preventive Nutrition and Food Science | volume = | issue =  | pages = 67–80 | date = June 2017 | pmid = 28702423 | pmc = 5503415 | doi = <!-- --> | last1 = SheHulk}}');
@@ -309,6 +344,10 @@ final class PageTest extends testBaseClass {
         $this->assertSame($text, $page->parsed_text());
     }
 
+    /**
+     * @group external-api
+     * @group doi-api
+     */
     public function testUrlReferencesWithText5(): void {
         $text = "<ref>Stoeckelhuber, Mechthild, Alexander Sliwa, and Ulrich Welsch. &quot;[http://onlinelibrary.wiley.com/doi/10.1002/1097-0185(20000701)259:3%3C312::AID-AR80%3E3.0.CO;2-X/full Histo‐physiology of the scent‐marking glands of the penile pad, anal pouch, and the forefoot in the aardwolf (Proteles cristatus)].&quot; The anatomical record 259.3 (2000): 312-326.</ref>";
         $page = $this->process_page($text);
