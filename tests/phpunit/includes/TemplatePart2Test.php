@@ -3955,4 +3955,47 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertSame('Test Encyclopedia', $template->get2('encyclopedia'));
     }
 
+    // Tests for issue #4830: When converting TO cite book, remove unsupported blank parameters
+    public function testConvertToCiteBookRemovesBlankJournal(): void {
+        $text = '{{cite journal|title=Test|journal=}}';
+        $template = $this->make_citation($text);
+        $template->change_name_to('cite book');
+        $this->assertSame('cite book', $template->wikiname());
+        $this->assertNull($template->get2('journal'));
+    }
+
+    public function testConvertToCiteBookRemovesBlankWebsite(): void {
+        $text = '{{cite web|title=Test|website=}}';
+        $template = $this->make_citation($text);
+        $template->change_name_to('cite book');
+        $this->assertSame('cite book', $template->wikiname());
+        $this->assertNull($template->get2('website'));
+    }
+
+    public function testConvertToCiteBookRemovesBlankNewspaper(): void {
+        $text = '{{cite news|title=Test|newspaper=}}';
+        $template = $this->make_citation($text);
+        $template->change_name_to('cite book');
+        $this->assertSame('cite book', $template->wikiname());
+        $this->assertNull($template->get2('newspaper'));
+    }
+
+    public function testConvertToCiteBookRemovesBlankMagazine(): void {
+        $text = '{{cite magazine|title=Test|magazine=}}';
+        $template = $this->make_citation($text);
+        $template->change_name_to('cite book');
+        $this->assertSame('cite book', $template->wikiname());
+        $this->assertNull($template->get2('magazine'));
+    }
+
+    public function testConvertToCiteBookPreservesNonBlankJournal(): void {
+        // If journal has a value when converting, we preserve it (user may have intentionally added it)
+        $text = '{{cite journal|title=Test|journal=Some Journal}}';
+        $template = $this->make_citation($text);
+        $template->change_name_to('cite book');
+        $this->assertSame('cite book', $template->wikiname());
+        // The journal parameter should still be there (bot respects human edits)
+        $this->assertSame('Some Journal', $template->get2('journal'));
+    }
+
 }

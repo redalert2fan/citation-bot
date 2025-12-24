@@ -3265,6 +3265,14 @@ final class Template
                 $this->rename( 'title', 'chapter' );
                 $this->add('title', $tmp);
             }
+            
+            // Issue #4830: Remove unsupported parameters when converting to cite book
+            // These parameters are not supported by cite book template
+            foreach (['journal', 'newspaper', 'magazine', 'website'] as $param) {
+                if ($this->has($param) && $this->blank($param)) {
+                    $this->forget($param);
+                }
+            }
         }
     }
 
