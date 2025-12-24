@@ -12,8 +12,11 @@ try {
     //Set up tool requirements
     require_once __DIR__ . '/includes/setup.php';
 
-    if (!isset($_POST['text'], $_POST['summary']) || !is_string($_POST['text']) || !is_string($_POST['summary'])) {
-        throw new Exception('not a string');    // @codeCoverageIgnore
+    if (!isset($_POST['text'], $_POST['summary'])) {
+        throw new Exception('missing parameters');    // @codeCoverageIgnore
+    }
+    if (!is_string($_POST['text']) || !is_string($_POST['summary'])) {
+        throw new Exception('invalid parameter types');    // @codeCoverageIgnore
     }
     $originalText = $_POST['text'];
     $editSummary = $_POST['summary'];
