@@ -3947,4 +3947,38 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertNull($template->get2('work'));
     }
 
+    public function testCiteBookRealWorldBookChapterWithDOI(): void {
+        // Real-world test: Progress in Optics book chapter with DOI and bibcode
+        // This tests that the bot doesn't add journal/work/website even when external APIs suggest it
+        $text = '{{cite book |last1=Berry |first1=M. V. |title=Progress in Optics Volume 50 |date=2007-01-01 |volume=50 |pages=13–50 |editor-last=Wolf |editor-first=E. |chapter-url=https://www.sciencedirect.com/science/article/pii/S0079663807500028 |access-date=2024-04-23 |publisher=Elsevier |last2=Jeffrey |first2=M. R. |chapter=Chapter 2 Conical diffraction: Hamilton\'s diabolical point at the heart of crystal optics |doi=10.1016/S0079-6638(07)50002-8 |bibcode=2007PrOpt..50...13B |isbn=978-0-444-53023-3 }}';
+        $template = $this->make_citation($text);
+
+        // Verify it's a cite book template
+        $this->assertSame('cite book', $template->wikiname());
+
+        // Verify unsupported parameters are not present and cannot be added
+        $this->assertNull($template->get2('journal'));
+        $this->assertNull($template->get2('work'));
+        $this->assertNull($template->get2('website'));
+        $this->assertNull($template->get2('newspaper'));
+        $this->assertNull($template->get2('magazine'));
+
+        // Try to add unsupported parameters (simulating what external APIs might try)
+        $this->assertFalse($template->add_if_new('journal', 'Progress in Optics'));
+        $this->assertFalse($template->add_if_new('work', 'Progress in Optics'));
+        $this->assertFalse($template->add_if_new('website', 'ScienceDirect'));
+
+        // Verify they were not added
+        $this->assertNull($template->get2('journal'));
+        $this->assertNull($template->get2('work'));
+        $this->assertNull($template->get2('website'));
+
+        // Verify supported parameters are still present
+        $this->assertSame('Berry', $template->get2('last1'));
+        $this->assertSame('10.1016/S0079-6638(07)50002-8', $template->get2('doi'));
+        $this->assertSame('2007PrOpt..50...13B', $template->get2('bibcode'));
+        $this->assertSame('978-0-444-53023-3', $template->get2('isbn'));
+        $this->assertNotNull($template->get2('chapter'));
+    }
+
 }
