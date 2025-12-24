@@ -5,6 +5,10 @@ declare(strict_types=1);
 /*
  * Performance regression tests for Citation Bot
  * These tests measure execution time and resource usage for critical operations
+ * 
+ * NOTE: These tests use real DOIs and APIs where possible to get realistic performance data.
+ * Some tests may be slow or require network access. They can be skipped in CI if needed
+ * by using: phpunit --exclude-group performance
  */
 
 require_once __DIR__ . '/../testBaseClass.php';
@@ -20,9 +24,16 @@ final class PerformanceTest extends testBaseClass
      * Maximum acceptable time for DOI lookup (in seconds)
      */
     private const MAX_DOI_LOOKUP_TIME = 3.0;
+    
+    /**
+     * Use a real, known-good DOI for testing
+     * This is a stable Nature publication that should remain available
+     */
+    private const TEST_DOI_VALID = '10.1038/nature12373';
 
     /**
      * Test that simple template expansion completes within acceptable time
+     * @group performance
      */
     public function testSimpleTemplateExpansionPerformance(): void {
         $start = microtime(true);
@@ -42,9 +53,10 @@ final class PerformanceTest extends testBaseClass
 
     /**
      * Test that DOI lookup with caching is faster than without
+     * @group performance
      */
     public function testDOICachingImprovement(): void {
-        $doi = '10.1038/nature12373';
+        $doi = self::TEST_DOI_VALID;
 
         // First call - cache miss
         $start1 = microtime(true);
@@ -71,6 +83,7 @@ final class PerformanceTest extends testBaseClass
 
     /**
      * Test memory usage during template processing
+     * @group performance
      */
     public function testMemoryUsageDuringProcessing(): void {
         $initialMemory = memory_get_usage(true);
@@ -92,11 +105,15 @@ final class PerformanceTest extends testBaseClass
 
     /**
      * Test that HandleCache properly limits memory growth
+     * @group performance
      */
     public function testHandleCacheMemoryLimit(): void {
-        // Fill cache with many items
+        // Save original cache state
+        $originalCacheActive = HandleCache::$cache_active;
+        
+        // Fill cache with synthetic test items
         for ($i = 0; $i < 1000; $i++) {
-            HandleCache::$cache_active["10.1234/test{$i}"] = true;
+            HandleCache::$cache_active["10.9999/perftest{$i}"] = true;
         }
 
         $itemCount = count(HandleCache::$cache_active);
@@ -114,10 +131,14 @@ final class PerformanceTest extends testBaseClass
                 'free_memory() should clear the cache'
             );
         }
+        
+        // Restore original state
+        HandleCache::$cache_active = $originalCacheActive;
     }
 
     /**
      * Benchmark: Measure template parsing performance
+     * @group performance
      */
     public function testTemplateParsingBenchmark(): void {
         $templates = [
@@ -151,6 +172,7 @@ final class PerformanceTest extends testBaseClass
 
     /**
      * Test that URL simplification is performant
+     * @group performance
      */
     public function testURLSimplificationPerformance(): void {
         $complexUrl = 'https://www.example.com/article?utm_source=test&utm_medium=email&utm_campaign=test123&tracking_id=xyz&session_id=abc&' .
@@ -175,11 +197,16 @@ final class PerformanceTest extends testBaseClass
 
     /**
      * Performance test for handling multiple templates on a page
+     * Uses synthetic DOIs to avoid API rate limiting issues in tests
+     * @group performance
+     * @group slow
      */
     public function testMultipleTemplatesPerformance(): void {
+        // Use simple templates that don't require API calls for faster testing
         $page_text = '';
         for ($i = 0; $i < 10; $i++) {
-            $page_text .= "{{cite journal|doi=10.1038/nature{$i}|title=Article {$i}}}\n\n";
+            // Use basic cite web templates without DOI to avoid API delays in tests
+            $page_text .= "{{cite web|url=https://example.com/article{$i}|title=Article {$i}}}\n\n";
         }
 
         $start = microtime(true);
@@ -200,9 +227,11 @@ final class PerformanceTest extends testBaseClass
 
     /**
      * Test that cache hit rate is reasonable
+     * Uses a known valid DOI for realistic testing
+     * @group performance
      */
     public function testCacheHitRate(): void {
-        $doi = '10.1038/test123';
+        $doi = self::TEST_DOI_VALID;
 
         // Prime the cache
         doi_active($doi);
