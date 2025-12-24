@@ -416,6 +416,8 @@ const ISSUE_ALIASES = ['issue', 'number'];
 const PAGE_ALIASES = ['page', 'pages', 'pp', 'p', 'at', 'article-number'];
 const TIME_ALIASES = ['date', 'year', 'publication-date'];  // Not really an alias, but things to clean up
 const WORK_ALIASES = ['work', 'journal', 'newspaper', 'magazine', 'periodical', 'website', 'encyclopedia', 'encyclopaedia'];
+// Issue #4830: Parameters not supported by cite book template
+const CITE_BOOK_UNSUPPORTED_PARAMS = ['work', 'journal', 'newspaper', 'magazine', 'website'];
 const ACCESS_ALIASES = ['accessdate', 'access-date'];
 const ISBN_ALIASES = ['ISBN', 'isbn13', 'ISBN13', 'isbn'];
 const LANG_ALIASES = ['language', 'lang'];
