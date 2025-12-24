@@ -27,6 +27,18 @@ final class HandleCache {
         // This is a static class
     }
 
+    /**
+     * Check if cache memory usage exceeds limit and clear if needed
+     * 
+     * PERFORMANCE NOTE: Current implementation uses "clear all" strategy when
+     * cache size exceeds MAX_CACHE_SIZE. This causes a cache warm-up penalty
+     * after clearing, as all frequently-accessed items must be fetched again.
+     * 
+     * Potential optimization: Implement LRU (Least Recently Used) eviction to
+     * preserve frequently-accessed items while limiting memory growth.
+     * This would require tracking access timestamps or using a more sophisticated
+     * data structure like an LRU cache implementation.
+     */
     public static function check_memory_use(): void {
         $usage = count(self::$cache_inactive) +
                         count(self::$cache_active) +
@@ -39,6 +51,12 @@ final class HandleCache {
         }
     }
 
+    /**
+     * Clear all caches and trigger garbage collection
+     * 
+     * Called when cache size exceeds MAX_CACHE_SIZE.
+     * Resets to initial state but preserves BAD_DOI_ARRAY constants.
+     */
     public static function free_memory(): void {
         self::$cache_active = [];
         self::$cache_inactive = BAD_DOI_ARRAY;

@@ -5,6 +5,17 @@
 declare(strict_types=1);
 
 /**
+ * Remove URLs from templates that are redundant with DOI links
+ * 
+ * PERFORMANCE NOTE: This function makes sequential HTTP requests for each template
+ * that requires DOI verification (lines 97-134). This is a known performance bottleneck
+ * for pages with many templates. Current implementation prioritizes correctness over speed.
+ * 
+ * Potential optimizations:
+ * - Batch URLs and use curl_multi for parallel requests
+ * - Add URL deduplication before making requests
+ * - Cache DOI -> URL resolution results
+ * 
  * @param array<Template> &$templates
  */
 function drop_urls_that_match_dois(array &$templates): void {  // Pointer to save memory

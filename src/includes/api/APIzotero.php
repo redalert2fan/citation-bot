@@ -128,6 +128,21 @@ final class Zotero {
         }
     }
 
+    /**
+     * Make a request to the Zotero API with rate limiting and error handling
+     * 
+     * PERFORMANCE NOTE: This function implements basic rate limiting using usleep().
+     * The delay increases with failure count to prevent overwhelming the API.
+     * Current implementation: 0.1s base delay + (failures * 0.1s)
+     * 
+     * For better performance at scale, consider:
+     * - Token bucket algorithm for more flexible rate limiting
+     * - Request queueing with controlled concurrency
+     * - Circuit breaker pattern for failing APIs
+     * 
+     * @param string $url The URL to request from Zotero
+     * @return string The response from Zotero, or ERROR_DONE if giving up
+     */
     private static function zotero_request(string $url): string {
         set_time_limit(120);
         if (self::$zotero_failures_count > self::ZOTERO_GIVE_UP) {
@@ -145,6 +160,7 @@ final class Zotero {
             return self::ERROR_DONE;
         }
 
+        // Rate limiting: base delay is 0.1s, increases with failures
         $delay = max(min(100000 * (1 + self::$zotero_failures_count), 10), 0); // 0.10 seconds delay, with paranoid bounds checks
         usleep($delay);
         $zotero_response = bot_curl_exec(self::$zotero_ch);
