@@ -3857,14 +3857,14 @@ final class TemplatePart2Test extends testBaseClass {
     public function testCiteBookBlocksUnsupportedParameters(): void {
         $text = '{{cite book|title=Test Book}}';
         $template = $this->make_citation($text);
-        
+
         // Test all 5 unsupported parameters
         $this->assertFalse($template->add_if_new('work', 'Test Work'));
         $this->assertFalse($template->add_if_new('journal', 'Test Journal'));
         $this->assertFalse($template->add_if_new('website', 'Test Website'));
         $this->assertFalse($template->add_if_new('newspaper', 'Test Newspaper'));
         $this->assertFalse($template->add_if_new('magazine', 'Test Magazine'));
-        
+
         // Verify none were added
         $this->assertNull($template->get2('work'));
         $this->assertNull($template->get2('journal'));
@@ -3876,11 +3876,11 @@ final class TemplatePart2Test extends testBaseClass {
     public function testCiteBookPreservesExistingUnsupportedParameters(): void {
         $text = '{{cite book|title=Test Book|work=Existing Work|journal=Existing Journal}}';
         $template = $this->make_citation($text);
-        
+
         // Existing parameters should be preserved
         $this->assertSame('Existing Work', $template->get2('work'));
         $this->assertSame('Existing Journal', $template->get2('journal'));
-        
+
         // Bot should not overwrite them
         $this->assertFalse($template->add_if_new('work', 'New Work'));
         $this->assertFalse($template->add_if_new('journal', 'New Journal'));
@@ -3891,14 +3891,14 @@ final class TemplatePart2Test extends testBaseClass {
     public function testCiteBookAllowsSupportedParameters(): void {
         $text = '{{cite book|title=Test Book}}';
         $template = $this->make_citation($text);
-        
+
         // Test key supported parameters
         $this->assertTrue($template->add_if_new('isbn', '978-0-123-45678-9'));
         $this->assertTrue($template->add_if_new('publisher', 'Test Publisher'));
         $this->assertTrue($template->add_if_new('last', 'Smith'));
         $this->assertTrue($template->add_if_new('chapter', 'Test Chapter'));
         $this->assertTrue($template->add_if_new('encyclopedia', 'Test Encyclopedia'));
-        
+
         $this->assertSame('978-0-123-45678-9', $template->get2('isbn'));
         $this->assertSame('Test Publisher', $template->get2('publisher'));
         $this->assertSame('Smith', $template->get2('last'));
@@ -3913,13 +3913,13 @@ final class TemplatePart2Test extends testBaseClass {
         $template1->change_name_to('cite book');
         $this->assertSame('cite book', $template1->wikiname());
         $this->assertNull($template1->get2('journal'));
-        
+
         // Test removal of blank website
         $text2 = '{{cite web|title=Test|website=}}';
         $template2 = $this->make_citation($text2);
         $template2->change_name_to('cite book');
         $this->assertNull($template2->get2('website'));
-        
+
         // Test removal of blank work
         $text3 = '{{cite journal|title=Test|work=}}';
         $template3 = $this->make_citation($text3);
