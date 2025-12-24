@@ -3853,4 +3853,106 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertNull($prepared->get2('title'));
     }
 
+    // Tests for issue #4830: Bot should not add work/journal/website/newspaper/magazine to cite book
+    public function testCiteBookDoesNotAddWork(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('work', 'Test Work');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('work'));
+    }
+
+    public function testCiteBookDoesNotAddJournal(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('journal', 'Test Journal');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('journal'));
+    }
+
+    public function testCiteBookDoesNotAddWebsite(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('website', 'Test Website');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('website'));
+    }
+
+    public function testCiteBookDoesNotAddNewspaper(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('newspaper', 'Test Newspaper');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('newspaper'));
+    }
+
+    public function testCiteBookDoesNotAddMagazine(): void {
+        $text = '{{cite book|title=Test Book}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('magazine', 'Test Magazine');
+        $this->assertFalse($result);
+        $this->assertNull($template->get2('magazine'));
+    }
+
+    public function testCiteBookPreservesExistingWork(): void {
+        $text = '{{cite book|title=Test Book|work=Existing Work}}';
+        $template = $this->make_citation($text);
+        $this->assertSame('Existing Work', $template->get2('work'));
+        // Try to add new value - should not change existing
+        $result = $template->add_if_new('work', 'New Work');
+        $this->assertFalse($result);
+        $this->assertSame('Existing Work', $template->get2('work'));
+    }
+
+    public function testCiteBookPreservesExistingJournal(): void {
+        $text = '{{cite book|title=Test Book|journal=Existing Journal}}';
+        $template = $this->make_citation($text);
+        $this->assertSame('Existing Journal', $template->get2('journal'));
+        // Try to add new value - should not change existing
+        $result = $template->add_if_new('journal', 'New Journal');
+        $this->assertFalse($result);
+        $this->assertSame('Existing Journal', $template->get2('journal'));
+    }
+
+    public function testCiteJournalStillAddsWork(): void {
+        $text = '{{cite journal|title=Test Article}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('work', 'Test Work');
+        $this->assertTrue($result);
+        $this->assertSame('Test Work', $template->get2('work'));
+    }
+
+    public function testCiteJournalStillAddsJournal(): void {
+        $text = '{{cite journal|title=Test Article}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('journal', 'Test Journal');
+        $this->assertTrue($result);
+        $this->assertSame('Test Journal', $template->get2('journal'));
+    }
+
+    public function testCiteWebStillAddsWebsite(): void {
+        $text = '{{cite web|title=Test Page}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('website', 'Test Website');
+        $this->assertTrue($result);
+        $this->assertSame('Test Website', $template->get2('website'));
+    }
+
+    public function testCiteNewsStillAddsNewspaper(): void {
+        $text = '{{cite news|title=Test Article}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('newspaper', 'Test Newspaper');
+        $this->assertTrue($result);
+        $this->assertSame('Test Newspaper', $template->get2('newspaper'));
+    }
+
+    public function testCiteBookStillAddsEncyclopedia(): void {
+        // Encyclopedia is allowed in cite book when using the encyclopedia parameter
+        $text = '{{cite book|title=Test Entry}}';
+        $template = $this->make_citation($text);
+        $result = $template->add_if_new('encyclopedia', 'Test Encyclopedia');
+        $this->assertTrue($result);
+        $this->assertSame('Test Encyclopedia', $template->get2('encyclopedia'));
+    }
+
 }
