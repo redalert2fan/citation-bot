@@ -3267,17 +3267,14 @@ final class Template
             }
             
             // Issue #4830: Remove blank unsupported parameters when converting to cite book
-            // These parameters (except work, which is handled above) are not supported by cite book template
+            // Remove blank journal/newspaper/magazine/website parameters
             // Only remove blank ones to avoid interfering with intentional human edits
             foreach (CITE_BOOK_UNSUPPORTED_PARAMS as $param) {
-                if ($param === 'work') {
-                    continue; // work is handled separately below after conversion logic
-                }
                 if ($this->has($param) && $this->blank($param)) {
                     $this->forget($param);
                 }
             }
-            // If work still exists and is blank after the conversion above, remove it too
+            // Handle work parameter separately: if it's blank after the conversion logic above, remove it
             if ($this->has('work') && $this->blank('work')) {
                 $this->forget('work');
             }
