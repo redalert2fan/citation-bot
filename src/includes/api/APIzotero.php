@@ -169,6 +169,10 @@ final class Zotero {
         }
     }
 
+    /**
+     * @performance Keeps track of errors and adds small delays (0.1-0.2 seconds) when things go wrong.
+     * After 5 errors in a row, pauses for 100 tries to avoid overloading the service. Tries again once if it times out.
+     */
     private static function zotero_request(string $url): string {
         set_time_limit(120);
         if (self::$zotero_failures_count > self::ZOTERO_GIVE_UP) {
@@ -186,7 +190,7 @@ final class Zotero {
             return self::ERROR_DONE;
         }
 
-        $delay = max(min(100000*(1+self::$zotero_failures_count), 10), 0); // 0.10 seconds delay, with paranoid bounds checks
+        $delay = max(min(100000 * (1 + self::$zotero_failures_count), 10), 0); // 0.10 seconds delay, with paranoid bounds checks
         usleep($delay);
         $zotero_response = bot_curl_exec(self::$zotero_ch);
         if ($zotero_response === '') {
@@ -461,7 +465,7 @@ final class Zotero {
             $bad_count += mb_substr_count($result->bookTitle, '�') + mb_substr_count($result->bookTitle, '$') + mb_substr_count($result->bookTitle, '%');
             $total_count += mb_strlen($result->bookTitle);
         }
-        if (($bad_count > 5) || ($total_count > 1 && (($bad_count/$total_count) > 0.1))) {
+        if (($bad_count > 5) || ($total_count > 1 && (($bad_count / $total_count) > 0.1))) {
             report_info("Could parse unicode characters in " . echoable($url));
             return;
         }
@@ -891,7 +895,7 @@ final class Zotero {
         if (isset($result->volume)) {
             $template->add_if_new('volume', clean_volume((string) $result->volume));
         }
-        if (isset($result->date) && mb_strlen((string) $result->date)>3) {
+        if (isset($result->date) && mb_strlen((string) $result->date) > 3) {
             $new_date = tidy_date((string) $result->date);
             if (mb_stripos($url, 'indiatimes') !== false) { // "re-posted" website all at once
                 $maybe_date = (int) strtotime($new_date);
@@ -905,7 +909,7 @@ final class Zotero {
                 $template->add_if_new('date', $new_date);
             }
         }
-        if (isset($result->series) && mb_stripos($url, '.acm.org')===false) {
+        if (isset($result->series) && mb_stripos($url, '.acm.org') === false) {
             $template->add_if_new('series', (string) $result->series);
         }
         $i = 0;
@@ -926,7 +930,7 @@ final class Zotero {
         $i = 0;
         while (isset($result->author[$i])) {
             if (author_is_human(@$result->author[$i][0] . ' ' . @$result->author[$i][1])) {
-                $template->validate_and_add('author' . (string) ($i+1), (string) @$result->author[$i][1], (string) @$result->author[$i][0],
+                $template->validate_and_add('author' . (string) ($i + 1), (string) @$result->author[$i][1], (string) @$result->author[$i][0],
                                                                 isset($result->rights) ? (string) $result->rights : '', false);
             }
             $i++;
@@ -1078,10 +1082,10 @@ final class Zotero {
                         }
                         if ($authorParam && author_is_human($result->creators[$i]->firstName . ' ' . $result->creators[$i]->lastName)) {
                             if (is_bad_author((string) $result->creators[$i]->lastName)) {
-                                $result->creators[$i]->lastName  ='';
+                                $result->creators[$i]->lastName  = '';
                             }
                             if (is_bad_author((string) $result->creators[$i]->firstName)) {
-                                $result->creators[$i]->firstName ='';
+                                $result->creators[$i]->firstName = '';
                             }
                             $template->validate_and_add($authorParam, (string) $result->creators[$i]->lastName, (string) $result->creators[$i]->firstName,
                             isset($result->rights) ? (string) $result->rights : '', false);
