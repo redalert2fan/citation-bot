@@ -107,7 +107,7 @@ if (!SLOW_MODE) {
 
 ## 3. Execution Time Limits
 
-The bot uses `set_time_limit(120)` extensively (found 56 times in codebase) to prevent PHP script timeout during:
+The bot uses `set_time_limit(120)` extensively (found 59 times in codebase) to prevent PHP script timeout during:
 
 ### 3.1 High-Frequency Time Limit Resets
 - **Template expansion** (8 locations in Template.php)
