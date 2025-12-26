@@ -128,6 +128,10 @@ final class Zotero {
         }
     }
 
+    /**
+     * @performance Keeps track of errors and adds small delays (0.1-0.2 seconds) when things go wrong.
+     * After 5 errors in a row, pauses for 100 tries to avoid overloading the service. Tries again once if it times out.
+     */
     private static function zotero_request(string $url): string {
         set_time_limit(120);
         if (self::$zotero_failures_count > self::ZOTERO_GIVE_UP) {
@@ -455,7 +459,7 @@ final class Zotero {
             unset($result->publicationTitle); // S2 without journals
         }
         if (isset($result->bookTitle)) {
-            foreach (array_merge(BAD_ACCEPTED_MANUSCRIPT_TITLES, IN_PRESS_ALIASES) as $bad_title ) {
+            foreach (ZOTERO_LIST_OF_EVIL as $bad_title ) {
                 if (str_i_same($result->bookTitle, $bad_title)) {
                     report_info("Received invalid book title data for URL " . echoable($url . ": " . $result->bookTitle));
                     return;
@@ -463,7 +467,7 @@ final class Zotero {
             }
         }
         if (isset($result->title)) {
-            foreach (array_merge(BAD_ACCEPTED_MANUSCRIPT_TITLES, IN_PRESS_ALIASES) as $bad_title ) {
+            foreach (ZOTERO_LIST_OF_EVIL as $bad_title ) {
                 if (str_i_same($result->title, $bad_title)) {
                     report_info("Received invalid title data for URL " . echoable($url . ": " . $result->title));
                     return;
@@ -471,7 +475,7 @@ final class Zotero {
             }
         }
         if (isset($result->publicationTitle)) {
-            foreach (array_merge(BAD_ACCEPTED_MANUSCRIPT_TITLES, IN_PRESS_ALIASES) as $bad_title ) {
+            foreach (ZOTERO_LIST_OF_EVIL as $bad_title ) {
                 if (str_i_same($result->publicationTitle, $bad_title)) {
                     report_info("Received invalid publication title data for URL " . echoable($url . ": " . $result->publicationTitle));
                     return;
