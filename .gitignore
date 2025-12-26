@@ -1,12 +1,10 @@
 .phplint.cache/*
-.phpunit.cache/*
 *.lock
 **/private*
 clover.xml
 core
 coverage
 coverage.xml
-junit.xml
 src/env.php
 src/includes/CodeCoverage
 src/includes/cookie.txt

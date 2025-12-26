@@ -16,7 +16,6 @@
         "php": ">=8.4"
     },
     "require-dev": {
-        "brianium/paratest": "^7",
         "designsecurity/progpilot": "^1",
         "mediawiki/mediawiki-codesniffer": "^48.0.0",
         "overtrue/phplint": "^9",
@@ -36,6 +35,6 @@
         "progpilot": "progpilot --configuration progpilot.yml src/*.php src/*/*.php src/*/*/*.php tests/*.php tests/*/*.php tests/*/*/*.php",
         "psalm": "PSALM_ALLOW_XDEBUG=1 php ./vendor/bin/psalm --memory-limit=4G",
         "psalm-taint": "PSALM_ALLOW_XDEBUG=1 php ./vendor/bin/psalm --taint-analysis --memory-limit=4G",
-        "test": "paratest --processes=auto --runner=WrapperRunner --enforce-time-limit --default-time-limit=60000 --cache-directory=.phpunit.cache --coverage-clover=coverage.xml --log-junit=junit.xml --verbose 1>&2; TEST_EXIT=$?; sync; sync; php tests/parse_junit.php; sync; exit $TEST_EXIT"
+        "test": "phpunit --enforce-time-limit --default-time-limit 13000 --coverage-clover coverage.xml 1>&2"
     }
 }

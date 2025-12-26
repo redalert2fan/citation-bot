@@ -7,11 +7,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-const BIG_ARRAY = [...HAS_NO_VOLUME, ...BAD_ACCEPTED_MANUSCRIPT_TITLES, ...BAD_AUTHORS,
-                   ...PUBLISHER_ENDINGS, ...BAD_TITLES, ...IN_PRESS_ALIASES, ...NON_PUBLISHERS,
-                   ...JOURNAL_IS_BOOK_SERIES, ...HAS_NO_ISSUE, ...WORKS_ARE_PUBLISHERS, ...PREFER_VOLUMES,
-                   ...PREFER_ISSUES];
-
 final class constantsTest extends testBaseClass {
 
     public function testConstantsDefined(): void {
@@ -99,7 +94,11 @@ final class constantsTest extends testBaseClass {
     public function testAllLowerCase(): void {
         $pg = new TestPage(); // Fill page name with test name for debugging
         unset($pg);
-        foreach (BIG_ARRAY as $actual) {
+        $big_array = array_merge(HAS_NO_VOLUME, BAD_ACCEPTED_MANUSCRIPT_TITLES, BAD_AUTHORS,
+                                 PUBLISHER_ENDINGS, BAD_TITLES, IN_PRESS_ALIASES, NON_PUBLISHERS,
+                                 JOURNAL_IS_BOOK_SERIES, HAS_NO_ISSUE, WORKS_ARE_PUBLISHERS, PREFER_VOLUMES,
+                                 PREFER_ISSUES);
+        foreach ($big_array as $actual) {
             $this->assertSame(mb_strtolower($actual), $actual);
         }
     }
@@ -107,7 +106,8 @@ final class constantsTest extends testBaseClass {
     public function testMinimized(): void { // See is_book_series() function
         $pg = new TestPage(); // Fill page name with test name for debugging
         unset($pg);
-        foreach (JOURNAL_IS_BOOK_SERIES as $actual) {
+        $big_array = JOURNAL_IS_BOOK_SERIES;
+        foreach ($big_array as $actual) {
             $simple = mb_trim(str_replace(['-', '.', '   ', '  ', '[[', ']]'], [' ', ' ', ' ', ' ', ' ', ' '], $actual));
             $simple = mb_trim(str_replace(['    ', '   ', '  '], [' ', ' ', ' '], $simple));
             $this->assertSame($simple, $actual);
@@ -117,7 +117,11 @@ final class constantsTest extends testBaseClass {
     public function testNoSpacesOnEnds(): void {
         $pg = new TestPage(); // Fill page name with test name for debugging
         unset($pg);
-        foreach (BIG_ARRAY as $actual) {
+        $big_array = array_merge(HAS_NO_VOLUME, BAD_ACCEPTED_MANUSCRIPT_TITLES, BAD_AUTHORS,
+                                PUBLISHER_ENDINGS, BAD_TITLES, IN_PRESS_ALIASES, NON_PUBLISHERS,
+                                JOURNAL_IS_BOOK_SERIES, HAS_NO_ISSUE, WORKS_ARE_PUBLISHERS, PREFER_VOLUMES,
+                                PREFER_ISSUES);
+        foreach ($big_array as $actual) {
             if (!in_array($actual, ["sign up "], true)) {
                 $this->assertSame(mb_trim($actual), $actual);
             }
