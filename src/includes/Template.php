@@ -3266,7 +3266,7 @@ final class Template
                 $this->add('title', $tmp);
             }
 
-            // Issue #4830: Remove blank unsupported parameters when converting to cite book
+            // Remove blank unsupported parameters when converting to cite book
             // Remove blank journal/newspaper/magazine/website parameters
             // Only remove blank ones to avoid interfering with intentional human edits
             foreach (CITE_BOOK_UNSUPPORTED_PARAMS as $param) {

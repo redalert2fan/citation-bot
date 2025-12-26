@@ -2169,7 +2169,7 @@ final class TemplatePart4Test extends testBaseClass {
         $this->assertNull($prepared->get2('title'));
     }
 
-    // Tests for issue #4830: Bot should not add unsupported parameters to cite book
+    // Tests to verify the bot does not add unsupported parameters to cite book templates
     public function testCiteBookBlocksUnsupportedParameters(): void {
         $text = '{{cite book|title=Test Book}}';
         $template = $this->make_citation($text);
