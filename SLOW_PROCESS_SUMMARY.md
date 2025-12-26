@@ -102,7 +102,7 @@ SLOW_MODE triggers:
    - Impact: Reduce duplicate DOI checks within same session
    - Files: `doiTools.php`, add simple in-memory cache
 
-2. **Profile slow regex patterns** - Identify and optimize patterns in `APIarchives.php:66`
+2. **Profile slow regex patterns** - Identify and optimize patterns in `expand_templates_from_archives()` function
    - Impact: Reduce archive HTML parsing time
    - Files: `APIarchives.php`
 

@@ -111,8 +111,8 @@ The bot uses `set_time_limit(120)` extensively (found 56 times in codebase) to p
 
 ### 3.1 High-Frequency Time Limit Resets
 - **Template expansion** (8 locations in Template.php)
-- **Page operations** (10 locations in Page.php)
-- **All API functions** (40+ locations across API*.php files)
+- **Page operations** (13 locations in Page.php)
+- **All API functions** (38+ locations across API*.php files)
 - **Archive processing** (5 locations in APIarchives.php)
 
 **Strategy:** Reset time limit frequently during long operations to ensure completion
@@ -124,8 +124,8 @@ Explicitly marked with comments:
 set_time_limit(120); // This can be slow
 ```
 Found in:
-- `APIzotero.php:239` - Zotero translation service calls
-- `APIarchives.php:66` - Complex regex operations on archive HTML
+- `APIzotero.php` (`expand_by_zotero()` function) - Zotero translation service calls
+- `APIarchives.php` (`expand_templates_from_archives()` function) - Complex regex operations on archive HTML
 
 ## 4. Test Performance Infrastructure
 
@@ -182,7 +182,7 @@ Found in:
 
 ### 6.1 Complex Regex on Large HTML
 
-**Location:** `APIarchives.php:66`
+**Location:** `APIarchives.php` in the `expand_templates_from_archives()` function
 
 Multiple complex regex patterns applied to full archive page HTML:
 ```php
