@@ -25,7 +25,12 @@ const TEMPLATES_WE_CHAPTER_URL = [
     'baghdad during the abbasid caliphate', 'the cambridge history of china', 'cambridge history of iran',
     'essays on the latin orient', 'cambridge history of egypt',
 ];
-const ISSN_TEMPLATES = [...TEMPLATES_WE_PROCESS, ...TEMPLATES_WE_SLIGHTLY_PROCESS, ...['cite magazine']];
+const ISSN_TEMPLATES = [...TEMPLATES_WE_PROCESS, ...TEMPLATES_WE_SLIGHTLY_PROCESS, 'cite magazine'];
+// Parameters not supported by cite book template per Wikipedia documentation
+// Note: 'work' is handled separately due to special conversion logic (work+title -> title+chapter)
+// Note: 'periodical' is rarely used and typically aliased to journal
+// Note: 'encyclopedia' and 'encyclopaedia' ARE supported in cite book for encyclopedia entries
+const CITE_BOOK_UNSUPPORTED_PARAMS = ['journal', 'newspaper', 'magazine', 'website'];
 const TEMPLATES_WE_HARV = [
     'cite iucn', 'cite odnb', 'cite dnb', 'dnb', 'dnbie', 'cite americana', 'cite eb1911', 'cite techreport',
     'cite wikisource', 'ei2', 'encyclopaedia of islam, new edition', 'ei3', 'encyclopaedia of islam, three',
@@ -417,11 +422,6 @@ const ISSUE_ALIASES = ['issue', 'number'];
 const PAGE_ALIASES = ['page', 'pages', 'pp', 'p', 'at', 'article-number'];
 const TIME_ALIASES = ['date', 'year', 'publication-date'];  // Not really an alias, but things to clean up
 const WORK_ALIASES = ['work', 'journal', 'newspaper', 'magazine', 'periodical', 'website', 'encyclopedia', 'encyclopaedia'];
-// Parameters not supported by cite book template per Wikipedia documentation
-// Note: 'work' is handled separately due to special conversion logic (work+title -> title+chapter)
-// Note: 'periodical' is rarely used and typically aliased to journal
-// Note: 'encyclopedia' and 'encyclopaedia' ARE supported in cite book for encyclopedia entries
-const CITE_BOOK_UNSUPPORTED_PARAMS = ['journal', 'newspaper', 'magazine', 'website'];
 const ACCESS_ALIASES = ['accessdate', 'access-date'];
 const ISBN_ALIASES = ['ISBN', 'isbn13', 'ISBN13', 'isbn'];
 const LANG_ALIASES = ['language', 'lang'];

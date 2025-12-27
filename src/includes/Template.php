@@ -91,7 +91,7 @@ final class Template
         }
         if (mb_strpos($trim_name, "_") !== false) {
             $tmp_name = str_replace("_", " ", $trim_name);
-            if (in_array(mb_strtolower($tmp_name), array_merge(TEMPLATES_WE_PROCESS, TEMPLATES_WE_SLIGHTLY_PROCESS, TEMPLATES_WE_BARELY_PROCESS, TEMPLATES_WE_RENAME), true)) {
+            if (in_array(mb_strtolower($tmp_name), [...TEMPLATES_WE_PROCESS, ...TEMPLATES_WE_SLIGHTLY_PROCESS, ...TEMPLATES_WE_BARELY_PROCESS, ...TEMPLATES_WE_RENAME], true)) {
                 $this->name = $spacing[1] . str_replace("_", " ", $trim_name) . $spacing[2];
                 $trim_name = str_replace("_", " ", $trim_name);
             }
@@ -285,7 +285,7 @@ final class Template
                 foreach (ALL_ALIASES as $alias_list) {
                     if (!$this->blank($alias_list)) {
                         // At least one is set
-                        $drop_me_maybe = array_merge($drop_me_maybe, $alias_list);
+                        $drop_me_maybe = [...$drop_me_maybe, ...$alias_list];
                     }
                 }
                 // Do it this way to avoid massive N*M work load (N=size of $param and M=size of $drop_me_maybe) which happens when checking if each one is blank
@@ -996,7 +996,7 @@ final class Template
             case "author89":
             case "author99":
                 if (
-                    $this->blank(array_merge(COAUTHOR_ALIASES, ["last{$auNo}", "author{$auNo}"])) &&
+                    $this->blank([...COAUTHOR_ALIASES, "last{$auNo}", "author{$auNo}"]) &&
                     mb_strpos($this->get('author') . $this->get('authors'), ' and ') === false &&
                     mb_strpos($this->get('author') . $this->get('authors'), '; ') === false &&
                     mb_strpos($this->get('author') . $this->get('authors'), ' et al') === false
@@ -1109,7 +1109,7 @@ final class Template
             case "first97":
             case "first98":
             case "first99":
-                if ($this->blank(array_merge(COAUTHOR_ALIASES, [$param_name, "author" . $auNo])) && under_two_authors($this->get('author'))) {
+                if ($this->blank([...COAUTHOR_ALIASES, $param_name, "author" . $auNo]) && under_two_authors($this->get('author'))) {
                     return $this->add($param_name, clean_up_first_names($value));
                 }
                 return false;
@@ -1293,7 +1293,7 @@ final class Template
                 if ($this->has('title') && str_equivalent($this->get('title'), $value)) {
                     return false;
                 } // Messed up already or in database
-                if (!$this->blank(array_merge(['agency', 'publisher'], WORK_ALIASES)) && in_array(mb_strtolower($value), DUBIOUS_JOURNALS, true)) {
+                if (!$this->blank(['agency', 'publisher', ...WORK_ALIASES]) && in_array(mb_strtolower($value), DUBIOUS_JOURNALS, true)) {
                     return false;
                 } // non-journals that are probably same as agency or publisher that come from zotero
                 if ($this->get($param_name) === 'none' || $this->blank(["journal", "periodical", "encyclopedia", "encyclopaedia", "newspaper", "magazine", "contribution"])) {
@@ -1702,7 +1702,7 @@ final class Template
                 if ($this->get_identifiers_from_url($value)) {
                     return false;
                 }
-                if (!$this->blank(array_merge([$param_name], TITLE_LINK_ALIASES))) {
+                if (!$this->blank([$param_name, ...TITLE_LINK_ALIASES])) {
                     return false;
                 }
                 if ($this->get('title') === 'none') {
@@ -1744,7 +1744,7 @@ final class Template
                 return false;
 
             case 'title-link':
-                if ($this->blank(array_merge(TITLE_LINK_ALIASES, ['url']))) {
+                if ($this->blank([...TITLE_LINK_ALIASES, 'url'])) {
                     return $this->add($param_name, $value); // We do not sanitize this, since it is not new data
                 }
                 return false;
@@ -3180,7 +3180,6 @@ final class Template
             if ($new_name === 'cite arxiv') {
                 if (
                     !$this->blank(
-                        array_merge(
                             [
                                 'website',
                                 'displayauthors',
@@ -3204,9 +3203,8 @@ final class Template
                                 'display-editors',
                                 'displayeditors',
                                 'url',
-                            ],
-                            FIRST_EDITOR_ALIASES
-                        )
+                                ...FIRST_EDITOR_ALIASES
+                            ]
                     )
                 ) {
                     return;
@@ -5964,7 +5962,7 @@ final class Template
                             $this->forget($to_drop);
                         }
                     }
-                } elseif (in_array(mb_strtolower($this->get('journal')), array_merge(NON_PUBLISHERS, BAD_TITLES, DUBIOUS_JOURNALS, ['amazon.com']), true)) {
+                } elseif (in_array(mb_strtolower($this->get('journal')), [...NON_PUBLISHERS, ...BAD_TITLES, ...DUBIOUS_JOURNALS, 'amazon.com'], true)) {
                     report_forget('Citation has chapter/ISBN already, dropping dubious Journal title: ' . echoable($this->get('journal')));
                     $this->forget('journal');
                 } else {
@@ -6076,11 +6074,11 @@ final class Template
                 foreach (ALL_ALIASES as $alias_list) {
                     if (!$this->blank($alias_list)) {
                         // At least one is set
-                        $drop_me_maybe = array_merge($drop_me_maybe, $alias_list);
+                        $drop_me_maybe = [...$drop_me_maybe, ...$alias_list];
                     }
                 }
                 if (!$this->incomplete()) {
-                    $drop_me_maybe = array_merge($drop_me_maybe, LOTS_OF_EDITORS); // Always drop empty editors at end, if "complete"
+                    $drop_me_maybe = [...$drop_me_maybe, ...LOTS_OF_EDITORS]; // Always drop empty editors at end, if "complete"
                 }
                 // Do it this way to avoid massive N*M work load (N=size of $param and M=size of $drop_me_maybe) which happens when checking if each one is blank
                 foreach ($this->param as $key => $p) {
@@ -6179,7 +6177,7 @@ final class Template
                 foreach (ALL_ALIASES as $alias_list) {
                     if (!$this->blank($alias_list)) {
                         // At least one is set
-                        $drop_me_maybe = array_merge($drop_me_maybe, $alias_list);
+                        $drop_me_maybe = [...$drop_me_maybe, ...$alias_list];
                     }
                 }
                 // Do it this way to avoid massive N*M work load (N=size of $param and M=size of $drop_me_maybe) which happens when checking if each one is blank
