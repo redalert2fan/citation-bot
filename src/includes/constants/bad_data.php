@@ -503,6 +503,13 @@ const NON_PUBLISHERS = [
     'researchgate',
     'zenodo',
 ]; // Google Inc is a valid publisher, however.
+
+// BAD_ZOTERO_TITLES: Used for SUBSTRING matching (mb_stripos) in Zotero API responses and archive URLs.
+// This is separate from BAD_TITLES which uses EXACT matching (in_array after lowercasing).
+// The overlap with BAD_TITLES is intentional - both lists serve different purposes:
+// - BAD_TITLES: General-purpose exact matching for any title source
+// - BAD_ZOTERO_TITLES: Zotero-specific substring matching for error pages and bad metadata
+// Attempting to remove overlap would break functionality. See ANALYSIS_BAD_TITLES_CONSTANTS.md for details.
 const BAD_ZOTERO_TITLES = [
     ' has expired',
     ' Log In',
