@@ -6361,6 +6361,7 @@ final class Template
                     continue;
                 }
 
+                // @phpstan-ignore-next-line greater.invalid - PHPStan cannot track Template method side effects
                 if ($i > $cur) {
                     foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
                         if ($this->has($b . $i)) {
