@@ -6299,7 +6299,7 @@ final class Template
         }
     }
 
-    /** 
+    /**
      * Remove duplicate authors from citation templates
      * Note: Only runs on fully processed templates (TEMPLATES_WE_PROCESS).
      * Does not run on slightly or barely processed templates (e.g., cite news, cite thesis, cite conference).
@@ -6307,7 +6307,7 @@ final class Template
     public function deduplicate_authors(): void {
         $seen = [];
         $remove = [];
-        
+
         for ($i = 1; $i <= 99; $i++) {
             $last = $first = '';
             foreach (['last' . $i, 'surname' . $i, 'author' . $i . '-last', 'author-last' . $i] as $p) {
@@ -6322,7 +6322,7 @@ final class Template
                     break;
                 }
             }
-            
+
             if ($last !== '') {
                 $key = mb_strtolower(mb_trim($last)) . '|' . mb_strtolower(mb_trim($first));
                 if (isset($seen[$key])) {
@@ -6332,7 +6332,7 @@ final class Template
                 }
             }
         }
-        
+
         if ($remove) {
             foreach ($remove as $n) {
                 foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
@@ -6342,11 +6342,13 @@ final class Template
                     $this->forget($p);
                 }
             }
-            
+
             $cur = 1;
             for ($i = 1; $i <= 99; $i++) {
-                if (in_array($i, $remove, true)) continue;
-                
+                if (in_array($i, $remove, true)) {
+                    continue;
+                }
+
                 $has = false;
                 foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
                     if ($this->has($b . $i)) {
@@ -6354,11 +6356,13 @@ final class Template
                         break;
                     }
                 }
-                
+
                 if ($has) {
                     if ($i !== $cur) {
                         foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
-                            if ($this->has($b . $i)) $this->rename($b . $i, $b . $cur);
+                            if ($this->has($b . $i)) {
+                                $this->rename($b . $i, $b . $cur);
+                            }
                         }
                         if ($this->has('author' . $i . '-link')) {
                             $this->rename('author' . $i . '-link', 'author' . $cur . '-link');
@@ -6373,7 +6377,7 @@ final class Template
                     $cur++;
                 }
             }
-            
+
             report_action("Removed " . count($remove) . " duplicate author" . (count($remove) > 1 ? "s" : ""));
         }
     }
