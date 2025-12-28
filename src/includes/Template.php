@@ -6358,7 +6358,7 @@ final class Template
                 }
 
                 if ($has) {
-                    if ($i !== $cur) {
+                    if ($i > $cur) {
                         foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
                             if ($this->has($b . $i)) {
                                 $this->rename($b . $i, $b . $cur);
