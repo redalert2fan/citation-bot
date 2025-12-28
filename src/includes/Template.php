@@ -6302,7 +6302,7 @@ final class Template
     /** 
      * Remove duplicate authors from citation templates
      * Note: Only runs on fully processed templates (TEMPLATES_WE_PROCESS).
-     * Does not run on TEMPLATES_WE_SLIGHTLY_PROCESS (cite news) or TEMPLATES_WE_BARELY_PROCESS (cite thesis, cite conference).
+     * Does not run on slightly or barely processed templates (e.g., cite news, cite thesis, cite conference).
      */
     public function deduplicate_authors(): void {
         $seen = [];
@@ -6360,8 +6360,14 @@ final class Template
                         foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
                             if ($this->has($b . $i)) $this->rename($b . $i, $b . $cur);
                         }
-                        foreach (['author' . $i . '-link', 'author-link' . $i, 'authorlink' . $i] as $link) {
-                            if ($this->has($link)) $this->rename($link, str_replace((string) $i, (string) $cur, $link));
+                        if ($this->has('author' . $i . '-link')) {
+                            $this->rename('author' . $i . '-link', 'author' . $cur . '-link');
+                        }
+                        if ($this->has('author-link' . $i)) {
+                            $this->rename('author-link' . $i, 'author-link' . $cur);
+                        }
+                        if ($this->has('authorlink' . $i)) {
+                            $this->rename('authorlink' . $i, 'authorlink' . $cur);
                         }
                     }
                     $cur++;
