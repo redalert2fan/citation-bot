@@ -6305,7 +6305,7 @@ final class Template
      * keeping the first occurrence of each unique author
      */
     public function deduplicate_authors(): void {
-        $authors = [];
+        $seen_authors = []; // Use associative array for O(1) lookup
         $to_remove = [];
         
         // Collect all authors with their last and first names
@@ -6336,32 +6336,20 @@ final class Template
                 $normalized_first = mb_strtolower(mb_trim($first));
                 $author_key = $normalized_last . '|' . $normalized_first;
                 
-                // Check if this author already exists
-                $is_duplicate = false;
-                foreach ($authors as $existing_author) {
-                    if ($existing_author['key'] === $author_key) {
-                        $is_duplicate = true;
-                        break;
-                    }
-                }
-                
-                if ($is_duplicate) {
-                    // Mark this author number for removal
+                // Check if this author already exists (O(1) lookup)
+                if (isset($seen_authors[$author_key])) {
+                    // This is a duplicate, mark for removal
                     $to_remove[] = $i;
                 } else {
-                    // Add to our list of unique authors
-                    $authors[] = [
-                        'key' => $author_key,
-                        'number' => $i,
-                        'last' => $last,
-                        'first' => $first
-                    ];
+                    // First occurrence of this author
+                    $seen_authors[$author_key] = $i;
                 }
             }
         }
         
         // If we found duplicates, remove them and renumber
-        if (count($to_remove) > 0) {
+        $num_duplicates = count($to_remove);
+        if ($num_duplicates > 0) {
             // Remove duplicate authors and their related parameters
             foreach ($to_remove as $author_num) {
                 // Remove all possible author parameter variations
@@ -6423,7 +6411,7 @@ final class Template
                 }
             }
             
-            report_action("Removed " . count($to_remove) . " duplicate author" . (count($to_remove) > 1 ? "s" : ""));
+            report_action("Removed " . $num_duplicates . " duplicate author" . ($num_duplicates > 1 ? "s" : ""));
         }
     }
 
