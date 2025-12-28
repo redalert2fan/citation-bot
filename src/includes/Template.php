@@ -6299,6 +6299,11 @@ final class Template
         }
     }
 
+    /** 
+     * Remove duplicate authors from citation templates
+     * Note: Only runs on fully processed templates (TEMPLATES_WE_PROCESS).
+     * Does not run on TEMPLATES_WE_SLIGHTLY_PROCESS (cite news) or TEMPLATES_WE_BARELY_PROCESS (cite thesis, cite conference).
+     */
     public function deduplicate_authors(): void {
         $seen = [];
         $remove = [];
