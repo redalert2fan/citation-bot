@@ -6357,25 +6357,27 @@ final class Template
                     }
                 }
 
-                if ($has) {
-                    if ($i > $cur) {
-                        foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
-                            if ($this->has($b . $i)) {
-                                $this->rename($b . $i, $b . $cur);
-                            }
-                        }
-                        if ($this->has('author' . $i . '-link')) {
-                            $this->rename('author' . $i . '-link', 'author' . $cur . '-link');
-                        }
-                        if ($this->has('author-link' . $i)) {
-                            $this->rename('author-link' . $i, 'author-link' . $cur);
-                        }
-                        if ($this->has('authorlink' . $i)) {
-                            $this->rename('authorlink' . $i, 'authorlink' . $cur);
+                if (!$has) {
+                    continue;
+                }
+
+                if ($i > $cur) {
+                    foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
+                        if ($this->has($b . $i)) {
+                            $this->rename($b . $i, $b . $cur);
                         }
                     }
-                    $cur++;
+                    if ($this->has('author' . $i . '-link')) {
+                        $this->rename('author' . $i . '-link', 'author' . $cur . '-link');
+                    }
+                    if ($this->has('author-link' . $i)) {
+                        $this->rename('author-link' . $i, 'author-link' . $cur);
+                    }
+                    if ($this->has('authorlink' . $i)) {
+                        $this->rename('authorlink' . $i, 'authorlink' . $cur);
+                    }
                 }
+                $cur++;
             }
 
             report_action("Removed " . count($remove) . " duplicate author" . (count($remove) > 1 ? "s" : ""));
