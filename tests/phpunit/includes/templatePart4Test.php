@@ -1872,4 +1872,93 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $template->final_tidy();
         $this->assertNull($template->get2('title'));
     }
+
+    public function testDeduplicateAuthors1(): void {
+        // Test the exact example from the issue
+        $text = "{{Cite web |last1=Freed |first1=Jamie |last2=Freed |first2=Jamie |title=Airline startup Greater Bay's launch slowed by COVID situation in Hong Kong |url=https://www.reuters.com/business/aerospace-defense/airline-startup-greater-bays-launch-slowed-by-covid-situation-hong-kong-ceo-2022-03-18/ |website=Reuters |date=18 March 2022 }}";
+        $template = $this->process_citation($text);
+        // Should have last1 and first1, but not last2 and first2
+        $this->assertSame('Freed', $template->get2('last1'));
+        $this->assertSame('Jamie', $template->get2('first1'));
+        $this->assertNull($template->get2('last2'));
+        $this->assertNull($template->get2('first2'));
+    }
+
+    public function testDeduplicateAuthors2(): void {
+        // Test with three authors where two are duplicates
+        $text = "{{cite journal |last1=Smith |first1=John |last2=Doe |first2=Jane |last3=Smith |first3=John }}";
+        $template = $this->process_citation($text);
+        // Should have two authors: Smith, John and Doe, Jane
+        $this->assertSame('Smith', $template->get2('last1'));
+        $this->assertSame('John', $template->get2('first1'));
+        $this->assertSame('Doe', $template->get2('last2'));
+        $this->assertSame('Jane', $template->get2('first2'));
+        $this->assertNull($template->get2('last3'));
+        $this->assertNull($template->get2('first3'));
+    }
+
+    public function testDeduplicateAuthors3(): void {
+        // Test with case-insensitive comparison
+        $text = "{{cite journal |last1=SMITH |first1=JOHN |last2=Smith |first2=John }}";
+        $template = $this->process_citation($text);
+        // Should deduplicate despite case difference
+        $this->assertSame('SMITH', $template->get2('last1'));
+        $this->assertSame('JOHN', $template->get2('first1'));
+        $this->assertNull($template->get2('last2'));
+        $this->assertNull($template->get2('first2'));
+    }
+
+    public function testDeduplicateAuthors4(): void {
+        // Test renumbering when middle author is duplicate
+        $text = "{{cite journal |last1=Smith |first1=John |last2=Smith |first2=John |last3=Doe |first3=Jane }}";
+        $template = $this->process_citation($text);
+        // Should have Smith, John as author1 and Doe, Jane renumbered as author2
+        $this->assertSame('Smith', $template->get2('last1'));
+        $this->assertSame('John', $template->get2('first1'));
+        $this->assertSame('Doe', $template->get2('last2'));
+        $this->assertSame('Jane', $template->get2('first2'));
+        $this->assertNull($template->get2('last3'));
+        $this->assertNull($template->get2('first3'));
+    }
+
+    public function testDeduplicateAuthors5(): void {
+        // Test with unique authors - should not change anything
+        $text = "{{cite journal |last1=Smith |first1=John |last2=Doe |first2=Jane |last3=Brown |first3=Bob }}";
+        $template = $this->process_citation($text);
+        // All three authors should remain
+        $this->assertSame('Smith', $template->get2('last1'));
+        $this->assertSame('John', $template->get2('first1'));
+        $this->assertSame('Doe', $template->get2('last2'));
+        $this->assertSame('Jane', $template->get2('first2'));
+        $this->assertSame('Brown', $template->get2('last3'));
+        $this->assertSame('Bob', $template->get2('first3'));
+    }
+
+    public function testDeduplicateAuthors6(): void {
+        // Test with authors having same last name but different first names
+        $text = "{{cite journal |last1=Smith |first1=John |last2=Smith |first2=Jane }}";
+        $template = $this->process_citation($text);
+        // Both should remain as they are different people
+        $this->assertSame('Smith', $template->get2('last1'));
+        $this->assertSame('John', $template->get2('first1'));
+        $this->assertSame('Smith', $template->get2('last2'));
+        $this->assertSame('Jane', $template->get2('first2'));
+    }
+
+    public function testDeduplicateAuthors7(): void {
+        // Test with duplicate at non-sequential positions
+        $text = "{{cite journal |last1=Smith |first1=John |last2=Doe |first2=Jane |last3=Brown |first3=Bob |last5=Smith |first5=John }}";
+        $template = $this->process_citation($text);
+        // Should remove last5/first5 duplicate of Smith, John
+        $this->assertSame('Smith', $template->get2('last1'));
+        $this->assertSame('John', $template->get2('first1'));
+        $this->assertSame('Doe', $template->get2('last2'));
+        $this->assertSame('Jane', $template->get2('first2'));
+        $this->assertSame('Brown', $template->get2('last3'));
+        $this->assertSame('Bob', $template->get2('first3'));
+        $this->assertNull($template->get2('last4'));
+        $this->assertNull($template->get2('first4'));
+        $this->assertNull($template->get2('last5'));
+        $this->assertNull($template->get2('first5'));
+    }
 }

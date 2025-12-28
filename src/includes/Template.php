@@ -6172,6 +6172,8 @@ final class Template
             if ($this->wikiname() === 'cite dictionary' && $this->get('dictionary') && $this->get('entry') && $this->get('title')) {
                 $this->forget('title');
             }
+            // Remove duplicate authors
+            $this->deduplicate_authors();
         } elseif (in_array($this->wikiname(), TEMPLATES_WE_SLIGHTLY_PROCESS, true)) {
             $this->tidy_parameter('publisher');
             $this->tidy_parameter('via');
@@ -6294,6 +6296,134 @@ final class Template
                     $this->add_if_new('display-authors', 'etal');
                 }
             }
+        }
+    }
+
+    /**
+     * Remove duplicate authors from the citation
+     * Compares authors by their last/first names and removes duplicates,
+     * keeping the first occurrence of each unique author
+     */
+    public function deduplicate_authors(): void {
+        $authors = [];
+        $to_remove = [];
+        
+        // Collect all authors with their last and first names
+        for ($i = 1; $i <= 99; $i++) {
+            $last = '';
+            $first = '';
+            
+            // Try different parameter variations for last name
+            foreach (['last' . $i, 'surname' . $i, 'author' . $i . '-last', 'author-last' . $i] as $param) {
+                if ($this->has($param) && $this->get($param) !== '') {
+                    $last = $this->get($param);
+                    break;
+                }
+            }
+            
+            // Try different parameter variations for first name
+            foreach (['first' . $i, 'forename' . $i, 'given' . $i, 'author' . $i . '-first', 'author-first' . $i, 'author' . $i . '-given', 'author-given' . $i] as $param) {
+                if ($this->has($param) && $this->get($param) !== '') {
+                    $first = $this->get($param);
+                    break;
+                }
+            }
+            
+            // If we have at least a last name, consider this author slot
+            if ($last !== '') {
+                // Normalize for comparison (lowercase, trim)
+                $normalized_last = mb_strtolower(mb_trim($last));
+                $normalized_first = mb_strtolower(mb_trim($first));
+                $author_key = $normalized_last . '|' . $normalized_first;
+                
+                // Check if this author already exists
+                $is_duplicate = false;
+                foreach ($authors as $existing_author) {
+                    if ($existing_author['key'] === $author_key) {
+                        $is_duplicate = true;
+                        break;
+                    }
+                }
+                
+                if ($is_duplicate) {
+                    // Mark this author number for removal
+                    $to_remove[] = $i;
+                } else {
+                    // Add to our list of unique authors
+                    $authors[] = [
+                        'key' => $author_key,
+                        'number' => $i,
+                        'last' => $last,
+                        'first' => $first
+                    ];
+                }
+            }
+        }
+        
+        // If we found duplicates, remove them and renumber
+        if (count($to_remove) > 0) {
+            // Remove duplicate authors and their related parameters
+            foreach ($to_remove as $author_num) {
+                // Remove all possible author parameter variations
+                foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $param_base) {
+                    $this->forget($param_base . $author_num);
+                }
+                // Remove alternative formats
+                foreach (['author-last', 'author-first', 'author-given'] as $param_base) {
+                    $this->forget($param_base . $author_num);
+                    $this->forget('author' . $author_num . '-last');
+                    $this->forget('author' . $author_num . '-first');
+                    $this->forget('author' . $author_num . '-given');
+                }
+                // Remove author links
+                $this->forget('author' . $author_num . '-link');
+                $this->forget('author-link' . $author_num);
+                $this->forget('authorlink' . $author_num);
+            }
+            
+            // Renumber authors to remove gaps
+            $current_num = 1;
+            for ($i = 1; $i <= 99; $i++) {
+                // Skip if this was a removed duplicate
+                if (in_array($i, $to_remove, true)) {
+                    continue;
+                }
+                
+                // Check if this author number has any data
+                $has_data = false;
+                foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $param_base) {
+                    if ($this->has($param_base . $i)) {
+                        $has_data = true;
+                        break;
+                    }
+                }
+                
+                // If this slot has data and needs renumbering
+                if ($has_data && $i !== $current_num) {
+                    // Rename all author-related parameters
+                    foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $param_base) {
+                        if ($this->has($param_base . $i)) {
+                            $this->rename($param_base . $i, $param_base . $current_num);
+                        }
+                    }
+                    // Rename author links
+                    if ($this->has('author' . $i . '-link')) {
+                        $this->rename('author' . $i . '-link', 'author' . $current_num . '-link');
+                    }
+                    if ($this->has('author-link' . $i)) {
+                        $this->rename('author-link' . $i, 'author-link' . $current_num);
+                    }
+                    if ($this->has('authorlink' . $i)) {
+                        $this->rename('authorlink' . $i, 'authorlink' . $current_num);
+                    }
+                }
+                
+                if ($has_data) {
+                    $current_num++;
+                }
+            }
+            
+            report_action("Removed " . count($to_remove) . " duplicate author" . (count($to_remove) > 1 ? "s" : ""));
         }
     }
 
