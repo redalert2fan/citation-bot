@@ -1055,5 +1055,6 @@ class Page {
         $this->modifications['names'] = false;
         $this->modifications['ref'] = false;
         $this->modifications['na'] = false;
+        $this->modifications['duplicate_authors'] = false;
     }
 }
