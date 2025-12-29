@@ -47,6 +47,7 @@ final class Template
     private bool $mod_names = false;
     private bool $mod_ref = false;
     private bool $mod_na = false;
+    private bool $mod_duplicate_authors = false;
     private bool $no_initial_doi = false;
     private bool $held_work_done = false;
     /** @var array<array<string>> */
@@ -6341,6 +6342,7 @@ final class Template
         }
 
         if ($remove) {
+            $this->mod_duplicate_authors = true;
             foreach ($remove as $n) {
                 foreach (['last', 'surname', 'first', 'forename', 'given', 'initials'] as $b) {
                     $this->forget($b . $n);
@@ -6928,6 +6930,7 @@ final class Template
         $ret['names'] = $this->mod_names;
         $ret['ref'] = $this->mod_ref;
         $ret['na'] = $this->mod_na;
+        $ret['duplicate_authors'] = $this->mod_duplicate_authors;
         return $ret;
     }
 
