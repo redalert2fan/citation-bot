@@ -6922,7 +6922,9 @@ final class Template
         $ret['names'] = $this->mod_names;
         $ret['ref'] = $this->mod_ref;
         $ret['na'] = $this->mod_na;
-        $ret['preprint_conversion'] = $this->preprint_conversion;
+        if ($this->preprint_conversion !== '') {
+            $ret['preprint_conversion'] = $this->preprint_conversion;
+        }
         return $ret;
     }
 
