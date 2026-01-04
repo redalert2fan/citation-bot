@@ -3151,7 +3151,7 @@ final class Template
     }
 
     private function convert_to_preprint_template(string $preprint_name): void {
-        if (!in_array($this->wikiname(), ['cite journal', 'citation'], true) || $this->blank('doi')) {
+        if ($this->blank('doi')) {
             return;
         }
 
@@ -3212,8 +3212,6 @@ final class Template
         if ($was_citation) {
             $this->add('mode', 'cs2');
         }
-        // Explicitly ensure doi is removed (should already be gone, but double-check)
-        $this->forget('doi');
     }
 
     public function change_name_to(string $new_name, bool $rename_cite_book = true, bool $rename_anything = false): void {
