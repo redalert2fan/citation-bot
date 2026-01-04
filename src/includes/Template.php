@@ -3206,6 +3206,7 @@ final class Template
             $this->name = $invoke . $new_template_name;
         }
         $this->modifications['template_type'] = true;
+        $this->modifications['preprint_conversion'] = $preprint_name; // Track specific conversion for edit summary
         
         // Re-add saved parameters
         foreach ($saved_params as $param_name => $value) {
