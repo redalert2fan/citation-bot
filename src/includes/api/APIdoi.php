@@ -15,6 +15,22 @@ function query_doi_api(array $_ids, array &$templates): void { // $id not used y
     return;
 }
 
+function get_crossref_relation(string $doi): ?object {
+    static $ch = null;
+    if ($ch === null) {
+        $ch = bot_curl_init(1.0, [CURLOPT_USERAGENT => BOT_CROSSREF_USER_AGENT]);
+    }
+    $url = "https://api.crossref.org/v1/works/" . doi_encode($doi) . "?mailto=" . CROSSREFUSERNAME;
+    curl_setopt($ch, CURLOPT_URL, $url);
+    $json = bot_curl_exec($ch);
+    $json = @json_decode($json);
+
+    if (is_object($json) && isset($json->message) && isset($json->status) && (string) $json->status === "ok") {
+        return $json->message->relation ?? null;
+    }
+    return null;
+}
+
 function check_preprint_published(Template $template): void {
     $wikiname = $template->wikiname();
     if ($wikiname !== 'cite biorxiv' && $wikiname !== 'cite medrxiv') {
@@ -37,13 +53,12 @@ function check_preprint_published(Template $template): void {
 
     $preprint_doi = (mb_strpos($preprint_id, '10.1101/') === 0) ? $preprint_id : '10.1101/' . $preprint_id;
 
-    $crossref_data = query_crossref_newapi($preprint_doi);
-    if (!isset($crossref_data->relation->{'is-preprint-of'})) {
-        unset($crossref_data->relation); // Free memory
+    $relation = get_crossref_relation($preprint_doi);
+    if (!isset($relation->{'is-preprint-of'})) {
         return;
     }
 
-    $is_preprint_of = $crossref_data->relation->{'is-preprint-of'};
+    $is_preprint_of = $relation->{'is-preprint-of'};
     $relations = is_array($is_preprint_of) ? $is_preprint_of : [$is_preprint_of];
 
     foreach ($relations as $relation_item) {
@@ -55,11 +70,9 @@ function check_preprint_published(Template $template): void {
             if (!$template->has($preprint_param)) {
                 $template->add_if_new($preprint_param, mb_substr($preprint_doi, 8));
             }
-            unset($crossref_data->relation); // Free memory after use
             break;
         }
     }
-    unset($crossref_data->relation); // Free memory if no match found
 }
 
 function expand_by_doi(Template $template, bool $force = false): void {
@@ -559,7 +572,7 @@ function query_crossref_newapi(string $doi): object {
     unset(  $json, $result->reference, $result->assertion, $result->{'reference-count'},
             $result->deposited, $result->link, $result->{'update-policy'}, $result->{'is-referenced-by-count'},
             $result->{'published-online'}, $result->member, $result->score, $result->prefix, $result->source,
-            $result->abstract, $result->URL, $result->{'content-domain'},
+            $result->abstract, $result->URL, $result->relation, $result->{'content-domain'},
             $result->{'short-container-title'}, $result->license,
             $result->indexed, $result->{'references-count'}, $result->resource,
             $result->subject, $result->language);
