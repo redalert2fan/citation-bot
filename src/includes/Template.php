@@ -3212,6 +3212,8 @@ final class Template
         if ($was_citation) {
             $this->add('mode', 'cs2');
         }
+        // Explicitly ensure doi is removed (should already be gone, but double-check)
+        $this->forget('doi');
     }
 
     public function change_name_to(string $new_name, bool $rename_cite_book = true, bool $rename_anything = false): void {
@@ -4308,15 +4310,17 @@ final class Template
                     // Check for bioRxiv or medRxiv journals
                     $periodical_lower = mb_strtolower($periodical);
                     if (
-                        $periodical_lower === 'biorxiv' ||
-                        $periodical_lower === 'biorxiv: the preprint server for biology'
+                        ($periodical_lower === 'biorxiv' ||
+                         $periodical_lower === 'biorxiv: the preprint server for biology') &&
+                        in_array($this->wikiname(), ['cite journal', 'citation'], true)
                     ) {
                         $this->convert_to_preprint_template('bioRxiv');
                         return;
                     }
                     if (
-                        $periodical_lower === 'medrxiv' ||
-                        $periodical_lower === 'medrxiv: the preprint server for health sciences'
+                        ($periodical_lower === 'medrxiv' ||
+                         $periodical_lower === 'medrxiv: the preprint server for health sciences') &&
+                        in_array($this->wikiname(), ['cite journal', 'citation'], true)
                     ) {
                         $this->convert_to_preprint_template('medRxiv');
                         return;
