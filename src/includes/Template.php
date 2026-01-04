@@ -3212,6 +3212,8 @@ final class Template
         if ($was_citation) {
             $this->add('mode', 'cs2');
         }
+        // Explicitly forget doi to ensure it's removed (paranoid check)
+        $this->quietly_forget('doi');
     }
 
     public function change_name_to(string $new_name, bool $rename_cite_book = true, bool $rename_anything = false): void {
