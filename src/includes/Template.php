@@ -3157,6 +3157,10 @@ final class Template
         
         $doi = $this->get('doi');
         // Check if DOI starts with either 10.1101 or 10.64898
+        // These are the only DOI prefixes used by bioRxiv and medRxiv:
+        // - 10.1101: Legacy prefix (before Dec 2025) from Cold Spring Harbor Laboratory
+        // - 10.64898: New prefix (from Dec 2025) assigned by openRxiv organization
+        // This safety check ensures we only convert actual bioRxiv/medRxiv preprints
         if (mb_strpos($doi, '10.1101') !== 0 && mb_strpos($doi, '10.64898') !== 0) {
             return;
         }
