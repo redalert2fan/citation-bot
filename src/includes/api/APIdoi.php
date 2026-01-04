@@ -49,6 +49,7 @@ function check_preprint_published(Template $template): void {
         if (isset($relation_item->{'id-type'}) && $relation_item->{'id-type'} === 'doi' && isset($relation_item->id)) {
             report_action("Converting {{" . $wikiname . "}} to {{cite journal}} - preprint published with DOI: " . doi_link($relation_item->id));
             $template->change_name_to('cite journal');
+            $template->mark_preprint_converted();
             $template->add_if_new('doi', $relation_item->id);
             if (!$template->has($preprint_param)) {
                 $template->add_if_new($preprint_param, mb_substr($preprint_doi, 8));

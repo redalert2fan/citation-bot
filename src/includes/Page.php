@@ -744,6 +744,9 @@ class Page {
         if ($this->modifications["na"]) {
             $auto_summary .= 'Removed invalid "n/a" parameter values. ';
         }
+        if ($this->modifications["preprint"]) {
+            $auto_summary .= 'Converted bioRxiv/medRxiv preprint to published article. ';
+        }
         if ($this->odnb_sub_removed) {
             $auto_summary .= 'Removed ODNBsub template. ';
         }
