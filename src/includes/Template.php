@@ -3172,29 +3172,35 @@ final class Template
         // Use the full DOI as the identifier (including prefix)
         $identifier = $doi;
 
-        // Parameters to keep
-        $params_to_keep = [
-            'author', 'last', 'first', 'last1', 'first1', 'last2', 'first2',
-            'last3', 'first3', 'last4', 'first4', 'last5', 'first5',
-            'last6', 'first6', 'last7', 'first7', 'last8', 'first8',
-            'last9', 'first9', 'date', 'year', 'title', 'language',
-        ];
-
-        // Store parameters we want to keep
+        // Parameters to keep - based on Template:Cite bioRxiv and Template:Cite medRxiv documentation
+        // Keep all author-related, date, title, page, and citation style parameters
         $saved_params = [];
-        foreach ($params_to_keep as $param) {
-            if ($this->has($param)) {
-                $saved_params[$param] = $this->get($param);
-            }
-        }
-
-        // Get all numbered author parameters (last#, first#, author#)
         foreach ($this->param as $param) {
             $param_name = $param->param;
-            if (preg_match('~^(last|first|author)(\d+)$~', $param_name, $matches)) {
-                if ((int) $matches[2] <= 9) { // Only keep first 9 authors
-                    $saved_params[$param_name] = $param->val;
-                }
+            
+            // Keep all author parameters (last#, first#, author#, author-link#, author-mask#, etc.)
+            if (preg_match('~^(last|first|author|author-link|author-mask|authorlink|authormask)(\d*)$~', $param_name)) {
+                $saved_params[$param_name] = $param->val;
+            }
+            // Keep display/formatting parameters
+            elseif (in_array($param_name, ['display-authors', 'displayauthors', 'collaboration', 'name-list-style', 'df'], true)) {
+                $saved_params[$param_name] = $param->val;
+            }
+            // Keep date/time parameters
+            elseif (in_array($param_name, ['date', 'year'], true)) {
+                $saved_params[$param_name] = $param->val;
+            }
+            // Keep title parameters
+            elseif (in_array($param_name, ['title', 'trans-title', 'language'], true)) {
+                $saved_params[$param_name] = $param->val;
+            }
+            // Keep page parameters
+            elseif (in_array($param_name, ['page', 'pages', 'at', 'no-pp'], true)) {
+                $saved_params[$param_name] = $param->val;
+            }
+            // Keep citation style parameters
+            elseif (in_array($param_name, ['quote', 'ref', 'postscript'], true)) {
+                $saved_params[$param_name] = $param->val;
             }
         }
 

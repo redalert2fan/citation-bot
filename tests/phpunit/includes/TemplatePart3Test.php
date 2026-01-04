@@ -1726,4 +1726,33 @@ EP - 999 }}';
         // Should not convert because DOI doesn't start with 10.1101 or 10.64898
         $this->assertSame('cite journal', $expanded->wikiname());
     }
+
+    public function testBioRxivConversionPreservesAdditionalParameters(): void {
+        // Test that additional supported parameters are preserved
+        $text = '{{cite journal |last1=Smith |first1=John |author-link1=John Smith |display-authors=3 |date=2024-01-01 |title=Test |journal=bioRxiv |doi=10.1101/123456 |pages=1-10 |quote=Important findings}}';
+        $expanded = $this->process_citation($text);
+        $this->assertSame('cite bioRxiv', $expanded->wikiname());
+        $this->assertSame('10.1101/123456', $expanded->get2('biorxiv'));
+        $this->assertSame('Smith', $expanded->get2('last1'));
+        $this->assertSame('John', $expanded->get2('first1'));
+        $this->assertSame('John Smith', $expanded->get2('author-link1'));
+        $this->assertSame('3', $expanded->get2('display-authors'));
+        $this->assertSame('2024-01-01', $expanded->get2('date'));
+        $this->assertSame('1-10', $expanded->get2('pages'));
+        $this->assertSame('Important findings', $expanded->get2('quote'));
+        $this->assertNull($expanded->get2('doi'));
+        $this->assertNull($expanded->get2('journal'));
+    }
+
+    public function testMedRxivConversionPreservesPageParameters(): void {
+        // Test that page-related parameters are preserved
+        $text = '{{cite journal |last1=Doe |first1=Jane |title=Research |journal=medRxiv |doi=10.64898/2026.01.01.123456 |page=15 |at=Table 2}}';
+        $expanded = $this->process_citation($text);
+        $this->assertSame('cite medRxiv', $expanded->wikiname());
+        $this->assertSame('10.64898/2026.01.01.123456', $expanded->get2('medrxiv'));
+        $this->assertSame('15', $expanded->get2('page'));
+        $this->assertSame('Table 2', $expanded->get2('at'));
+        $this->assertNull($expanded->get2('doi'));
+        $this->assertNull($expanded->get2('journal'));
+    }
 }
