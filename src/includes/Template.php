@@ -3150,95 +3150,62 @@ final class Template
     }
 
     private function convert_to_preprint_template(string $preprint_name): void {
-        // Only convert cite journal or citation templates
-        if (!in_array($this->wikiname(), ['cite journal', 'citation'], true)) {
-            return;
-        }
-
-        // Verify DOI starts with one of the expected prefixes (10.1101 or 10.64898)
-        $doi = $this->get('doi');
-        if ($this->blank('doi')) {
+        // Only convert cite journal or citation templates with valid DOI
+        if (!in_array($this->wikiname(), ['cite journal', 'citation'], true) || $this->blank('doi')) {
             return;
         }
         
+        $doi = $this->get('doi');
         // Check if DOI starts with either 10.1101 or 10.64898
         if (mb_strpos($doi, '10.1101') !== 0 && mb_strpos($doi, '10.64898') !== 0) {
-            return; // Safety check: only convert if DOI matches expected prefixes
+            return;
         }
 
-        // Remember if this was a citation template (needs mode=cs2)
         $was_citation = ($this->wikiname() === 'citation');
-
-        // Use the full DOI as the identifier (including prefix)
-        $identifier = $doi;
-
-        // Parameters to keep - based on Template:Cite bioRxiv and Template:Cite medRxiv documentation
-        // Keep all author-related, date, title, page, and citation style parameters
+        
+        // Define supported parameters based on template documentation
+        $supported_params = [
+            'author', 'last', 'first', 'author-link', 'author-mask', 'authorlink', 'authormask',
+            'display-authors', 'displayauthors', 'collaboration', 'name-list-style', 'df',
+            'date', 'year', 'title', 'trans-title', 'language',
+            'page', 'pages', 'at', 'no-pp', 'quote', 'ref', 'postscript',
+        ];
+        
+        // Save supported parameters and numbered author params
         $saved_params = [];
         foreach ($this->param as $param) {
-            $param_name = $param->param;
-            
-            // Keep all author parameters (last#, first#, author#, author-link#, author-mask#, etc.)
-            if (preg_match('~^(last|first|author|author-link|author-mask|authorlink|authormask)(\d*)$~', $param_name)) {
-                $saved_params[$param_name] = $param->val;
-            }
-            // Keep display/formatting parameters
-            elseif (in_array($param_name, ['display-authors', 'displayauthors', 'collaboration', 'name-list-style', 'df'], true)) {
-                $saved_params[$param_name] = $param->val;
-            }
-            // Keep date/time parameters
-            elseif (in_array($param_name, ['date', 'year'], true)) {
-                $saved_params[$param_name] = $param->val;
-            }
-            // Keep title parameters
-            elseif (in_array($param_name, ['title', 'trans-title', 'language'], true)) {
-                $saved_params[$param_name] = $param->val;
-            }
-            // Keep page parameters
-            elseif (in_array($param_name, ['page', 'pages', 'at', 'no-pp'], true)) {
-                $saved_params[$param_name] = $param->val;
-            }
-            // Keep citation style parameters
-            elseif (in_array($param_name, ['quote', 'ref', 'postscript'], true)) {
-                $saved_params[$param_name] = $param->val;
+            $name = $param->param;
+            if (in_array($name, $supported_params, true) ||
+                preg_match('~^(last|first|author|author-link|author-mask|authorlink|authormask)\d+$~', $name)) {
+                $saved_params[$name] = $param->val;
             }
         }
-
-        // Remove all parameters
-        $all_params = [];
+        
+        // Remove all parameters then re-add saved ones
         foreach ($this->param as $param) {
-            $all_params[] = $param->param;
+            $this->forget($param->param);
         }
-        foreach ($all_params as $param_name) {
-            $this->forget($param_name);
-        }
-
-        // Change template name to cite bioRxiv or cite medRxiv
+        
+        // Change template name (reusing existing pattern from change_name_to)
         $new_template_name = 'cite ' . $preprint_name;
-        if (mb_stripos($this->name, '#invoke:') !== false) {
+        $invoke = mb_stripos($this->name, '#invoke:') !== false ? '#invoke:' : '';
+        if ($invoke) {
             $this->name = str_ireplace('#invoke:', '', $this->name);
-            $invoke = '#invoke:';
+        }
+        if (preg_match("~^(\s*)[\s\S]*?(\s*)$~", $this->name, $spacing)) {
+            $this->name = $invoke . $spacing[1] . $new_template_name . $spacing[2];
         } else {
-            $invoke = '';
+            $this->name = $invoke . $new_template_name;
         }
-        if (!preg_match("~^(\s*)[\s\S]*?(\s*)$~", $this->name, $spacing)) {
-            $spacing = [];
-            $spacing[1] = '';
-            $spacing[2] = '';
-        }
-        $this->name = $invoke . $spacing[1] . $new_template_name . $spacing[2];
         $this->modifications['template_type'] = true;
-
-        // Re-add the saved parameters
+        
+        // Re-add saved parameters
         foreach ($saved_params as $param_name => $value) {
             $this->add($param_name, $value);
         }
-
-        // Add the preprint identifier parameter (use full DOI)
-        $preprint_param = mb_strtolower($preprint_name);
-        $this->add($preprint_param, $identifier);
-
-        // Add mode=cs2 if it was a citation template
+        
+        // Add preprint identifier and mode if needed
+        $this->add(mb_strtolower($preprint_name), $doi);
         if ($was_citation) {
             $this->add('mode', 'cs2');
         }
