@@ -773,7 +773,7 @@ class Page {
         }
         if ($this->modifications["preprint_conversion"] !== '') {
             $preprint_name = $this->modifications["preprint_conversion"];
-            $auto_summary = rtrim($auto_summary) . " Converted to cite {$preprint_name}. ";
+            $auto_summary = mb_rtrim($auto_summary) . " Converted to cite {$preprint_name}. ";
         }
         $auto_summary .= "| [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. " . $edit_summary_end;
 
