@@ -6845,7 +6845,7 @@ final class Template
         }
     }
 
-    /** @return array<bool|array<string>> */
+    /** @return array<bool|string|array<string>> */
     public function modifications(): array {
         if ($this->has(mb_strtolower('CITATION_BOT_PLACEHOLDER_BARE_URL'))) {
             if ($this->has('title') || $this->has('chapter')) {
