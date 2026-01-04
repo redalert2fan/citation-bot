@@ -3149,6 +3149,95 @@ final class Template
         }
     }
 
+    private function convert_to_preprint_template(string $preprint_name): void {
+        // Only convert cite journal or citation templates
+        if (!in_array($this->wikiname(), ['cite journal', 'citation'], true)) {
+            return;
+        }
+
+        // Verify DOI starts with one of the expected prefixes (10.1101 or 10.64898)
+        $doi = $this->get('doi');
+        if ($this->blank('doi')) {
+            return;
+        }
+        
+        // Check if DOI starts with either 10.1101 or 10.64898
+        if (mb_strpos($doi, '10.1101') !== 0 && mb_strpos($doi, '10.64898') !== 0) {
+            return; // Safety check: only convert if DOI matches expected prefixes
+        }
+
+        // Remember if this was a citation template (needs mode=cs2)
+        $was_citation = ($this->wikiname() === 'citation');
+
+        // Use the full DOI as the identifier (including prefix)
+        $identifier = $doi;
+
+        // Parameters to keep
+        $params_to_keep = [
+            'author', 'last', 'first', 'last1', 'first1', 'last2', 'first2',
+            'last3', 'first3', 'last4', 'first4', 'last5', 'first5',
+            'last6', 'first6', 'last7', 'first7', 'last8', 'first8',
+            'last9', 'first9', 'date', 'year', 'title', 'language',
+        ];
+
+        // Store parameters we want to keep
+        $saved_params = [];
+        foreach ($params_to_keep as $param) {
+            if ($this->has($param)) {
+                $saved_params[$param] = $this->get($param);
+            }
+        }
+
+        // Get all numbered author parameters (last#, first#, author#)
+        foreach ($this->param as $param) {
+            $param_name = $param->param;
+            if (preg_match('~^(last|first|author)(\d+)$~', $param_name, $matches)) {
+                if ((int) $matches[2] <= 9) { // Only keep first 9 authors
+                    $saved_params[$param_name] = $param->val;
+                }
+            }
+        }
+
+        // Remove all parameters
+        $all_params = [];
+        foreach ($this->param as $param) {
+            $all_params[] = $param->param;
+        }
+        foreach ($all_params as $param_name) {
+            $this->forget($param_name);
+        }
+
+        // Change template name to cite bioRxiv or cite medRxiv
+        $new_template_name = 'cite ' . $preprint_name;
+        if (mb_stripos($this->name, '#invoke:') !== false) {
+            $this->name = str_ireplace('#invoke:', '', $this->name);
+            $invoke = '#invoke:';
+        } else {
+            $invoke = '';
+        }
+        if (!preg_match("~^(\s*)[\s\S]*?(\s*)$~", $this->name, $spacing)) {
+            $spacing = [];
+            $spacing[1] = '';
+            $spacing[2] = '';
+        }
+        $this->name = $invoke . $spacing[1] . $new_template_name . $spacing[2];
+        $this->modifications['template_type'] = true;
+
+        // Re-add the saved parameters
+        foreach ($saved_params as $param_name => $value) {
+            $this->add($param_name, $value);
+        }
+
+        // Add the preprint identifier parameter (use full DOI)
+        $preprint_param = mb_strtolower($preprint_name);
+        $this->add($preprint_param, $identifier);
+
+        // Add mode=cs2 if it was a citation template
+        if ($was_citation) {
+            $this->add('mode', 'cs2');
+        }
+    }
+
     public function change_name_to(string $new_name, bool $rename_cite_book = true, bool $rename_anything = false): void {
         if (mb_strpos($this->get('doi'), '10.1093') !== false && $this->wikiname() !== 'cite web') {
             return;
@@ -4240,6 +4329,22 @@ final class Template
                     if (mb_stripos($periodical, 'arxiv') !== false) {
                         return;
                     }
+                    // Check for bioRxiv or medRxiv journals
+                    $periodical_lower = mb_strtolower($periodical);
+                    if (
+                        $periodical_lower === 'biorxiv' ||
+                        $periodical_lower === 'biorxiv: the preprint server for biology'
+                    ) {
+                        $this->convert_to_preprint_template('bioRxiv');
+                        return;
+                    }
+                    if (
+                        $periodical_lower === 'medrxiv' ||
+                        $periodical_lower === 'medrxiv: the preprint server for health sciences'
+                    ) {
+                        $this->convert_to_preprint_template('medRxiv');
+                        return;
+                    }
                     // Special odd cases go here
                     if ($periodical === 'TAXON') {
                         // All caps that should not be
@@ -5303,7 +5408,7 @@ final class Template
                             $this->forget('via');
                         } elseif (mb_stripos($this->get('via'), 'library') !== false) {
                             $this->forget('via');
-                        } elseif (in_array($this->wikiname(), ['cite arxiv', 'cite biorxiv', 'cite citeseerx', 'cite ssrn'], true)) {
+                        } elseif (in_array($this->wikiname(), ['cite arxiv', 'cite biorxiv', 'cite medrxiv', 'cite citeseerx', 'cite ssrn'], true)) {
                             $this->forget('via');
                         } elseif (
                             $this->has('pmc') ||

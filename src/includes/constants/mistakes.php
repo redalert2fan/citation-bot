@@ -1757,6 +1757,8 @@ const TEMPLATE_CONVERSIONS = [
     ['cite maps', 'cite map'],
     ['Cite biorxiv', 'Cite bioRxiv'],
     ['cite biorxiv', 'cite bioRxiv'],
+    ['Cite medrxiv', 'Cite medRxiv'],
+    ['cite medrxiv', 'cite medRxiv'],
     ['Cite list', 'Cite mailing list'],
     ['cite list', 'cite mailing list'],
     ['Cite mailinglist', 'Cite mailing list'],
