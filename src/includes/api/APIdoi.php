@@ -15,8 +15,105 @@ function query_doi_api(array $_ids, array &$templates): void { // $id not used y
     return;
 }
 
+/**
+ * Check if a bioRxiv/medRxiv preprint has been published and convert to cite journal
+ * This checks CrossRef's relation field for is-preprint-of relationship
+ */
+function check_preprint_published(Template $template): void {
+    // Only process cite biorxiv and cite medrxiv templates
+    if (!in_array($template->wikiname(), ['cite biorxiv', 'cite medrxiv'], true)) {
+        return;
+    }
+
+    // Get the preprint DOI - could be in doi field or biorxiv/medrxiv parameter
+    $preprint_doi = '';
+    $preprint_param = '';
+
+    if ($template->has('biorxiv')) {
+        $preprint_param = 'biorxiv';
+        $biorxiv_id = $template->get('biorxiv');
+        // biorxiv parameter can be just the ID or the full DOI
+        if (mb_strpos($biorxiv_id, '10.1101/') === 0) {
+            $preprint_doi = $biorxiv_id;
+        } else {
+            $preprint_doi = '10.1101/' . $biorxiv_id;
+        }
+    } elseif ($template->has('medrxiv')) {
+        $preprint_param = 'medrxiv';
+        $medrxiv_id = $template->get('medrxiv');
+        // medrxiv parameter can be just the ID or the full DOI
+        if (mb_strpos($medrxiv_id, '10.1101/') === 0) {
+            $preprint_doi = $medrxiv_id;
+        } else {
+            $preprint_doi = '10.1101/' . $medrxiv_id;
+        }
+    } elseif ($template->has('doi')) {
+        $doi = $template->get('doi');
+        // Check if DOI is a bioRxiv or medRxiv DOI (10.1101/...)
+        if (mb_strpos($doi, '10.1101/') === 0) {
+            $preprint_doi = $doi;
+            // Determine if bioRxiv or medRxiv based on template name
+            $preprint_param = ($template->wikiname() === 'cite biorxiv') ? 'biorxiv' : 'medrxiv';
+        }
+    }
+
+    if (!$preprint_doi) {
+        return;
+    }
+
+    // Query CrossRef new API to get relation information
+    $crossref_data = query_crossref_newapi($preprint_doi);
+
+    // Check if there's an is-preprint-of relation
+    if (!isset($crossref_data->relation) || !isset($crossref_data->relation->{'is-preprint-of'})) {
+        return;
+    }
+
+    $is_preprint_of = $crossref_data->relation->{'is-preprint-of'};
+
+    // Extract the published DOI from the relation
+    $published_doi = null;
+    if (is_array($is_preprint_of)) {
+        foreach ($is_preprint_of as $relation_item) {
+            if (isset($relation_item->{'id-type'}) && $relation_item->{'id-type'} === 'doi' && isset($relation_item->id)) {
+                $published_doi = $relation_item->id;
+                break;
+            }
+        }
+    } elseif (is_object($is_preprint_of) && isset($is_preprint_of->{'id-type'}) && $is_preprint_of->{'id-type'} === 'doi' && isset($is_preprint_of->id)) {
+        $published_doi = $is_preprint_of->id;
+    }
+
+    if (!$published_doi) {
+        return;
+    }
+
+    // We found a published version! Convert the template
+    report_action("Converting {{" . $template->wikiname() . "}} to {{cite journal}} - preprint has been published with DOI: " . doi_link($published_doi));
+
+    // Change template name to cite journal
+    $template->change_name_to('cite journal');
+
+    // Add the published DOI
+    $template->add_if_new('doi', $published_doi);
+
+    // Keep the original preprint parameter (biorxiv or medrxiv)
+    // If it was in the doi field, move it to the appropriate parameter
+    if (!$template->has($preprint_param)) {
+        // Extract just the ID part (after 10.1101/)
+        $preprint_id = mb_substr($preprint_doi, 8); // Remove "10.1101/"
+        $template->add_if_new($preprint_param, $preprint_id);
+    }
+
+    // The template will be expanded with the published DOI in the normal expansion process
+}
+
 function expand_by_doi(Template $template, bool $force = false): void {
     set_time_limit(120);
+    
+    // Check if this is a bioRxiv/medRxiv preprint that has been published
+    check_preprint_published($template);
+    
     $template->verify_doi();  // Sometimes CrossRef has Data even when DOI is broken, so try CrossRef anyway even when return is false
     $doi = $template->get_without_comments_and_placeholders('doi');
     if ($doi === $template->last_searched_doi) {
@@ -508,7 +605,7 @@ function query_crossref_newapi(string $doi): object {
     unset(  $json, $result->reference, $result->assertion, $result->{'reference-count'},
             $result->deposited, $result->link, $result->{'update-policy'}, $result->{'is-referenced-by-count'},
             $result->{'published-online'}, $result->member, $result->score, $result->prefix, $result->source,
-            $result->abstract, $result->URL, $result->relation, $result->{'content-domain'},
+            $result->abstract, $result->URL, $result->{'content-domain'},
             $result->{'short-container-title'}, $result->license,
             $result->indexed, $result->{'references-count'}, $result->resource,
             $result->subject, $result->language);
