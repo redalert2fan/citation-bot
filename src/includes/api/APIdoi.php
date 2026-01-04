@@ -15,97 +15,47 @@ function query_doi_api(array $_ids, array &$templates): void { // $id not used y
     return;
 }
 
-/**
- * Check if a bioRxiv/medRxiv preprint has been published and convert to cite journal
- * This checks CrossRef's relation field for is-preprint-of relationship
- */
 function check_preprint_published(Template $template): void {
-    // Only process cite biorxiv and cite medrxiv templates
-    if (!in_array($template->wikiname(), ['cite biorxiv', 'cite medrxiv'], true)) {
+    $wikiname = $template->wikiname();
+    if ($wikiname !== 'cite biorxiv' && $wikiname !== 'cite medrxiv') {
         return;
     }
 
-    // Get the preprint DOI - could be in doi field or biorxiv/medrxiv parameter
-    $preprint_doi = '';
-    $preprint_param = '';
-
-    if ($template->has('biorxiv')) {
-        $preprint_param = 'biorxiv';
-        $biorxiv_id = $template->get('biorxiv');
-        // biorxiv parameter can be just the ID or the full DOI
-        if (mb_strpos($biorxiv_id, '10.1101/') === 0) {
-            $preprint_doi = $biorxiv_id;
-        } else {
-            $preprint_doi = '10.1101/' . $biorxiv_id;
-        }
-    } elseif ($template->has('medrxiv')) {
-        $preprint_param = 'medrxiv';
-        $medrxiv_id = $template->get('medrxiv');
-        // medrxiv parameter can be just the ID or the full DOI
-        if (mb_strpos($medrxiv_id, '10.1101/') === 0) {
-            $preprint_doi = $medrxiv_id;
-        } else {
-            $preprint_doi = '10.1101/' . $medrxiv_id;
-        }
-    } elseif ($template->has('doi')) {
+    $preprint_param = ($wikiname === 'cite biorxiv') ? 'biorxiv' : 'medrxiv';
+    $preprint_id = $template->get($preprint_param);
+    
+    if (!$preprint_id && $template->has('doi')) {
         $doi = $template->get('doi');
-        // Check if DOI is a bioRxiv or medRxiv DOI (10.1101/...)
         if (mb_strpos($doi, '10.1101/') === 0) {
-            $preprint_doi = $doi;
-            // Determine if bioRxiv or medRxiv based on template name
-            $preprint_param = ($template->wikiname() === 'cite biorxiv') ? 'biorxiv' : 'medrxiv';
+            $preprint_id = $doi;
         }
     }
-
-    if (!$preprint_doi) {
+    
+    if (!$preprint_id) {
         return;
     }
 
-    // Query CrossRef new API to get relation information
+    $preprint_doi = (mb_strpos($preprint_id, '10.1101/') === 0) ? $preprint_id : '10.1101/' . $preprint_id;
+    
     $crossref_data = query_crossref_newapi($preprint_doi);
-
-    // Check if there's an is-preprint-of relation
-    if (!isset($crossref_data->relation) || !isset($crossref_data->relation->{'is-preprint-of'})) {
+    if (!isset($crossref_data->relation->{'is-preprint-of'})) {
         return;
     }
 
     $is_preprint_of = $crossref_data->relation->{'is-preprint-of'};
-
-    // Extract the published DOI from the relation
-    $published_doi = null;
-    if (is_array($is_preprint_of)) {
-        foreach ($is_preprint_of as $relation_item) {
-            if (isset($relation_item->{'id-type'}) && $relation_item->{'id-type'} === 'doi' && isset($relation_item->id)) {
-                $published_doi = $relation_item->id;
-                break;
+    $relations = is_array($is_preprint_of) ? $is_preprint_of : [$is_preprint_of];
+    
+    foreach ($relations as $relation_item) {
+        if (isset($relation_item->{'id-type'}) && $relation_item->{'id-type'} === 'doi' && isset($relation_item->id)) {
+            report_action("Converting {{" . $wikiname . "}} to {{cite journal}} - preprint published with DOI: " . doi_link($relation_item->id));
+            $template->change_name_to('cite journal');
+            $template->add_if_new('doi', $relation_item->id);
+            if (!$template->has($preprint_param)) {
+                $template->add_if_new($preprint_param, mb_substr($preprint_doi, 8));
             }
+            break;
         }
-    } elseif (is_object($is_preprint_of) && isset($is_preprint_of->{'id-type'}) && $is_preprint_of->{'id-type'} === 'doi' && isset($is_preprint_of->id)) {
-        $published_doi = $is_preprint_of->id;
     }
-
-    if (!$published_doi) {
-        return;
-    }
-
-    // We found a published version! Convert the template
-    report_action("Converting {{" . $template->wikiname() . "}} to {{cite journal}} - preprint has been published with DOI: " . doi_link($published_doi));
-
-    // Change template name to cite journal
-    $template->change_name_to('cite journal');
-
-    // Add the published DOI
-    $template->add_if_new('doi', $published_doi);
-
-    // Keep the original preprint parameter (biorxiv or medrxiv)
-    // If it was in the doi field, move it to the appropriate parameter
-    if (!$template->has($preprint_param)) {
-        // Extract just the ID part (after 10.1101/)
-        $preprint_id = mb_substr($preprint_doi, 8); // Remove "10.1101/"
-        $template->add_if_new($preprint_param, $preprint_id);
-    }
-
-    // The template will be expanded with the published DOI in the normal expansion process
 }
 
 function expand_by_doi(Template $template, bool $force = false): void {
