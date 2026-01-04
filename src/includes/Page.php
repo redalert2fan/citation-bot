@@ -753,7 +753,7 @@ class Page {
         if (($isbn978_added > 0) && ($isbn978_added > $isbn_added)) { // Still will get false positives for isbn=blank converted to isbn=978......
             $auto_summary .= 'Upgrade ISBN10 to 13. ';
         }
-        if (isset($this->modifications["preprint_conversion"]) && is_string($this->modifications["preprint_conversion"]) && $this->modifications["preprint_conversion"]) {
+        if ($this->modifications["preprint_conversion"] !== '') {
             $preprint_name = $this->modifications["preprint_conversion"];
             $auto_summary .= "Convert {{cite journal}} to {{cite {$preprint_name}}}. ";
         }
@@ -1056,5 +1056,6 @@ class Page {
         $this->modifications['names'] = false;
         $this->modifications['ref'] = false;
         $this->modifications['na'] = false;
+        $this->modifications['preprint_conversion'] = '';
     }
 }
