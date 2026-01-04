@@ -771,7 +771,7 @@ class Page {
         if (!$auto_summary) {
             $auto_summary = "Misc citation tidying. ";
         }
-        if ($this->modifications["preprint_conversion"] !== '' && 
+        if ($this->modifications["preprint_conversion"] !== '' &&
             in_array($this->modifications["preprint_conversion"], ['bioRxiv', 'medRxiv'], true)) {
             $preprint_name = $this->modifications["preprint_conversion"];
             $auto_summary = mb_rtrim($auto_summary) . " Converted to cite {$preprint_name}. ";
