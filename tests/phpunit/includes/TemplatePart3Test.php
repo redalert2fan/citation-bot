@@ -1654,7 +1654,7 @@ EP - 999 }}';
         // Test bioRxiv with old DOI prefix (10.1101)
         $text = '{{cite journal |last1=Larivière |first1=Vincent |title=A simple proposal |journal=bioRxiv |doi=10.1101/062109}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite bioRxiv', $expanded->wikiname());
+        $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('10.1101/062109', $expanded->get2('biorxiv'));
         $this->assertSame('Larivière', $expanded->get2('last1'));
         $this->assertNull($expanded->get2('journal'));
@@ -1663,36 +1663,36 @@ EP - 999 }}';
         // Test bioRxiv with new DOI prefix (10.64898)
         $text = '{{cite journal |last1=Smith |first1=John |title=Test |journal=bioRxiv |doi=10.64898/2026.01.01.123456}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite bioRxiv', $expanded->wikiname());
+        $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('10.64898/2026.01.01.123456', $expanded->get2('biorxiv'));
         
         // Test medRxiv conversion
         $text = '{{cite journal |last1=Doe |first1=Jane |title=Research |journal=medRxiv |doi=10.1101/2020.06.07.123456}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite medRxiv', $expanded->wikiname());
+        $this->assertSame('cite medrxiv', $expanded->wikiname());
         $this->assertSame('10.1101/2020.06.07.123456', $expanded->get2('medrxiv'));
         
         // Test full journal descriptions
         $text = '{{cite journal |title=Title |journal=bioRxiv: The Preprint Server for Biology |doi=10.1101/123456}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite bioRxiv', $expanded->wikiname());
+        $this->assertSame('cite biorxiv', $expanded->wikiname());
         
         $text = '{{cite journal |title=Title |journal=medRxiv: The Preprint Server for Health Sciences |doi=10.64898/123456}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite medRxiv', $expanded->wikiname());
+        $this->assertSame('cite medrxiv', $expanded->wikiname());
     }
 
     public function testBioRxivMedRxivCitationAndParameters(): void {
         // Test citation template adds mode=cs2
         $text = '{{citation |last1=Test |first1=Author |title=Research |journal=bioRxiv |doi=10.1101/123456}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite bioRxiv', $expanded->wikiname());
+        $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('cs2', $expanded->get2('mode'));
         
         // Test parameter preservation (author, display, date, title, page, quote)
         $text = '{{cite journal |last1=Smith |first1=John |author-link1=John Smith |display-authors=3 |date=2024-01-01 |title=Test |language=en |journal=bioRxiv |doi=10.1101/123456 |pages=1-10 |at=Table 1 |quote=Important}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite bioRxiv', $expanded->wikiname());
+        $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('John Smith', $expanded->get2('author-link1'));
         $this->assertSame('3', $expanded->get2('display-authors'));
         $this->assertSame('2024-01-01', $expanded->get2('date'));
