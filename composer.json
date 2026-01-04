@@ -18,13 +18,14 @@
     "require-dev": {
         "brianium/paratest": "^7",
         "designsecurity/progpilot": "^1",
-        "mediawiki/mediawiki-codesniffer": "^48.0.0",
+        "mediawiki/mediawiki-codesniffer": "*",
         "overtrue/phplint": "^9",
         "phan/phan": "^5",
         "phpstan/phpstan": "^2.1.32",
         "phpunit/php-invoker": "^6",
         "phpunit/phpunit": "^12",
-        "vimeo/psalm": "^6"
+        "vimeo/psalm": "^6",
+        "squizlabs/php_codesniffer": "*"
     },
     "scripts": {
         "coverage-report": "phpunit --enforce-time-limit --default-time-limit 13000 --coverage-html coverage",
