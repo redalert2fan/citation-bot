@@ -755,7 +755,7 @@ class Page {
         }
         if (isset($this->modifications["preprint_conversion"]) && $this->modifications["preprint_conversion"]) {
             $preprint_name = $this->modifications["preprint_conversion"];
-            $auto_summary .= "Convert to cite {$preprint_name}. ";
+            $auto_summary .= "Convert {{cite journal}} to {{cite {$preprint_name}}}. ";
         }
         if (mb_stripos($auto_summary, 'template') !== false) {
             foreach (['cite|', 'Cite|', 'citebook', 'Citebook', 'cit book', 'Cit book', 'cite books', 'Cite books',

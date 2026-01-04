@@ -3150,24 +3150,18 @@ final class Template
     }
 
     private function convert_to_preprint_template(string $preprint_name): void {
-        // Only convert cite journal or citation templates with valid DOI
         if (!in_array($this->wikiname(), ['cite journal', 'citation'], true) || $this->blank('doi')) {
             return;
         }
         
         $doi = $this->get('doi');
-        // Check if DOI starts with either 10.1101 or 10.64898
-        // These are the only DOI prefixes used by bioRxiv and medRxiv:
-        // - 10.1101: Legacy prefix (before Dec 2025) from Cold Spring Harbor Laboratory
-        // - 10.64898: New prefix (from Dec 2025) assigned by openRxiv organization
-        // This safety check ensures we only convert actual bioRxiv/medRxiv preprints
+        // Only convert DOIs with prefixes 10.1101 (legacy) or 10.64898 (new openRxiv)
         if (mb_strpos($doi, '10.1101') !== 0 && mb_strpos($doi, '10.64898') !== 0) {
             return;
         }
 
         $was_citation = ($this->wikiname() === 'citation');
         
-        // Define supported parameters based on template documentation
         $supported_params = [
             'author', 'last', 'first', 'author-link', 'author-mask', 'authorlink', 'authormask',
             'display-authors', 'displayauthors', 'collaboration', 'name-list-style', 'df',
@@ -3185,7 +3179,7 @@ final class Template
             }
         }
         
-        // Remove all parameters (collect names first to avoid modifying array during iteration)
+        // Remove all parameters (collect names first to avoid array modification during iteration)
         $param_names = [];
         foreach ($this->param as $param) {
             $param_names[] = $param->param;
@@ -3194,7 +3188,7 @@ final class Template
             $this->forget($param_name);
         }
         
-        // Change template name (reusing existing pattern from change_name_to)
+        // Change template name
         $new_template_name = 'cite ' . $preprint_name;
         $invoke = mb_stripos($this->name, '#invoke:') !== false ? '#invoke:' : '';
         if ($invoke) {
@@ -3206,7 +3200,7 @@ final class Template
             $this->name = $invoke . $new_template_name;
         }
         $this->modifications['template_type'] = true;
-        $this->modifications['preprint_conversion'] = $preprint_name; // Track specific conversion for edit summary
+        $this->modifications['preprint_conversion'] = $preprint_name;
         
         // Re-add saved parameters
         foreach ($saved_params as $param_name => $value) {
