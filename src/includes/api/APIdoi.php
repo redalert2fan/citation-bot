@@ -23,20 +23,20 @@ function check_preprint_published(Template $template): void {
 
     $preprint_param = ($wikiname === 'cite biorxiv') ? 'biorxiv' : 'medrxiv';
     $preprint_id = $template->get($preprint_param);
-    
+
     if (!$preprint_id && $template->has('doi')) {
         $doi = $template->get('doi');
         if (mb_strpos($doi, '10.1101/') === 0) {
             $preprint_id = $doi;
         }
     }
-    
+
     if (!$preprint_id) {
         return;
     }
 
     $preprint_doi = (mb_strpos($preprint_id, '10.1101/') === 0) ? $preprint_id : '10.1101/' . $preprint_id;
-    
+
     $crossref_data = query_crossref_newapi($preprint_doi);
     if (!isset($crossref_data->relation->{'is-preprint-of'})) {
         return;
@@ -44,7 +44,7 @@ function check_preprint_published(Template $template): void {
 
     $is_preprint_of = $crossref_data->relation->{'is-preprint-of'};
     $relations = is_array($is_preprint_of) ? $is_preprint_of : [$is_preprint_of];
-    
+
     foreach ($relations as $relation_item) {
         if (isset($relation_item->{'id-type'}) && $relation_item->{'id-type'} === 'doi' && isset($relation_item->id)) {
             report_action("Converting {{" . $wikiname . "}} to {{cite journal}} - preprint published with DOI: " . doi_link($relation_item->id));
@@ -60,10 +60,10 @@ function check_preprint_published(Template $template): void {
 
 function expand_by_doi(Template $template, bool $force = false): void {
     set_time_limit(120);
-    
+
     // Check if this is a bioRxiv/medRxiv preprint that has been published
     check_preprint_published($template);
-    
+
     $template->verify_doi();  // Sometimes CrossRef has Data even when DOI is broken, so try CrossRef anyway even when return is false
     $doi = $template->get_without_comments_and_placeholders('doi');
     if ($doi === $template->last_searched_doi) {

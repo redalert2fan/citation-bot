@@ -289,7 +289,7 @@ final class DoiTest extends testBaseClass {
         $template = $this->make_citation('{{cite biorxiv |biorxiv=007237}}');
         $this->assertSame('cite biorxiv', $template->wikiname());
         $this->assertSame('007237', $template->get2('biorxiv'));
-        
+
         $template = $this->make_citation('{{cite medrxiv |medrxiv=2020.01.01.20020020}}');
         $this->assertSame('cite medrxiv', $template->wikiname());
         $this->assertSame('2020.01.01.20020020', $template->get2('medrxiv'));
