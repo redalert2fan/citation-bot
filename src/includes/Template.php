@@ -3185,9 +3185,13 @@ final class Template
             }
         }
         
-        // Remove all parameters then re-add saved ones
+        // Remove all parameters (collect names first to avoid modifying array during iteration)
+        $param_names = [];
         foreach ($this->param as $param) {
-            $this->forget($param->param);
+            $param_names[] = $param->param;
+        }
+        foreach ($param_names as $param_name) {
+            $this->forget($param_name);
         }
         
         // Change template name (reusing existing pattern from change_name_to)
