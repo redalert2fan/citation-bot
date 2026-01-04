@@ -39,6 +39,7 @@ function check_preprint_published(Template $template): void {
 
     $crossref_data = query_crossref_newapi($preprint_doi);
     if (!isset($crossref_data->relation->{'is-preprint-of'})) {
+        unset($crossref_data->relation); // Free memory
         return;
     }
 
@@ -54,9 +55,11 @@ function check_preprint_published(Template $template): void {
             if (!$template->has($preprint_param)) {
                 $template->add_if_new($preprint_param, mb_substr($preprint_doi, 8));
             }
+            unset($crossref_data->relation); // Free memory after use
             break;
         }
     }
+    unset($crossref_data->relation); // Free memory if no match found
 }
 
 function expand_by_doi(Template $template, bool $force = false): void {
