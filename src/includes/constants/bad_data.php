@@ -238,6 +238,7 @@ const BAD_PUBLISHERS = [
 
 /** Things with dois that should be {{cite document|work=THIS}} */
 const ARE_WORKS = [
+    'biorxiv',
     'ietf datatracker',
     'medrxiv',
 ];
