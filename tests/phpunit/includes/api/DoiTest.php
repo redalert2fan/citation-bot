@@ -285,21 +285,12 @@ final class DoiTest extends testBaseClass {
         $this->assertSame('10.1093/ww/9780199540884.013.U221850', $template->get2('doi'));
     }
 
-    public function testBioRxivConversion(): void {
-        // Test that cite biorxiv converts to cite journal when published
-        // This test may fail if the CrossRef API is down or the DOI doesn't have is-preprint-of relation
-        $text = '{{cite biorxiv |biorxiv=007237 |title=Test Title}}';
-        $template = $this->make_citation($text);
-        // The check_preprint_published function should be called during expansion
-        // For now, just test that the template structure is correct
+    public function testBioRxivMedRxivTemplates(): void {
+        $template = $this->make_citation('{{cite biorxiv |biorxiv=007237}}');
         $this->assertSame('cite biorxiv', $template->wikiname());
         $this->assertSame('007237', $template->get2('biorxiv'));
-    }
-
-    public function testMedRxivConversion(): void {
-        // Test that cite medrxiv is recognized and can be processed
-        $text = '{{cite medrxiv |medrxiv=2020.01.01.20020020 |title=Test Title}}';
-        $template = $this->make_citation($text);
+        
+        $template = $this->make_citation('{{cite medrxiv |medrxiv=2020.01.01.20020020}}');
         $this->assertSame('cite medrxiv', $template->wikiname());
         $this->assertSame('2020.01.01.20020020', $template->get2('medrxiv'));
     }
