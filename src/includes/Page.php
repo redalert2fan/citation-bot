@@ -36,7 +36,7 @@ const PROTECTED_PAGE = ["sysop", "templateeditor"];
 class Page {
     protected string $text = '';
     protected string $title = '';
-    /** @var array<bool|array<string>> */
+    /** @var array<bool|string|array<string>> */
     private array $modifications = [];
     private bool $odnb_sub_removed = false;
     private DateStyle $date_style = DateStyle::DATES_WHATEVER;
