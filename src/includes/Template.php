@@ -3153,7 +3153,7 @@ final class Template
         if (!in_array($this->wikiname(), ['cite journal', 'citation'], true) || $this->blank('doi')) {
             return;
         }
-        
+
         $doi = $this->get('doi');
         // Only convert DOIs with prefixes 10.1101 (legacy) or 10.64898 (new openRxiv)
         if (mb_strpos($doi, '10.1101') !== 0 && mb_strpos($doi, '10.64898') !== 0) {
@@ -3161,14 +3161,14 @@ final class Template
         }
 
         $was_citation = ($this->wikiname() === 'citation');
-        
+
         $supported_params = [
             'author', 'last', 'first', 'author-link', 'author-mask', 'authorlink', 'authormask',
             'display-authors', 'displayauthors', 'collaboration', 'name-list-style', 'df',
             'date', 'year', 'title', 'trans-title', 'language',
             'page', 'pages', 'at', 'no-pp', 'quote', 'ref', 'postscript',
         ];
-        
+
         // Save supported parameters and numbered author params
         $saved_params = [];
         foreach ($this->param as $param) {
@@ -3178,7 +3178,7 @@ final class Template
                 $saved_params[$name] = $param->val;
             }
         }
-        
+
         // Remove all parameters (collect names first to avoid array modification during iteration)
         $param_names = [];
         foreach ($this->param as $param) {
@@ -3187,7 +3187,7 @@ final class Template
         foreach ($param_names as $param_name) {
             $this->forget($param_name);
         }
-        
+
         // Change template name
         $new_template_name = 'cite ' . $preprint_name;
         $invoke = mb_stripos($this->name, '#invoke:') !== false ? '#invoke:' : '';
@@ -3201,12 +3201,12 @@ final class Template
         }
         $this->modifications['template_type'] = true;
         $this->modifications['preprint_conversion'] = $preprint_name;
-        
+
         // Re-add saved parameters
         foreach ($saved_params as $param_name => $value) {
             $this->add($param_name, $value);
         }
-        
+
         // Add preprint identifier and mode if needed
         $this->add(mb_strtolower($preprint_name), $doi);
         if ($was_citation) {

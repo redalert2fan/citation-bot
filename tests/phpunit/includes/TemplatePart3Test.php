@@ -1657,16 +1657,16 @@ EP - 999 }}';
         $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('10.1101/062109', $expanded->get2('biorxiv'));
         $this->assertNull($expanded->get2('doi'));
-        
+
         $text = '{{cite journal |title=Test |journal=bioRxiv |doi=10.64898/123456}}';
         $this->assertSame('cite biorxiv', $this->process_citation($text)->wikiname());
-        
+
         // medRxiv with full description
         $text = '{{cite journal |title=Research |journal=medRxiv: The Preprint Server for Health Sciences |doi=10.1101/2020.06.07.123456}}';
         $expanded = $this->process_citation($text);
         $this->assertSame('cite medrxiv', $expanded->wikiname());
         $this->assertSame('10.1101/2020.06.07.123456', $expanded->get2('medrxiv'));
-        
+
         // citation template with mode=cs2 and parameter preservation
         $text = '{{citation |last1=Test |author-link1=John Smith |date=2024-01-01 |title=Research |language=en |journal=bioRxiv |doi=10.1101/123456 |pages=1-10 |quote=Important}}';
         $expanded = $this->process_citation($text);
@@ -1674,7 +1674,7 @@ EP - 999 }}';
         $this->assertSame('cs2', $expanded->get2('mode'));
         $this->assertSame('John Smith', $expanded->get2('author-link1'));
         $this->assertSame('1-10', $expanded->get2('pages'));
-        
+
         // No conversion with wrong DOI prefix
         $text = '{{cite journal |title=Title |journal=bioRxiv |doi=10.9999/12345}}';
         $this->assertSame('cite journal', $this->process_citation($text)->wikiname());
