@@ -49,6 +49,7 @@ final class Template
     private bool $mod_na = false;
     private bool $no_initial_doi = false;
     private bool $held_work_done = false;
+    private string $preprint_conversion = '';
     /** @var array<array<string>> */
     private array $used_by_api = [
         'adsabs' => [],
@@ -3199,8 +3200,7 @@ final class Template
         } else {
             $this->name = $invoke . $new_template_name;
         }
-        $this->modifications['template_type'] = true;
-        $this->modifications['preprint_conversion'] = $preprint_name;
+        $this->preprint_conversion = $preprint_name;
 
         // Re-add saved parameters
         foreach ($saved_params as $param_name => $value) {
@@ -6922,6 +6922,7 @@ final class Template
         $ret['names'] = $this->mod_names;
         $ret['ref'] = $this->mod_ref;
         $ret['na'] = $this->mod_na;
+        $ret['preprint_conversion'] = $this->preprint_conversion;
         return $ret;
     }
 
