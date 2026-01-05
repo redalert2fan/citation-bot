@@ -3207,13 +3207,14 @@ final class Template
             $this->add($param_name, $value);
         }
 
+        // Explicitly forget doi before adding preprint identifier to ensure no interference
+        $this->quietly_forget('doi');
+        
         // Add preprint identifier and mode if needed
         $this->add(mb_strtolower($preprint_name), $doi);
         if ($was_citation) {
             $this->add('mode', 'cs2');
         }
-        // Explicitly forget doi to ensure it's removed (paranoid check)
-        $this->quietly_forget('doi');
     }
 
     public function change_name_to(string $new_name, bool $rename_cite_book = true, bool $rename_anything = false): void {
