@@ -4274,7 +4274,7 @@ final class Template
                                     $keep = true;
                                 }
                                 
-                                if (!$keep && $param_name !== 'journal') {
+                                if (!$keep) {
                                     $params_to_remove[] = $p->param;
                                 }
                             }
