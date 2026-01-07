@@ -50,6 +50,7 @@ final class Template
     private bool $no_initial_doi = false;
     private bool $held_work_done = false;
     private bool $biorxiv_convert_flag = false; // Flag to defer bioRxiv conversion until after tidy loop
+    private string $biorxiv_original_template = ''; // Store original template name at detection time
     /** @var array<array<string>> */
     private array $used_by_api = [
         'adsabs' => [],
@@ -4250,8 +4251,10 @@ final class Template
                         $doi_value = $this->get('doi');
                         if (preg_match('~^10\.1101/|^10\.64898/~', $doi_value)) {
                             // Set flag to convert after tidy loop completes
-                            // This prevents state corruption from modifying template during parameter iteration
+                            // CRITICAL: Store template type NOW, not later
+                            // By conversion time, template state may have changed
                             $this->biorxiv_convert_flag = true;
+                            $this->biorxiv_original_template = $this->wikiname();
                             return;
                         }
                     }
@@ -5806,8 +5809,9 @@ final class Template
 
     /** Convert template to cite bioRxiv (called after tidy loop completes) */
     private function convert_to_biorxiv(): void {
-        // Store whether this was a citation template for mode=cs2
-        $was_citation = ($this->wikiname() === 'citation');
+        // Use SAVED template type from when flag was set, not current state
+        // This is critical because template state may have changed between detection and conversion
+        $was_citation = ($this->biorxiv_original_template === 'citation');
         
         // Build list of parameters to KEEP (not remove)
         // This is a safer approach than trying to iterate and remove
