@@ -5806,67 +5806,73 @@ final class Template
         // Store whether this was a citation template for mode=cs2
         $was_citation = ($this->wikiname() === 'citation');
         
-        // IMPORTANT: Collect ALL parameter names BEFORE making any modifications
-        // This prevents issues from forget() side effects during iteration
-        $all_param_names = [];
-        foreach ($this->param as $p) {
-            $all_param_names[] = $p->param;
-        }
+        // Build list of parameters to KEEP (not remove)
+        // This is a safer approach than trying to iterate and remove
+        $params_to_keep = [...CITE_BIORXIV_ALLOWED_PARAMS];
         
-        // Convert template name to cite bioRxiv
-        $this->change_name_to('cite biorxiv', true, true);
+        // Add author/editor pattern matches to keep list
+        $params_to_keep[] = 'vauthors';
+        $params_to_keep[] = 'authors';
+        $params_to_keep[] = 'display-authors';
+        $params_to_keep[] = 'displayauthors';
+        $params_to_keep[] = 'veditors';
+        $params_to_keep[] = 'editors';
+        $params_to_keep[] = 'display-editors';
+        $params_to_keep[] = 'displayeditors';
         
-        // Rename doi parameter to biorxiv
-        $this->rename('doi', 'biorxiv');
+        // Get current parameter list and build new filtered param array
+        $old_params = $this->param;
+        $new_params = [];
         
-        // Add mode=cs2 if it was a citation template
-        if ($was_citation && $this->blank('mode')) {
-            $this->add_if_new('mode', 'cs2');
-        }
-        
-        // Remove journal parameter as it's not needed in cite bioRxiv
-        $this->forget('journal');
-        
-        // Remove parameters not allowed by cite bioRxiv
-        // Use the pre-collected parameter names to avoid iteration issues
-        $params_to_remove = [];
-        
-        foreach ($all_param_names as $param_name) {
-            // Skip parameters we already handled
-            if ($param_name === 'doi' || $param_name === 'journal') {
-                continue;
+        foreach ($old_params as $p) {
+            $param_name = $p->param;
+            $keep = false;
+            
+            // Check if it's in the allowed list
+            if (in_array(mb_strtolower($param_name), $params_to_keep, true)) {
+                $keep = true;
             }
             
-            // Check if parameter matches author/editor patterns (keep these)
-            $is_author_editor = (
+            // Check if it matches author/editor patterns
+            if (!$keep && (
                 preg_match('~^(?:author|last|first|given|surname|forename|initials)\d*$~i', $param_name) ||
                 preg_match('~^(?:author|editor)\d+-(?:last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
                 preg_match('~^(?:author|editor)-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
                 preg_match('~^(?:authorlink|authormask|editorlink|editormask)\d*$~i', $param_name) ||
                 preg_match('~^editor\d*$~i', $param_name) ||
-                preg_match('~^editor-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
-                in_array(mb_strtolower($param_name), ['vauthors', 'authors', 'display-authors', 'displayauthors', 'veditors', 'editors', 'display-editors', 'displayeditors'], true)
-            );
+                preg_match('~^editor-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name)
+            )) {
+                $keep = true;
+            }
             
-            // Mark for removal if not author/editor and not in the allowed list
-            if (!$is_author_editor && !in_array(mb_strtolower($param_name), CITE_BIORXIV_ALLOWED_PARAMS, true)) {
-                // Don't remove placeholder or special internal parameters
-                if (mb_stripos($param_name, 'CITATION_BOT') === false && mb_stripos($param_name, 'DUPLICATE') === false) {
-                    $params_to_remove[] = $param_name;
-                }
+            // Keep CITATION_BOT and DUPLICATE parameters
+            if (!$keep && (mb_stripos($param_name, 'CITATION_BOT') !== false || mb_stripos($param_name, 'DUPLICATE') !== false)) {
+                $keep = true;
+            }
+            
+            // Keep doi for now (we'll rename it)
+            if (mb_strtolower($param_name) === 'doi') {
+                $keep = true;
+            }
+            
+            if ($keep) {
+                $new_params[] = $p;
             }
         }
         
-        // Deduplicate and remove parameters
-        $params_to_remove = array_unique($params_to_remove);
+        // ATOMIC REPLACEMENT: Replace entire param array at once
+        // This avoids all iteration corruption issues
+        $this->param = $new_params;
         
-        foreach ($params_to_remove as $param_name) {
-            if ($this->has($param_name)) {
-                $this->forget($param_name);
-            }
+        // Now safe to do other operations
+        $this->change_name_to('cite biorxiv', true, true);
+        $this->rename('doi', 'biorxiv');
+        
+        if ($was_citation && $this->blank('mode')) {
+            $this->add_if_new('mode', 'cs2');
         }
         
-        // Clear the flag to prevent re-conversion if tidy() is called again
+        // Clear the flag to prevent re-conversion
         $this->biorxiv_convert_flag = false;
         
         report_modification('Converted citation to cite bioRxiv');
