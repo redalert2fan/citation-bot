@@ -435,6 +435,22 @@ const CITE_BOOK_UNSUPPORTED_PARAMS = [
     'magazine',
 ];
 
+/** Parameters allowed by cite bioRxiv template per Wikipedia documentation at https://en.wikipedia.org/wiki/Template:Cite_bioRxiv */
+const CITE_BIORXIV_ALLOWED_PARAMS = [
+    'biorxiv',
+    'title',
+    'trans-title',
+    'script-title',
+    'language',
+    'date',
+    'year',
+    'quote',
+    'postscript',
+    'ref',
+    'mode',
+    'class',
+];
+
 const ALL_ALIASES = [
     TITLE_LINK_ALIASES, ARXIV_ALIASES, COAUTHOR_ALIASES, CHAPTER_ALIASES,
     DISPLAY_AUTHORS, DISPLAY_EDITORS, DOI_BROKEN_ALIASES, FIRST_AUTHOR_ALIASES,

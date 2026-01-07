@@ -4240,6 +4240,57 @@ final class Template
                     if (mb_stripos($periodical, 'arxiv') !== false) {
                         return;
                     }
+                    // Check for bioRxiv journal conversion
+                    if (
+                        (mb_stripos($periodical, 'biorxiv') !== false || $periodical === 'bioRxiv: The Preprint Server for Biology') &&
+                        ($this->wikiname() === 'cite journal' || $this->wikiname() === 'citation') &&
+                        $this->has('doi')
+                    ) {
+                        $doi_value = $this->get('doi');
+                        if (preg_match('~^10\.1101/|^10\.64898/~', $doi_value)) {
+                            // Store whether this was a citation template for mode=cs2
+                            $was_citation = ($this->wikiname() === 'citation');
+                            
+                            // Convert template name to cite bioRxiv
+                            $this->change_name_to('cite biorxiv', true, true);
+                            
+                            // Rename doi parameter to biorxiv
+                            $this->rename('doi', 'biorxiv');
+                            
+                            // Add mode=cs2 if it was a citation template
+                            if ($was_citation && $this->blank('mode')) {
+                                $this->add_if_new('mode', 'cs2');
+                            }
+                            
+                            // Remove journal parameter as it's not needed in cite bioRxiv
+                            $this->forget($param);
+                            
+                            // Remove parameters not allowed by cite bioRxiv
+                            $params_to_check = $this->param;
+                            foreach ($params_to_check as $p) {
+                                $param_name = $p->param;
+                                // Check if parameter matches author/editor patterns (keep these)
+                                $is_author_editor = (
+                                    preg_match('~^(?:author|last|first|given|surname|forename|initials|author-link|author-mask|authorlink|authormask)\d*$~i', $param_name) ||
+                                    preg_match('~^\d*-(?:author|last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
+                                    preg_match('~^(?:editor|editor-last|editor-first|editor-given|editor-surname|editor-forename|editor-initials|editor-link|editor-mask|editorlink|editormask)\d*$~i', $param_name) ||
+                                    preg_match('~^\d*-(?:editor|last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
+                                    in_array(mb_strtolower($param_name), ['vauthors', 'authors', 'display-authors', 'displayauthors', 'veditors', 'editors', 'display-editors', 'displayeditors'], true)
+                                );
+                                
+                                // Keep if it's author/editor, or in the allowed list
+                                if (!$is_author_editor && !in_array(mb_strtolower($param_name), CITE_BIORXIV_ALLOWED_PARAMS, true)) {
+                                    // Don't remove placeholder or special internal parameters
+                                    if (mb_stripos($param_name, 'CITATION_BOT') === false && mb_stripos($param_name, 'DUPLICATE') === false) {
+                                        $this->forget($param_name);
+                                    }
+                                }
+                            }
+                            
+                            report_modification('Converted citation to cite bioRxiv');
+                            return;
+                        }
+                    }
                     // Special odd cases go here
                     if ($periodical === 'TAXON') {
                         // All caps that should not be
