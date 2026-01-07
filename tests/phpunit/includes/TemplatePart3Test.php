@@ -1678,5 +1678,35 @@ EP - 999 }}';
         // No conversion with wrong DOI prefix
         $text = '{{cite journal |title=Title |journal=bioRxiv |doi=10.9999/12345}}';
         $this->assertSame('cite journal', $this->process_citation($text)->wikiname());
+        
+        // Real-world example with vauthors, article-number, pmid, pmc
+        $text = '{{cite journal | vauthors = Watanabe Y, Mendonça L, Allen ER, Howe A, Lee M, Allen JD, Chawla H, Pulido D, Donnellan F, Davies H, Ulaszewska M, Belij-Rammerstorfer S, Morris S, Krebs AS, Dejnirattisai W, Mongkolsapaya J, Supasa P, Screaton GR, Green CM, Lambe T, Zhang P, Gilbert SC, Crispin M | title = Native-like SARS-CoV-2 spike glycoprotein expressed by ChAdOx1 nCoV-19/AZD1222 vaccine | journal = bioRxiv | article-number = 2021.01.15.426463 | date = January 2021 | pmid = 33501433 | pmc = 7836103 | doi = 10.1101/2021.01.15.426463 }}';
+        $expanded = $this->process_citation($text);
+        $this->assertSame('cite biorxiv', $expanded->wikiname());
+        $this->assertSame('10.1101/2021.01.15.426463', $expanded->get2('biorxiv'));
+        $this->assertNull($expanded->get2('doi'));
+        $this->assertNull($expanded->get2('journal'));
+        $this->assertNull($expanded->get2('article-number'));
+        $this->assertNull($expanded->get2('pmid')); // pmid/pmc not in supported list
+        $this->assertSame('January 2021', $expanded->get2('date'));
+        
+        // Real-world example with full journal description
+        $text = '{{cite journal | vauthors = Lyu J, Kapolka N, Gumpper R, Alon A, Wang L, Jain MK, Barros-Álvarez X, Sakamoto K, Kim Y, DiBerto J, Kim K, Tummino TA, Huang S, Irwin JJ, Tarkhanova OO, Moroz Y, Skiniotis G, Kruse AC, Shoichet BK, Roth BL | title = AlphaFold2 structures template ligand discovery | journal = BioRxiv: The Preprint Server for Biology | date = December 2023 | pmid = 38187536 | pmc = 10769324 | doi = 10.1101/2023.12.20.572662 }}';
+        $expanded = $this->process_citation($text);
+        $this->assertSame('cite biorxiv', $expanded->wikiname());
+        $this->assertSame('10.1101/2023.12.20.572662', $expanded->get2('biorxiv'));
+        $this->assertNull($expanded->get2('doi'));
+        
+        // Real-world example with url, hdl, s2cid
+        $text = '{{cite journal |last1=Larivière |first1=Vincent |last2=Kiermer |first2=Véronique |last3=MacCallum |first3=Catriona J. |last4=McNutt |first4=Marcia |last5=Patterson |first5=Mark |last6=Pulverer |first6=Bernd |last7=Swaminathan |first7=Sowmya |last8=Taylor |first8=Stuart |last9=Curry |first9=Stephen |date=2016-07-05 |title=A simple proposal for the publication of journal citation distributions |journal=bioRxiv |article-number=062109 |url=http://biorxiv.org/lookup/doi/10.1101/062109 |language=en |doi=10.1101/062109 |hdl=1866/23301 |s2cid=64293941 |hdl-access=free}}';
+        $expanded = $this->process_citation($text)->wikiname();
+        $this->assertSame('cite biorxiv', $expanded);
+        $template = $this->process_citation($text);
+        $this->assertSame('10.1101/062109', $template->get2('biorxiv'));
+        $this->assertNull($template->get2('doi'));
+        $this->assertNull($template->get2('url')); // url not in supported list
+        $this->assertNull($template->get2('hdl')); // hdl not in supported list
+        $this->assertSame('Vincent', $template->get2('first1'));
+        $this->assertSame('en', $template->get2('language'));
     }
 }
