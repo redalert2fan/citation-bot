@@ -459,6 +459,7 @@ const CITE_BIORXIV_ALLOWED_PARAMS = [
     'article-number',
     'df',
     'name-list-style',
+    'name-list-format',
     'collaboration',
 ];
 

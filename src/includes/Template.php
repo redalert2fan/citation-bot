@@ -4267,9 +4267,15 @@ final class Template
                             
                             // Remove parameters not allowed by cite bioRxiv
                             // Collect parameters to remove first to avoid modifying array during iteration
+                            // This prevents "Premature end of PHP process" error from iterator corruption
                             $params_to_remove = [];
-                            foreach ($this->param as $p) {
+                            
+                            // Cache the param array to avoid issues if it's modified elsewhere
+                            $params_snapshot = $this->param;
+                            
+                            foreach ($params_snapshot as $p) {
                                 $param_name = $p->param;
+                                
                                 // Check if parameter matches author/editor patterns (keep these)
                                 // Handles formats: author3, last4, first8, author-link1, author1-last, editor2-first, etc.
                                 $is_author_editor = (
@@ -4291,7 +4297,8 @@ final class Template
                                 }
                             }
                             
-                            // Now remove the collected parameters
+                            // Now remove the collected parameters in a separate loop
+                            // This two-phase approach prevents iterator corruption
                             foreach ($params_to_remove as $param_name) {
                                 $this->forget($param_name);
                             }
