@@ -4242,19 +4242,15 @@ final class Template
                     if (mb_stripos($periodical, 'arxiv') !== false) {
                         return;
                     }
-                    // Check for bioRxiv journal conversion - FLAG for later conversion
+                    // Check for bioRxiv journal conversion - only for cite journal
                     if (
                         (mb_stripos($periodical, 'biorxiv') !== false || mb_strtolower($periodical) === 'biorxiv: the preprint server for biology') &&
-                        ($this->wikiname() === 'cite journal' || $this->wikiname() === 'citation') &&
+                        $this->wikiname() === 'cite journal' &&
                         $this->has('doi')
                     ) {
                         $doi_value = $this->get('doi');
                         if (preg_match('~^10\.1101/|^10\.64898/~', $doi_value)) {
-                            // Set flag to convert after tidy loop completes
-                            // CRITICAL: Store template type NOW, not later
-                            // By conversion time, template state may have changed
                             $this->biorxiv_convert_flag = true;
-                            $this->biorxiv_original_template = $this->wikiname();
                             return;
                         }
                     }
@@ -5798,36 +5794,15 @@ final class Template
             }
         } // Give up tidy after third time. Something is goofy.
         
-        // Process bioRxiv conversion if flagged (AFTER parameter iteration completes)
+        // Process bioRxiv conversion if flagged
         if ($this->biorxiv_convert_flag) {
-            // CRITICAL: Clear flag BEFORE conversion to prevent infinite recursion
-            // if change_name_to() triggers final_tidy() which calls tidy() again
             $this->biorxiv_convert_flag = false;
             $this->convert_to_biorxiv();
         }
     }
 
-    /** Convert template to cite bioRxiv (called after tidy loop completes) */
     private function convert_to_biorxiv(): void {
-        // Use SAVED template type from when flag was set, not current state
-        // This is critical because template state may have changed between detection and conversion
-        $was_citation = ($this->biorxiv_original_template === 'citation');
-        
-        // Build list of parameters to KEEP (not remove)
-        // This is a safer approach than trying to iterate and remove
         $params_to_keep = [...CITE_BIORXIV_ALLOWED_PARAMS];
-        
-        // Add author/editor pattern matches to keep list
-        $params_to_keep[] = 'vauthors';
-        $params_to_keep[] = 'authors';
-        $params_to_keep[] = 'display-authors';
-        $params_to_keep[] = 'displayauthors';
-        $params_to_keep[] = 'veditors';
-        $params_to_keep[] = 'editors';
-        $params_to_keep[] = 'display-editors';
-        $params_to_keep[] = 'displayeditors';
-        
-        // Get current parameter list and build new filtered param array
         $old_params = $this->param;
         $new_params = [];
         
@@ -5835,29 +5810,26 @@ final class Template
             $param_name = $p->param;
             $keep = false;
             
-            // Check if it's in the allowed list
             if (in_array(mb_strtolower($param_name), $params_to_keep, true)) {
                 $keep = true;
             }
             
-            // Check if it matches author/editor patterns
             if (!$keep && (
                 preg_match('~^(?:author|last|first|given|surname|forename|initials)\d*$~i', $param_name) ||
                 preg_match('~^(?:author|editor)\d+-(?:last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
                 preg_match('~^(?:author|editor)-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
                 preg_match('~^(?:authorlink|authormask|editorlink|editormask)\d*$~i', $param_name) ||
                 preg_match('~^editor\d*$~i', $param_name) ||
-                preg_match('~^editor-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name)
+                preg_match('~^editor-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
+                preg_match('~^(?:vauthors|authors|display-authors|displayauthors|veditors|editors|display-editors|displayeditors)$~i', $param_name)
             )) {
                 $keep = true;
             }
             
-            // Keep CITATION_BOT and DUPLICATE parameters
             if (!$keep && (mb_stripos($param_name, 'CITATION_BOT') !== false || mb_stripos($param_name, 'DUPLICATE') !== false)) {
                 $keep = true;
             }
             
-            // Keep doi for now (we'll rename it)
             if (mb_strtolower($param_name) === 'doi') {
                 $keep = true;
             }
@@ -5867,21 +5839,10 @@ final class Template
             }
         }
         
-        // ATOMIC REPLACEMENT: Replace entire param array at once
-        // This avoids all iteration corruption issues
         $this->param = $new_params;
-        
-        // Now safe to do other operations
         $this->change_name_to('cite biorxiv', true, true);
-        // CRITICAL: Update initial_name to prevent final_tidy from calling tidy() again
-        // Without this, final_tidy() sees name changed and calls tidy() a second time
         $this->initial_name = $this->name;
         $this->rename('doi', 'biorxiv');
-        
-        if ($was_citation && $this->blank('mode')) {
-            $this->add_if_new('mode', 'cs2');
-        }
-        
         report_modification('Converted citation to cite bioRxiv');
     }
 
