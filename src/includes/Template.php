@@ -4242,7 +4242,7 @@ final class Template
                     }
                     // Check for bioRxiv journal conversion
                     if (
-                        (mb_stripos($periodical, 'biorxiv') !== false || $periodical === 'bioRxiv: The Preprint Server for Biology') &&
+                        (mb_stripos($periodical, 'biorxiv') !== false || mb_strtolower($periodical) === 'biorxiv: the preprint server for biology') &&
                         ($this->wikiname() === 'cite journal' || $this->wikiname() === 'citation') &&
                         $this->has('doi')
                     ) {
