@@ -3165,6 +3165,8 @@ final class Template
 
         // Rename doi parameter to biorxiv/medrxiv
         $this->rename('doi', mb_strtolower($preprint_name));
+        // Explicitly ensure doi is gone (in case of any edge cases)
+        $this->quietly_forget('doi');
 
         // Supported parameters for bioRxiv/medRxiv templates (including the new biorxiv/medrxiv param)
         $supported_params = ['title', 'trans-title', 'language', 'date', 'year',
