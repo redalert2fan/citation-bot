@@ -5806,6 +5806,13 @@ final class Template
         // Store whether this was a citation template for mode=cs2
         $was_citation = ($this->wikiname() === 'citation');
         
+        // IMPORTANT: Collect ALL parameter names BEFORE making any modifications
+        // This prevents issues from forget() side effects during iteration
+        $all_param_names = [];
+        foreach ($this->param as $p) {
+            $all_param_names[] = $p->param;
+        }
+        
         // Convert template name to cite bioRxiv
         $this->change_name_to('cite biorxiv', true, true);
         
@@ -5821,11 +5828,14 @@ final class Template
         $this->forget('journal');
         
         // Remove parameters not allowed by cite bioRxiv
-        // Safe to do here since we're outside the tidy parameter iteration loop
+        // Use the pre-collected parameter names to avoid iteration issues
         $params_to_remove = [];
         
-        foreach ($this->param as $p) {
-            $param_name = $p->param;
+        foreach ($all_param_names as $param_name) {
+            // Skip parameters we already handled
+            if ($param_name === 'doi' || $param_name === 'journal') {
+                continue;
+            }
             
             // Check if parameter matches author/editor patterns (keep these)
             $is_author_editor = (
@@ -5855,6 +5865,9 @@ final class Template
                 $this->forget($param_name);
             }
         }
+        
+        // Clear the flag to prevent re-conversion if tidy() is called again
+        $this->biorxiv_convert_flag = false;
         
         report_modification('Converted citation to cite bioRxiv');
     }
