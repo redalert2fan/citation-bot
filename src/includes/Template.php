@@ -5873,6 +5873,9 @@ final class Template
         
         // Now safe to do other operations
         $this->change_name_to('cite biorxiv', true, true);
+        // CRITICAL: Update initial_name to prevent final_tidy from calling tidy() again
+        // Without this, final_tidy() sees name changed and calls tidy() a second time
+        $this->initial_name = $this->name;
         $this->rename('doi', 'biorxiv');
         
         if ($was_citation && $this->blank('mode')) {
