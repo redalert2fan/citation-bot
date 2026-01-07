@@ -1650,23 +1650,31 @@ EP - 999 }}';
         $this->assertSame("{{cs1 config|name-list-style=vanc}}<ref>{{cite journal | title=From fibrositis to fibromyalgia to nociplastic pain: How rheumatology helped get us here and where do we go from here? | journal=Annals of the Rheumatic Diseases | date=2024 | volume=83 | issue=11 | pages=1421–1427 | doi=10.1136/ard-2023-225327 | pmid=39107083 | pmc=11503076 | vauthors = Clauw DJ }}</ref>{{cs1 config|name-list-style=vanc}}", $page->parsed_text());
     }
 
-    public function testBioRxivMedRxivConversion(): void {
-        // bioRxiv with old DOI (10.1101) and new DOI (10.64898)
+    public function testBioRxivConversion1_BasicOldDOI(): void {
+        // bioRxiv with old DOI (10.1101) - verify template name change and biorxiv param added
         $text = '{{cite journal |last1=Smith |title=Test |journal=bioRxiv |doi=10.1101/062109}}';
         $expanded = $this->process_citation($text);
         $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('10.1101/062109', $expanded->get2('biorxiv'));
-        $this->assertNull($expanded->get2('doi'));
+        $this->assertSame('Smith', $expanded->get2('last1'));
+        $this->assertSame('Test', $expanded->get2('title'));
+    }
 
+    public function testBioRxivConversion2_NewDOI(): void {
+        // bioRxiv with new DOI (10.64898)
         $text = '{{cite journal |title=Test |journal=bioRxiv |doi=10.64898/123456}}';
         $this->assertSame('cite biorxiv', $this->process_citation($text)->wikiname());
+    }
 
+    public function testBioRxivConversion3_MedRxivFullDescription(): void {
         // medRxiv with full description
         $text = '{{cite journal |title=Research |journal=medRxiv: The Preprint Server for Health Sciences |doi=10.1101/2020.06.07.123456}}';
         $expanded = $this->process_citation($text);
         $this->assertSame('cite medrxiv', $expanded->wikiname());
         $this->assertSame('10.1101/2020.06.07.123456', $expanded->get2('medrxiv'));
+    }
 
+    public function testBioRxivConversion4_CitationTemplateWithCS2(): void {
         // citation template with mode=cs2 and parameter preservation
         $text = '{{citation |last1=Test |author-link1=John Smith |date=2024-01-01 |title=Research |language=en |journal=bioRxiv |doi=10.1101/123456 |pages=1-10 |quote=Important}}';
         $expanded = $this->process_citation($text);
@@ -1674,11 +1682,15 @@ EP - 999 }}';
         $this->assertSame('cs2', $expanded->get2('mode'));
         $this->assertSame('John Smith', $expanded->get2('author-link1'));
         $this->assertSame('1-10', $expanded->get2('pages'));
+    }
 
+    public function testBioRxivConversion5_NoConversionWrongDOI(): void {
         // No conversion with wrong DOI prefix
         $text = '{{cite journal |title=Title |journal=bioRxiv |doi=10.9999/12345}}';
         $this->assertSame('cite journal', $this->process_citation($text)->wikiname());
-        
+    }
+
+    public function testBioRxivConversion6_RealWorldVauthors(): void {
         // Real-world example with vauthors, article-number, pmid, pmc
         $text = '{{cite journal | vauthors = Watanabe Y, Mendonça L, Allen ER, Howe A, Lee M, Allen JD, Chawla H, Pulido D, Donnellan F, Davies H, Ulaszewska M, Belij-Rammerstorfer S, Morris S, Krebs AS, Dejnirattisai W, Mongkolsapaya J, Supasa P, Screaton GR, Green CM, Lambe T, Zhang P, Gilbert SC, Crispin M | title = Native-like SARS-CoV-2 spike glycoprotein expressed by ChAdOx1 nCoV-19/AZD1222 vaccine | journal = bioRxiv | article-number = 2021.01.15.426463 | date = January 2021 | pmid = 33501433 | pmc = 7836103 | doi = 10.1101/2021.01.15.426463 }}';
         $expanded = $this->process_citation($text);
@@ -1689,14 +1701,18 @@ EP - 999 }}';
         $this->assertNull($expanded->get2('article-number'));
         $this->assertNull($expanded->get2('pmid')); // pmid/pmc not in supported list
         $this->assertSame('January 2021', $expanded->get2('date'));
-        
+    }
+
+    public function testBioRxivConversion7_RealWorldFullDescription(): void {
         // Real-world example with full journal description
         $text = '{{cite journal | vauthors = Lyu J, Kapolka N, Gumpper R, Alon A, Wang L, Jain MK, Barros-Álvarez X, Sakamoto K, Kim Y, DiBerto J, Kim K, Tummino TA, Huang S, Irwin JJ, Tarkhanova OO, Moroz Y, Skiniotis G, Kruse AC, Shoichet BK, Roth BL | title = AlphaFold2 structures template ligand discovery | journal = BioRxiv: The Preprint Server for Biology | date = December 2023 | pmid = 38187536 | pmc = 10769324 | doi = 10.1101/2023.12.20.572662 }}';
         $expanded = $this->process_citation($text);
         $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('10.1101/2023.12.20.572662', $expanded->get2('biorxiv'));
         $this->assertNull($expanded->get2('doi'));
-        
+    }
+
+    public function testBioRxivConversion8_RealWorldWithHdlS2cid(): void {
         // Real-world example with url, hdl, s2cid
         $text = '{{cite journal |last1=Larivière |first1=Vincent |last2=Kiermer |first2=Véronique |last3=MacCallum |first3=Catriona J. |last4=McNutt |first4=Marcia |last5=Patterson |first5=Mark |last6=Pulverer |first6=Bernd |last7=Swaminathan |first7=Sowmya |last8=Taylor |first8=Stuart |last9=Curry |first9=Stephen |date=2016-07-05 |title=A simple proposal for the publication of journal citation distributions |journal=bioRxiv |article-number=062109 |url=http://biorxiv.org/lookup/doi/10.1101/062109 |language=en |doi=10.1101/062109 |hdl=1866/23301 |s2cid=64293941 |hdl-access=free}}';
         $expanded = $this->process_citation($text)->wikiname();
