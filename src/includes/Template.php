@@ -3163,12 +3163,16 @@ final class Template
 
         $was_citation = ($this->wikiname() === 'citation');
 
-        // Supported parameters for bioRxiv/medRxiv templates
+        // Rename doi parameter to biorxiv/medrxiv
+        $this->rename('doi', mb_strtolower($preprint_name));
+
+        // Supported parameters for bioRxiv/medRxiv templates (including the new biorxiv/medrxiv param)
         $supported_params = ['title', 'trans-title', 'language', 'date', 'year',
                              'last', 'first', 'author', 'author-link', 'authorlink', 'author-mask', 'authormask',
                              'vauthors', 'display-authors', 'displayauthors', 'collaboration', 'name-list-style',
                              'page', 'pages', 'at', 'no-pp',
-                             'quote', 'ref', 'postscript', 'df', 'mode'];
+                             'quote', 'ref', 'postscript', 'df', 'mode',
+                             'biorxiv', 'medrxiv'];
         
         // Add numbered author parameters (last1-9, first1-9, etc.)
         for ($i = 1; $i <= 9; $i++) {
@@ -3181,32 +3185,17 @@ final class Template
             $supported_params[] = 'authormask' . $i;
         }
 
-        // Save values of supported parameters
-        $saved_params = [];
-        foreach ($supported_params as $param_name) {
-            $value = $this->get2($param_name);
-            if ($value) {
-                $saved_params[$param_name] = $value;
-            }
-        }
-
-        // Get list of all current parameters to remove
-        $all_param_names = [];
+        // Get list of all current parameters
+        $all_params = [];
         foreach ($this->param as $p) {
-            $all_param_names[] = $p->param;
+            $all_params[] = $p->param;
         }
 
-        // Remove all parameters
-        foreach ($all_param_names as $param_name) {
-            $this->forget($param_name);
-        }
-
-        // Add the biorxiv/medrxiv parameter with DOI value
-        $this->add(mb_strtolower($preprint_name), $doi);
-
-        // Restore supported parameters
-        foreach ($saved_params as $param_name => $value) {
-            $this->add($param_name, $value);
+        // Remove unsupported parameters
+        foreach ($all_params as $param_name) {
+            if (!in_array($param_name, $supported_params, true)) {
+                $this->forget($param_name);
+            }
         }
 
         // Change template name
