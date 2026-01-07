@@ -4297,10 +4297,23 @@ final class Template
                                 }
                             }
                             
+                            // Deduplicate the removal list to avoid processing same parameter multiple times
+                            $params_to_remove = array_unique($params_to_remove);
+                            
                             // Now remove the collected parameters in a separate loop
-                            // This two-phase approach prevents iterator corruption
-                            foreach ($params_to_remove as $param_name) {
-                                $this->forget($param_name);
+                            // Use existence check and silent forgetter to avoid cascading side effects
+                            // This prevents interference between multiple forget() calls
+                            try {
+                                foreach ($params_to_remove as $param_name) {
+                                    // Only remove if parameter still exists (may have been removed by cascading deletion)
+                                    if ($this->has($param_name)) {
+                                        // Use forgetter with echo_forgetting=false to avoid recursive side effects
+                                        $this->forgetter($param_name, false);
+                                    }
+                                }
+                            } catch (Exception $e) {
+                                // Log the error but don't let it crash the entire process
+                                bot_debug_log('Error during bioRxiv parameter cleanup: ' . $e->getMessage());
                             }
                             
                             report_modification('Converted citation to cite bioRxiv');
