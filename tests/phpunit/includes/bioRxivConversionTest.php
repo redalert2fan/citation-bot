@@ -56,4 +56,25 @@ final class bioRxivConversionTest extends testBaseClass {
         $this->assertSame('cite journal', $prepared->wikiname());
         $this->assertNull($prepared->get2('doi'));
     }
+
+    public function testBioRxivConversionWithVauthors(): void {
+        $text = '{{cite journal | vauthors = Watanabe Y, Mendonça L, Allen ER, Howe A, Lee M, Allen JD, Chawla H, Pulido D, Donnellan F, Davies H, Ulaszewska M, Belij-Rammerstorfer S, Morris S, Krebs AS, Dejnirattisai W, Mongkolsapaya J, Supasa P, Screaton GR, Green CM, Lambe T, Zhang P, Gilbert SC, Crispin M | title = Native-like SARS-CoV-2 spike glycoprotein expressed by ChAdOx1 nCoV-19/AZD1222 vaccine | journal = bioRxiv | article-number = 2021.01.15.426463 | date = January 2021 | pmid = 33501433 | pmc = 7836103 | doi = 10.1101/2021.01.15.426463 }}';
+        $prepared = $this->prepare_citation($text);
+        $this->assertSame('cite biorxiv', $prepared->wikiname());
+        $this->assertSame('10.1101/2021.01.15.426463', $prepared->get2('biorxiv'));
+        $this->assertNull($prepared->get2('doi'));
+        $this->assertNull($prepared->get2('journal'));
+        $this->assertSame('2021.01.15.426463', $prepared->get2('article-number'));
+        $this->assertSame('Watanabe Y, Mendonça L, Allen ER, Howe A, Lee M, Allen JD, Chawla H, Pulido D, Donnellan F, Davies H, Ulaszewska M, Belij-Rammerstorfer S, Morris S, Krebs AS, Dejnirattisai W, Mongkolsapaya J, Supasa P, Screaton GR, Green CM, Lambe T, Zhang P, Gilbert SC, Crispin M', $prepared->get2('vauthors'));
+    }
+
+    public function testBioRxivConversionWithLongJournalName(): void {
+        $text = '{{cite journal | vauthors = Lyu J, Kapolka N, Gumpper R, Alon A, Wang L, Jain MK, Barros-Álvarez X, Sakamoto K, Kim Y, DiBerto J, Kim K, Tummino TA, Huang S, Irwin JJ, Tarkhanova OO, Moroz Y, Skiniotis G, Kruse AC, Shoichet BK, Roth BL | title = AlphaFold2 structures template ligand discovery | journal = BioRxiv: The Preprint Server for Biology | date = December 2023 | pmid = 38187536 | pmc = 10769324 | doi = 10.1101/2023.12.20.572662 }}';
+        $prepared = $this->prepare_citation($text);
+        $this->assertSame('cite biorxiv', $prepared->wikiname());
+        $this->assertSame('10.1101/2023.12.20.572662', $prepared->get2('biorxiv'));
+        $this->assertNull($prepared->get2('doi'));
+        $this->assertNull($prepared->get2('journal'));
+        $this->assertSame('Lyu J, Kapolka N, Gumpper R, Alon A, Wang L, Jain MK, Barros-Álvarez X, Sakamoto K, Kim Y, DiBerto J, Kim K, Tummino TA, Huang S, Irwin JJ, Tarkhanova OO, Moroz Y, Skiniotis G, Kruse AC, Shoichet BK, Roth BL', $prepared->get2('vauthors'));
+    }
 }
