@@ -3163,13 +3163,50 @@ final class Template
 
         $was_citation = ($this->wikiname() === 'citation');
 
-        // Rename doi parameter to biorxiv/medrxiv
-        $this->rename('doi', mb_strtolower($preprint_name));
+        // Supported parameters for bioRxiv/medRxiv templates
+        $supported_params = ['title', 'trans-title', 'language', 'date', 'year',
+                             'last', 'first', 'author', 'author-link', 'authorlink', 'author-mask', 'authormask',
+                             'vauthors', 'display-authors', 'displayauthors', 'collaboration', 'name-list-style',
+                             'page', 'pages', 'at', 'no-pp',
+                             'quote', 'ref', 'postscript', 'df', 'mode'];
+        
+        // Add numbered author parameters (last1-9, first1-9, etc.)
+        for ($i = 1; $i <= 9; $i++) {
+            $supported_params[] = 'last' . $i;
+            $supported_params[] = 'first' . $i;
+            $supported_params[] = 'author' . $i;
+            $supported_params[] = 'author-link' . $i;
+            $supported_params[] = 'authorlink' . $i;
+            $supported_params[] = 'author-mask' . $i;
+            $supported_params[] = 'authormask' . $i;
+        }
 
-        // Remove unsupported parameters
-        $unsupported = ['journal', 'periodical', 'pmid', 'pmc', 'url', 'hdl', 's2cid', 'article-number', 'hdl-access'];
-        foreach ($unsupported as $param) {
-            $this->forget($param);
+        // Save values of supported parameters
+        $saved_params = [];
+        foreach ($supported_params as $param_name) {
+            $value = $this->get2($param_name);
+            if ($value) {
+                $saved_params[$param_name] = $value;
+            }
+        }
+
+        // Get list of all current parameters to remove
+        $all_param_names = [];
+        foreach ($this->param as $p) {
+            $all_param_names[] = $p->param;
+        }
+
+        // Remove all parameters
+        foreach ($all_param_names as $param_name) {
+            $this->forget($param_name);
+        }
+
+        // Add the biorxiv/medrxiv parameter with DOI value
+        $this->add(mb_strtolower($preprint_name), $doi);
+
+        // Restore supported parameters
+        foreach ($saved_params as $param_name => $value) {
+            $this->add($param_name, $value);
         }
 
         // Change template name
