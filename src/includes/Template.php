@@ -3164,18 +3164,18 @@ final class Template
         $was_citation = ($this->wikiname() === 'citation');
 
         $supported_params = [
-            'author', 'last', 'first', 'author-link', 'author-mask', 'authorlink', 'authormask',
+            'author', 'last', 'first', 'vauthors', 'author-link', 'author-mask', 'authorlink', 'authormask',
             'display-authors', 'displayauthors', 'collaboration', 'name-list-style', 'df',
             'date', 'year', 'title', 'trans-title', 'language',
             'page', 'pages', 'at', 'no-pp', 'quote', 'ref', 'postscript',
         ];
 
-        // Save supported parameters and numbered author params
+        // Save supported parameters and numbered author params (but never doi)
         $saved_params = [];
         foreach ($this->param as $param) {
             $name = $param->param;
-            if (in_array($name, $supported_params, true) ||
-                preg_match('~^(last|first|author|author-link|author-mask|authorlink|authormask)\d+$~', $name)) {
+            if ($name !== 'doi' && (in_array($name, $supported_params, true) ||
+                preg_match('~^(last|first|author|author-link|author-mask|authorlink|authormask)\d+$~', $name))) {
                 $saved_params[$name] = $param->val;
             }
         }
@@ -3212,8 +3212,6 @@ final class Template
         if ($was_citation) {
             $this->add('mode', 'cs2');
         }
-        // Ensure doi parameter is completely removed (it should already be gone, but be explicit)
-        $this->quietly_forget('doi');
     }
 
     public function change_name_to(string $new_name, bool $rename_cite_book = true, bool $rename_anything = false): void {
