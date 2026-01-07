@@ -3189,17 +3189,18 @@ final class Template
             $supported_params[] = 'authormask' . $i;
         }
 
-        // Get list of all current parameters
+        // Get list of all current parameters (create a copy to avoid modifying during iteration)
         $all_params = [];
         foreach ($this->param as $p) {
-            $all_params[] = $p->param;
+            $param_name = $p->param;
+            if (!in_array($param_name, $supported_params, true)) {
+                $all_params[] = $param_name;
+            }
         }
 
-        // Remove unsupported parameters
+        // Remove unsupported parameters (now safe to modify since we're using a separate list)
         foreach ($all_params as $param_name) {
-            if (!in_array($param_name, $supported_params, true)) {
-                $this->forget($param_name);
-            }
+            $this->forget($param_name);
         }
 
         // Change template name
