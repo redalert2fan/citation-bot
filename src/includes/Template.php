@@ -5797,6 +5797,9 @@ final class Template
         
         // Process bioRxiv conversion if flagged (AFTER parameter iteration completes)
         if ($this->biorxiv_convert_flag) {
+            // CRITICAL: Clear flag BEFORE conversion to prevent infinite recursion
+            // if change_name_to() triggers final_tidy() which calls tidy() again
+            $this->biorxiv_convert_flag = false;
             $this->convert_to_biorxiv();
         }
     }
@@ -5871,9 +5874,6 @@ final class Template
         if ($was_citation && $this->blank('mode')) {
             $this->add_if_new('mode', 'cs2');
         }
-        
-        // Clear the flag to prevent re-conversion
-        $this->biorxiv_convert_flag = false;
         
         report_modification('Converted citation to cite bioRxiv');
     }
