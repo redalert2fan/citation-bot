@@ -456,7 +456,6 @@ const CITE_BIORXIV_ALLOWED_PARAMS = [
     'p',
     'at',
     'no-pp',
-    'article-number',
     'df',
     'name-list-style',
     'name-list-format',

@@ -64,7 +64,9 @@ final class bioRxivConversionTest extends testBaseClass {
         $this->assertSame('10.1101/2021.01.15.426463', $prepared->get2('biorxiv'));
         $this->assertNull($prepared->get2('doi'));
         $this->assertNull($prepared->get2('journal'));
-        $this->assertSame('2021.01.15.426463', $prepared->get2('article-number'));
+        $this->assertNull($prepared->get2('article-number'));
+        $this->assertNull($prepared->get2('pmid'));
+        $this->assertNull($prepared->get2('pmc'));
         $this->assertSame('Watanabe Y, Mendonça L, Allen ER, Howe A, Lee M, Allen JD, Chawla H, Pulido D, Donnellan F, Davies H, Ulaszewska M, Belij-Rammerstorfer S, Morris S, Krebs AS, Dejnirattisai W, Mongkolsapaya J, Supasa P, Screaton GR, Green CM, Lambe T, Zhang P, Gilbert SC, Crispin M', $prepared->get2('vauthors'));
     }
 
@@ -75,6 +77,8 @@ final class bioRxivConversionTest extends testBaseClass {
         $this->assertSame('10.1101/2023.12.20.572662', $prepared->get2('biorxiv'));
         $this->assertNull($prepared->get2('doi'));
         $this->assertNull($prepared->get2('journal'));
+        $this->assertNull($prepared->get2('pmid'));
+        $this->assertNull($prepared->get2('pmc'));
         $this->assertSame('Lyu J, Kapolka N, Gumpper R, Alon A, Wang L, Jain MK, Barros-Álvarez X, Sakamoto K, Kim Y, DiBerto J, Kim K, Tummino TA, Huang S, Irwin JJ, Tarkhanova OO, Moroz Y, Skiniotis G, Kruse AC, Shoichet BK, Roth BL', $prepared->get2('vauthors'));
     }
 }
