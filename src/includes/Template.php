@@ -49,8 +49,8 @@ final class Template
     private bool $mod_na = false;
     private bool $no_initial_doi = false;
     private bool $held_work_done = false;
-    private bool $biorxiv_convert_flag = false; // Flag to defer bioRxiv conversion until after tidy loop
-    private string $biorxiv_original_template = ''; // Store original template name at detection time
+
+
     /** @var array<array<string>> */
     private array $used_by_api = [
         'adsabs' => [],
@@ -4250,7 +4250,40 @@ final class Template
                     ) {
                         $doi_value = $this->get('doi');
                         if (preg_match('~^10\.1101/|^10\.64898/~', $doi_value)) {
-                            $this->biorxiv_convert_flag = true;
+                            // Convert to cite bioRxiv
+                            $this->change_name_to('cite biorxiv', true, true);
+                            $this->rename('doi', 'biorxiv');
+                            
+                            // Remove parameters not allowed in cite bioRxiv
+                            $params_to_remove = [];
+                            foreach ($this->param as $p) {
+                                $param_name = mb_strtolower($p->param);
+                                $keep = in_array($param_name, CITE_BIORXIV_ALLOWED_PARAMS, true);
+                                
+                                if (!$keep && (
+                                    preg_match('~^(?:author|last|first|given|surname|forename|initials)\d*$~i', $p->param) ||
+                                    preg_match('~^(?:author|editor)\d+-(?:last|first|given|surname|forename|initials|link|mask)$~i', $p->param) ||
+                                    preg_match('~^(?:author|editor)-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $p->param) ||
+                                    preg_match('~^(?:authorlink|authormask|editorlink|editormask)\d*$~i', $p->param) ||
+                                    preg_match('~^editor\d*$~i', $p->param) ||
+                                    preg_match('~^editor-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $p->param) ||
+                                    preg_match('~^(?:vauthors|authors|display-authors|displayauthors|veditors|editors|display-editors|displayeditors)$~i', $p->param) ||
+                                    mb_stripos($p->param, 'CITATION_BOT') !== false ||
+                                    mb_stripos($p->param, 'DUPLICATE') !== false
+                                )) {
+                                    $keep = true;
+                                }
+                                
+                                if (!$keep && $param_name !== 'journal') {
+                                    $params_to_remove[] = $p->param;
+                                }
+                            }
+                            
+                            foreach ($params_to_remove as $param_name) {
+                                $this->forget($param_name);
+                            }
+                            
+                            report_modification('Converted citation to cite bioRxiv');
                             return;
                         }
                     }
@@ -5793,57 +5826,6 @@ final class Template
                 $this->tidy_parameter($param->param);
             }
         } // Give up tidy after third time. Something is goofy.
-        
-        // Process bioRxiv conversion if flagged
-        if ($this->biorxiv_convert_flag) {
-            $this->biorxiv_convert_flag = false;
-            $this->convert_to_biorxiv();
-        }
-    }
-
-    private function convert_to_biorxiv(): void {
-        $params_to_keep = [...CITE_BIORXIV_ALLOWED_PARAMS];
-        $old_params = $this->param;
-        $new_params = [];
-        
-        foreach ($old_params as $p) {
-            $param_name = $p->param;
-            $keep = false;
-            
-            if (in_array(mb_strtolower($param_name), $params_to_keep, true)) {
-                $keep = true;
-            }
-            
-            if (!$keep && (
-                preg_match('~^(?:author|last|first|given|surname|forename|initials)\d*$~i', $param_name) ||
-                preg_match('~^(?:author|editor)\d+-(?:last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
-                preg_match('~^(?:author|editor)-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
-                preg_match('~^(?:authorlink|authormask|editorlink|editormask)\d*$~i', $param_name) ||
-                preg_match('~^editor\d*$~i', $param_name) ||
-                preg_match('~^editor-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
-                preg_match('~^(?:vauthors|authors|display-authors|displayauthors|veditors|editors|display-editors|displayeditors)$~i', $param_name)
-            )) {
-                $keep = true;
-            }
-            
-            if (!$keep && (mb_stripos($param_name, 'CITATION_BOT') !== false || mb_stripos($param_name, 'DUPLICATE') !== false)) {
-                $keep = true;
-            }
-            
-            if (mb_strtolower($param_name) === 'doi') {
-                $keep = true;
-            }
-            
-            if ($keep) {
-                $new_params[] = $p;
-            }
-        }
-        
-        $this->param = $new_params;
-        $this->change_name_to('cite biorxiv', true, true);
-        $this->initial_name = $this->name;
-        $this->rename('doi', 'biorxiv');
-        report_modification('Converted citation to cite bioRxiv');
     }
 
     public function final_tidy(): void {
