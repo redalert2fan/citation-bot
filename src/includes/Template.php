@@ -3155,16 +3155,20 @@ final class Template
             return;
         }
 
-        $doi = $this->get('doi');
+        $doi_value = $this->get('doi');
         // Only convert DOIs with prefixes 10.1101 (legacy) or 10.64898 (new openRxiv)
-        if (mb_strpos($doi, '10.1101') !== 0 && mb_strpos($doi, '10.64898') !== 0) {
+        if (mb_strpos($doi_value, '10.1101') !== 0 && mb_strpos($doi_value, '10.64898') !== 0) {
             return;
         }
 
         $was_citation = ($this->wikiname() === 'citation');
 
-        // Rename doi parameter to biorxiv/medrxiv
-        $this->rename('doi', mb_strtolower($preprint_name));
+        // Add the biorxiv/medrxiv parameter with the DOI value
+        $preprint_param = mb_strtolower($preprint_name);
+        $this->add_if_new($preprint_param, $doi_value);
+        
+        // Remove the doi parameter completely
+        $this->forget('doi');
 
         // Supported parameters for bioRxiv/medRxiv templates (including the new biorxiv/medrxiv param)
         $supported_params = ['title', 'trans-title', 'language', 'date', 'year',
@@ -3191,9 +3195,9 @@ final class Template
             $all_params[] = $p->param;
         }
 
-        // Remove unsupported parameters (explicitly include doi to ensure it's removed)
+        // Remove unsupported parameters
         foreach ($all_params as $param_name) {
-            if (!in_array($param_name, $supported_params, true) || $param_name === 'doi') {
+            if (!in_array($param_name, $supported_params, true)) {
                 $this->forget($param_name);
             }
         }
