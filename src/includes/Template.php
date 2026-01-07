@@ -3189,19 +3189,11 @@ final class Template
             $supported_params[] = 'authormask' . $i;
         }
 
-        // Get list of all current parameters - make a true copy of the array first
-        $param_copy = $this->param; // Create copy before iteration
-        $params_to_remove = [];
-        foreach ($param_copy as $p) {
-            $param_name = $p->param;
-            if (!in_array($param_name, $supported_params, true)) {
-                $params_to_remove[] = $param_name;
+        // Remove unsupported parameters using direct unset (avoids forget() recursion issues)
+        foreach ($this->param as $key => $p) {
+            if (!in_array($p->param, $supported_params, true)) {
+                unset($this->param[$key]);
             }
-        }
-
-        // Remove unsupported parameters (now safe to modify since we're using a separate list)
-        foreach ($params_to_remove as $param_name) {
-            $this->forget($param_name);
         }
 
         // Change template name
