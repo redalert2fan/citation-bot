@@ -130,4 +130,21 @@ final class bioRxivConversionTest extends testBaseClass {
         $this->assertSame('EditorLast', $prepared->get2('editor1-last'));
         $this->assertSame('EditorFirst', $prepared->get2('editor1-first'));
     }
+
+    public function testBioRxivPreservesVariousAuthorFormats(): void {
+        $text = '{{cite journal |author3=Third |author5-last=Fifth |author-link7=Link7 |last10=Tenth |title=Many Authors |journal=bioRxiv |doi=10.1101/999888 |year=2020}}';
+        $prepared = $this->prepare_citation($text);
+        $this->assertSame('cite biorxiv', $prepared->wikiname());
+        $this->assertSame('Third', $prepared->get2('author3'));
+        $this->assertSame('Fifth', $prepared->get2('author5-last'));
+        $this->assertSame('Link7', $prepared->get2('author-link7'));
+        $this->assertSame('Tenth', $prepared->get2('last10'));
+    }
+
+    public function testBioRxivPreservesPageAliases(): void {
+        $text = '{{cite journal |last=Author |title=Title |journal=bioRxiv |doi=10.1101/777888 |pp=100-200 |year=2021}}';
+        $prepared = $this->prepare_citation($text);
+        $this->assertSame('cite biorxiv', $prepared->wikiname());
+        $this->assertSame('100-200', $prepared->get2('pp'));
+    }
 }

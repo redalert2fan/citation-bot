@@ -4271,11 +4271,14 @@ final class Template
                             foreach ($this->param as $p) {
                                 $param_name = $p->param;
                                 // Check if parameter matches author/editor patterns (keep these)
+                                // Handles formats: author3, last4, first8, author-link1, author1-last, editor2-first, etc.
                                 $is_author_editor = (
-                                    preg_match('~^(?:author|last|first|given|surname|forename|initials|author-link|author-mask|authorlink|authormask)\d*$~i', $param_name) ||
-                                    preg_match('~^\d*-(?:author|last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
-                                    preg_match('~^(?:editor|editor-last|editor-first|editor-given|editor-surname|editor-forename|editor-initials|editor-link|editor-mask|editorlink|editormask)\d*$~i', $param_name) ||
-                                    preg_match('~^\d*-(?:editor|last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
+                                    preg_match('~^(?:author|last|first|given|surname|forename|initials)\d*$~i', $param_name) ||
+                                    preg_match('~^(?:author|editor)\d+-(?:last|first|given|surname|forename|initials|link|mask)$~i', $param_name) ||
+                                    preg_match('~^(?:author|editor)-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
+                                    preg_match('~^(?:authorlink|authormask|editorlink|editormask)\d*$~i', $param_name) ||
+                                    preg_match('~^editor\d*$~i', $param_name) ||
+                                    preg_match('~^editor-(?:last|first|given|surname|forename|initials|link|mask)\d*$~i', $param_name) ||
                                     in_array(mb_strtolower($param_name), ['vauthors', 'authors', 'display-authors', 'displayauthors', 'veditors', 'editors', 'display-editors', 'displayeditors'], true)
                                 );
                                 
