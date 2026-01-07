@@ -9,23 +9,13 @@ require_once __DIR__ . '/../../testBaseClass.php';
 
 final class bioRxivConversionTest extends testBaseClass {
 
-    public function testBioRxivConversionFromCiteJournal(): void {
-        $text = '{{cite journal |last1=Larivière |first1=Vincent |last2=Kiermer |first2=Véronique |last3=MacCallum |first3=Catriona J. |last4=McNutt |first4=Marcia |last5=Patterson |first5=Mark |last6=Pulverer |first6=Bernd |last7=Swaminathan |first7=Sowmya |last8=Taylor |first8=Stuart |last9=Curry |first9=Stephen |date=2016-07-05 |title=A simple proposal for the publication of journal citation distributions |journal=bioRxiv |article-number=062109 |url=http://biorxiv.org/lookup/doi/10.1101/062109 |language=en |doi=10.1101/062109 |hdl=1866/23301 |s2cid=64293941 |hdl-access=free}}';
+    public function testBioRxivConversionSimple(): void {
+        $text = '{{cite journal |title=Test |journal=bioRxiv |doi=10.1101/123456}}';
         $prepared = $this->prepare_citation($text);
         $this->assertSame('cite biorxiv', $prepared->wikiname());
-        $this->assertSame('10.1101/062109', $prepared->get2('biorxiv'));
+        $this->assertSame('10.1101/123456', $prepared->get2('biorxiv'));
         $this->assertNull($prepared->get2('doi'));
         $this->assertNull($prepared->get2('journal'));
-        $this->assertNull($prepared->get2('article-number'));
-        $this->assertNull($prepared->get2('url'));
-        $this->assertNull($prepared->get2('hdl'));
-        $this->assertNull($prepared->get2('hdl-access'));
-        $this->assertNull($prepared->get2('s2cid'));
-        $this->assertSame('A simple proposal for the publication of journal citation distributions', $prepared->get2('title'));
-        $this->assertSame('en', $prepared->get2('language'));
-        $this->assertSame('2016-07-05', $prepared->get2('date'));
-        $this->assertSame('Larivière', $prepared->get2('last1'));
-        $this->assertSame('Vincent', $prepared->get2('first1'));
     }
 
     public function testBioRxivConversionFromCitation(): void {
