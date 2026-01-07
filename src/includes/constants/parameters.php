@@ -449,6 +449,13 @@ const CITE_BIORXIV_ALLOWED_PARAMS = [
     'ref',
     'mode',
     'class',
+    'page',
+    'pages',
+    'at',
+    'no-pp',
+    'df',
+    'name-list-style',
+    'collaboration',
 ];
 
 const ALL_ALIASES = [

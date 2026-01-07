@@ -4266,8 +4266,9 @@ final class Template
                             $this->forget($param);
                             
                             // Remove parameters not allowed by cite bioRxiv
-                            $params_to_check = $this->param;
-                            foreach ($params_to_check as $p) {
+                            // Collect parameters to remove first to avoid modifying array during iteration
+                            $params_to_remove = [];
+                            foreach ($this->param as $p) {
                                 $param_name = $p->param;
                                 // Check if parameter matches author/editor patterns (keep these)
                                 $is_author_editor = (
@@ -4278,13 +4279,18 @@ final class Template
                                     in_array(mb_strtolower($param_name), ['vauthors', 'authors', 'display-authors', 'displayauthors', 'veditors', 'editors', 'display-editors', 'displayeditors'], true)
                                 );
                                 
-                                // Keep if it's author/editor, or in the allowed list
+                                // Mark for removal if not author/editor and not in the allowed list
                                 if (!$is_author_editor && !in_array(mb_strtolower($param_name), CITE_BIORXIV_ALLOWED_PARAMS, true)) {
                                     // Don't remove placeholder or special internal parameters
                                     if (mb_stripos($param_name, 'CITATION_BOT') === false && mb_stripos($param_name, 'DUPLICATE') === false) {
-                                        $this->forget($param_name);
+                                        $params_to_remove[] = $param_name;
                                     }
                                 }
+                            }
+                            
+                            // Now remove the collected parameters
+                            foreach ($params_to_remove as $param_name) {
+                                $this->forget($param_name);
                             }
                             
                             report_modification('Converted citation to cite bioRxiv');
