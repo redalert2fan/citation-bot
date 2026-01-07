@@ -1681,7 +1681,8 @@ EP - 999 }}';
         $this->assertSame('cite biorxiv', $expanded->wikiname());
         $this->assertSame('cs2', $expanded->get2('mode'));
         $this->assertSame('John Smith', $expanded->get2('author-link1'));
-        $this->assertSame('1-10', $expanded->get2('pages'));
+        // Pages get normalized to use n-dash by tidy_parameter
+        $this->assertSame('1–10', $expanded->get2('pages'));
     }
 
     public function testBioRxivConversion5_NoConversionWrongDOI(): void {

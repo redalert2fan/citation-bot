@@ -3163,30 +3163,13 @@ final class Template
 
         $was_citation = ($this->wikiname() === 'citation');
 
-        $supported_params = [
-            'author', 'last', 'first', 'vauthors', 'author-link', 'author-mask', 'authorlink', 'authormask',
-            'display-authors', 'displayauthors', 'collaboration', 'name-list-style', 'df',
-            'date', 'year', 'title', 'trans-title', 'language',
-            'page', 'pages', 'at', 'no-pp', 'quote', 'ref', 'postscript',
-        ];
+        // Rename doi parameter to biorxiv/medrxiv
+        $this->rename('doi', mb_strtolower($preprint_name));
 
-        // Save supported parameters and numbered author params (but never doi)
-        $saved_params = [];
-        foreach ($this->param as $param) {
-            $name = $param->param;
-            if ($name !== 'doi' && (in_array($name, $supported_params, true) ||
-                preg_match('~^(last|first|author|author-link|author-mask|authorlink|authormask)\d+$~', $name))) {
-                $saved_params[$name] = $param->val;
-            }
-        }
-
-        // Remove all parameters (collect names first to avoid array modification during iteration)
-        $param_names = [];
-        foreach ($this->param as $param) {
-            $param_names[] = $param->param;
-        }
-        foreach ($param_names as $param_name) {
-            $this->forget($param_name);
+        // Remove unsupported parameters
+        $unsupported = ['journal', 'periodical', 'pmid', 'pmc', 'url', 'hdl', 's2cid', 'article-number', 'hdl-access'];
+        foreach ($unsupported as $param) {
+            $this->forget($param);
         }
 
         // Change template name
@@ -3202,13 +3185,7 @@ final class Template
         }
         $this->preprint_conversion = $preprint_name;
 
-        // Re-add saved parameters
-        foreach ($saved_params as $param_name => $value) {
-            $this->add($param_name, $value);
-        }
-
-        // Add preprint identifier and mode if needed
-        $this->add(mb_strtolower($preprint_name), $doi);
+        // Add mode=cs2 for citation templates
         if ($was_citation) {
             $this->add('mode', 'cs2');
         }
