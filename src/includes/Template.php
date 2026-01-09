@@ -4282,7 +4282,7 @@ final class Template
                                 $this->forget($param_name);
                             }
                             
-                            report_modification('Converted citation to cite bioRxiv');
+                            report_modification('Converted cite journal to cite bioRxiv');
                             return;
                         }
                     }
