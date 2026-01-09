@@ -50,7 +50,6 @@ final class Template
     private bool $no_initial_doi = false;
     private bool $held_work_done = false;
 
-
     /** @var array<array<string>> */
     private array $used_by_api = [
         'adsabs' => [],
