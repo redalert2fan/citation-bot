@@ -28,7 +28,7 @@ function convert_mathml_to_latex(string $mathml): string {
             $parts = preg_split('~<none/>~', $prescripts);
 
             // For isotope notation: <none/>number means superscript on left (mass number)
-            if (count($parts) === 2 && mb_trim($parts[0]) === '') {
+            if (is_array($parts) && count($parts) === 2 && mb_trim($parts[0]) === '') {
                 $superscript = mb_trim(strip_tags($parts[1]));
                 // Wrap base in \mathrm if it's a chemical element (single capital or capital + lowercase)
                 if (preg_match('~^[A-Z][a-z]?$~', $base)) {
@@ -41,7 +41,7 @@ function convert_mathml_to_latex(string $mathml): string {
             return $base;
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Handle msup (superscript): <msup><mi>x</mi><mn>2</mn></msup> -> x^{2}
     $mathml = preg_replace_callback(
@@ -52,7 +52,7 @@ function convert_mathml_to_latex(string $mathml): string {
             return $base . "^{" . $super . "}";
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Handle msub (subscript): <msub><mi>H</mi><mn>2</mn></msub> -> H_{2}
     $mathml = preg_replace_callback(
@@ -63,7 +63,7 @@ function convert_mathml_to_latex(string $mathml): string {
             return $base . "_{" . $sub . "}";
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Handle msubsup (subscript and superscript): <msubsup><mi>x</mi><mn>1</mn><mn>2</mn></msubsup> -> x_{1}^{2}
     $mathml = preg_replace_callback(
@@ -75,7 +75,7 @@ function convert_mathml_to_latex(string $mathml): string {
             return $base . "_{" . $sub . "}^{" . $super . "}";
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Handle mfrac (fractions): <mfrac><mn>1</mn><mn>2</mn></mfrac> -> \frac{1}{2}
     $mathml = preg_replace_callback(
@@ -86,7 +86,7 @@ function convert_mathml_to_latex(string $mathml): string {
             return "\\frac{" . $num . "}{" . $den . "}";
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Handle mroot (nth root): <mroot><mi>x</mi><mn>3</mn></mroot> -> \sqrt[3]{x}
     $mathml = preg_replace_callback(
@@ -97,7 +97,7 @@ function convert_mathml_to_latex(string $mathml): string {
             return "\\sqrt[" . $index . "]{" . $base . "}";
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Handle munder (underscript): <munder><mo>lim</mo><mrow>x→0</mrow></munder> -> \underset{x→0}{\lim}
     $mathml = preg_replace_callback(
@@ -105,7 +105,7 @@ function convert_mathml_to_latex(string $mathml): string {
         static function (array $matches): string {
             $content = $matches[1];
             // Try to extract base and underscript
-            if (preg_match('~^(.*?)<m[inor]>(.*?)</m[inor]>(.*)$~s', $content, $parts)) {
+            if (preg_match('~^(.*?)<m[inor]>(.*?)</m[inor]>(.*)$~s', $content, $parts) !== false && is_array($parts) && count($parts) >= 4) {
                 $base = mb_trim(strip_tags($parts[1] . $parts[2]));
                 $under = mb_trim(strip_tags($parts[3]));
                 if ($under !== '') {
@@ -116,7 +116,7 @@ function convert_mathml_to_latex(string $mathml): string {
             return strip_tags($content);
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Handle munderover (underscript and overscript): <munderover><mo>∑</mo><mn>0</mn><mi>n</mi></munderover> -> \sum_{0}^{n}
     $mathml = preg_replace_callback(
@@ -124,19 +124,17 @@ function convert_mathml_to_latex(string $mathml): string {
         static function (array $matches): string {
             $content = $matches[1];
             // Try to extract base, under, and over - for simple cases with three m[ino] elements
-            if (preg_match_all('~<m[ino]>(.*?)</m[ino]>~s', $content, $parts)) {
-                if (count($parts[1]) === 3) {
-                    $base = mb_trim($parts[1][0]);
-                    $under = mb_trim($parts[1][1]);
-                    $over = mb_trim($parts[1][2]);
-                    // For sum/integral/product symbols, use subscript/superscript notation
-                    return $base . "_{" . $under . "}^{" . $over . "}";
-                }
+            if (preg_match_all('~<m[ino]>(.*?)</m[ino]>~s', $content, $parts) !== false && is_array($parts) && isset($parts[1]) && is_array($parts[1]) && count($parts[1]) === 3) {
+                $base = mb_trim($parts[1][0]);
+                $under = mb_trim($parts[1][1]);
+                $over = mb_trim($parts[1][2]);
+                // For sum/integral/product symbols, use subscript/superscript notation
+                return $base . "_{" . $under . "}^{" . $over . "}";
             }
             return strip_tags($content);
         },
         $mathml
-    );
+    ) ?? $mathml;
 
     // Apply simple tag replacements from MML_TAGS constant
     $mathml = str_replace(array_keys(MML_TAGS), array_values(MML_TAGS), $mathml);
