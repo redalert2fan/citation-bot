@@ -4252,13 +4252,13 @@ final class Template
                             // Convert to cite bioRxiv
                             $this->change_name_to('cite biorxiv', true, true);
                             $this->rename('doi', 'biorxiv');
-                            
+
                             // Remove parameters not allowed in cite bioRxiv
                             $params_to_remove = [];
                             foreach ($this->param as $p) {
                                 $param_name = mb_strtolower($p->param);
                                 $keep = in_array($param_name, CITE_BIORXIV_ALLOWED_PARAMS, true);
-                                
+
                                 if (!$keep && (
                                     preg_match('~^(?:author|last|first|given|surname|forename|initials)\d*$~i', $p->param) ||
                                     preg_match('~^(?:author|editor)\d+-(?:last|first|given|surname|forename|initials|link|mask)$~i', $p->param) ||
@@ -4272,16 +4272,16 @@ final class Template
                                 )) {
                                     $keep = true;
                                 }
-                                
+
                                 if (!$keep) {
                                     $params_to_remove[] = $p->param;
                                 }
                             }
-                            
+
                             foreach ($params_to_remove as $param_name) {
                                 $this->forget($param_name);
                             }
-                            
+
                             report_modification('Converted cite journal to cite bioRxiv');
                             return;
                         }
