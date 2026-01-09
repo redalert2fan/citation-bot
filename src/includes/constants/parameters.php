@@ -442,10 +442,12 @@ const CITE_BIORXIV_ALLOWED_PARAMS = [
     'trans-title',
     'script-title',
     'language',
+    'lang',
     'date',
     'year',
     'publication-date',
     'quote',
+    'quotation',
     'postscript',
     'ref',
     'mode',
@@ -460,6 +462,9 @@ const CITE_BIORXIV_ALLOWED_PARAMS = [
     'name-list-style',
     'name-list-format',
     'collaboration',
+    'access-date',
+    'archive-date',
+    'orig-date',
 ];
 
 const ALL_ALIASES = [
