@@ -1673,4 +1673,15 @@ EP - 999 }}';
         $prepared = $this->prepare_citation($text);
         $this->assertSame('cite journal', $prepared->wikiname());
     }
+
+    public function testBioRxivNoConversionDifferentJournal(): void {
+        $text = '{{cite journal |title=Test Paper |journal=Nature |doi=10.1101/123456 |volume=500 |pages=123-456}}';
+        $prepared = $this->prepare_citation($text);
+        $this->assertSame('cite journal', $prepared->wikiname());
+        $this->assertSame('Nature', $prepared->get2('journal'));
+        $this->assertSame('10.1101/123456', $prepared->get2('doi'));
+        $this->assertSame('500', $prepared->get2('volume'));
+        $this->assertSame('123–456', $prepared->get2('pages'));
+        $this->assertNull($prepared->get2('biorxiv'));
+    }
 }
