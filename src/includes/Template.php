@@ -5931,6 +5931,25 @@ final class Template
             if ($this->wikiname() === 'cite arxiv' && $this->has('bibcode')) {
                 $this->forget('bibcode'); // Not supported and 99% of the time just a arxiv bibcode anyway
             }
+            if ($this->wikiname() === 'cite biorxiv' || $this->wikiname() === 'cite bioRxiv') {
+                // Remove disallowed parameters for cite biorxiv templates
+                $this->forget('pmid');
+                $this->forget('pmc');
+                $this->forget('journal');
+                // Only remove DOI if it matches the biorxiv parameter (to avoid data loss)
+                if ($this->has('doi') && $this->has('biorxiv')) {
+                    $doi_value = $this->get('doi');
+                    $biorxiv_value = $this->get('biorxiv');
+                    // DOI format: 10.1101/YYYY.MM.DD.XXXXXX
+                    // biorxiv parameter can be either full DOI or just the suffix
+                    if (mb_strpos($doi_value, '10.1101/') === 0) {
+                        $doi_suffix = mb_substr($doi_value, 8); // Remove "10.1101/" prefix
+                        if ($doi_suffix === $biorxiv_value || $doi_value === $biorxiv_value || '10.1101/' . $biorxiv_value === $doi_value) {
+                            $this->forget('doi');
+                        }
+                    }
+                }
+            }
             if ($this->wikiname() === 'cite web') {
                 if (!$this->blank_other_than_comments('title') && !$this->blank_other_than_comments('chapter')) {
                     if ($this->name === 'cite web') {
