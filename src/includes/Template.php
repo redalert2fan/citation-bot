@@ -4246,6 +4246,26 @@ final class Template
                         $this->set($param, 'Taxon');
                         return;
                     }
+                    // Handle bioRxiv preprint server
+                    if (mb_stripos($periodical, 'biorxiv') !== false || mb_stripos($periodical, 'preprint server for biology') !== false) {
+                        // Convert to cite biorxiv template
+                        $this->change_name_to('cite bioRxiv');
+                        // Move DOI to biorxiv parameter if it's a bioRxiv DOI
+                        if ($this->has('doi') && mb_strpos($this->get('doi'), '10.1101/') === 0) {
+                            $doi_value = $this->get('doi');
+                            // Extract just the suffix after "10.1101/"
+                            $biorxiv_id = mb_substr($doi_value, 8);
+                            if ($this->blank('biorxiv')) {
+                                $this->add_if_new('biorxiv', $biorxiv_id);
+                            }
+                        }
+                        // Remove disallowed parameters
+                        $this->forget('pmid');
+                        $this->forget('pmc');
+                        $this->forget('doi');
+                        $this->forget($param); // Remove the journal parameter itself
+                        return;
+                    }
                     // End special odd cases
                     if (mb_substr(mb_strtolower($periodical), 0, 7) === 'http://' || mb_substr(mb_strtolower($periodical), 0, 8) === 'https://') {
                         if ($this->blank('url')) {
