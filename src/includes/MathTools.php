@@ -170,11 +170,41 @@ function convert_mathml_to_latex(string $mathml): string {
  * @return bool True if MathML tags are detected
  */
 function contains_mathml(string $text): bool {
-    // List of common MathML element names (without 'm' prefix)
-    // Note: Order matters for regex matching - longer names first to avoid partial matches
-    $elements = 'ultiscripts|underover|subsup|sqrt|frac|root|under|over|space|fenced|table|text|ath|row|tr|td|i|n|o|sup|sub';
+    // Static pattern cache - built once and reused for performance
+    static $pattern = null;
     
-    // Match: <math>, <mi>, <mml:math>, <mml:mi>, etc.
-    // Pattern ensures we match complete MathML elements by checking for whitespace, closing >, or self-closing /
-    return (bool) preg_match('~<(?:mml:)?m(?:' . $elements . ')(?:\s|>|/)~i', $text);
+    if ($pattern === null) {
+        // List of common MathML element names (without 'm' prefix)
+        // Longer names first to avoid partial matches in regex alternation
+        $elements = [
+            'multiscripts', // matches mmultiscripts (has two m's - one from prefix, one here)
+            'underover',    // matches munderover
+            'subsup',       // matches msubsup
+            'sqrt',         // matches msqrt
+            'frac',         // matches mfrac
+            'root',         // matches mroot
+            'under',        // matches munder
+            'over',         // matches mover
+            'space',        // matches mspace
+            'fenced',       // matches mfenced
+            'table',        // matches mtable
+            'text',         // matches mtext
+            'ath',          // matches math
+            'row',          // matches mrow
+            'tr',           // matches mtr
+            'td',           // matches mtd
+            'i',            // matches mi
+            'n',            // matches mn
+            'o',            // matches mo
+            'sup',          // matches msup
+            'sub',          // matches msub
+        ];
+        
+        // Build pattern: matches <math>, <mi>, <mml:math>, <mml:mi>, etc.
+        // Ensures complete element match by checking for whitespace, closing >, or self-closing /
+        $elements_regex = implode('|', $elements);
+        $pattern = '~<(?:mml:)?m(?:' . $elements_regex . ')(?:\s|>|/)~i';
+    }
+    
+    return (bool) preg_match($pattern, $text);
 }
