@@ -154,8 +154,25 @@ function convert_mathml_to_latex(string $mathml): string {
 
 /**
  * Check if a string contains MathML markup
+ * Detects common MathML elements including:
+ * - math: root element
+ * - mi, mn, mo: identifiers, numbers, operators
+ * - msup, msub, msubsup: superscripts, subscripts
+ * - mfrac, msqrt, mroot: fractions, roots
+ * - munder, mover, munderover: under/over scripts
+ * - mmultiscripts: complex scripts (e.g., isotope notation)
+ * - mrow, mspace, mfenced: grouping and spacing
+ * - mtable, mtr, mtd: tables
+ * - mtext: text content
+ * 
+ * Supports both standard (<math>) and namespaced (<mml:math>) MathML.
+ * 
  * @return bool True if MathML tags are detected
  */
 function contains_mathml(string $text): bool {
-    return (bool) preg_match('~<(?:mml:)?m(?:ath|i|n|o|text|sup|sub|sqrt|frac|root|under|over|row|space|fenced|subsup|multiscripts|table|tr|td)[^>]*>~i', $text);
+    // List of common MathML element names (without 'm' prefix)
+    $elements = 'ath|i|n|o|text|sup|sub|sqrt|frac|root|under|over|row|space|fenced|subsup|multiscripts|table|tr|td';
+    
+    // Match: <math>, <mi>, <mml:math>, <mml:mi>, etc.
+    return (bool) preg_match('~<(?:mml:)?m(?:' . $elements . ')[^>]*>~i', $text);
 }
