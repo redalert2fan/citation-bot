@@ -905,4 +905,9 @@ final class textToolsTest extends testBaseClass {
     public function testCorrectJournalName6(): void {
         $this->assertSame('Progress in Optics', correct_journal_name(' Progess in optics '));
     }
+
+    public function testCorrectJournalName7(): void {
+        // Test that non-matching journals also get trimmed
+        $this->assertSame('Other Journal', correct_journal_name(' Other Journal '));
+    }
 }

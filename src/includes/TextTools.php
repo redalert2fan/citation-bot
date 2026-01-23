@@ -1155,9 +1155,10 @@ function correct_journal_name(string $journal): string {
     if ($journal === '') {
         return $journal;
     }
-    $journal_lower = mb_strtolower(mb_trim($journal));
+    $journal_trimmed = mb_trim($journal);
+    $journal_lower = mb_strtolower($journal_trimmed);
     if (isset(JOURNAL_NAME_CORRECTIONS[$journal_lower])) {
         return JOURNAL_NAME_CORRECTIONS[$journal_lower];
     }
-    return $journal;
+    return $journal_trimmed;
 }
