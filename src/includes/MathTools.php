@@ -171,8 +171,10 @@ function convert_mathml_to_latex(string $mathml): string {
  */
 function contains_mathml(string $text): bool {
     // List of common MathML element names (without 'm' prefix)
-    $elements = 'ath|i|n|o|text|sup|sub|sqrt|frac|root|under|over|row|space|fenced|subsup|multiscripts|table|tr|td';
+    // Note: Order matters for regex matching - longer names first to avoid partial matches
+    $elements = 'ultiscripts|underover|subsu[bp]|sqrt|frac|root|under|over|space|fenced|table|text|ath|row|tr|td|i|n|o|sup|sub';
     
     // Match: <math>, <mi>, <mml:math>, <mml:mi>, etc.
-    return (bool) preg_match('~<(?:mml:)?m(?:' . $elements . ')[^>]*>~i', $text);
+    // Pattern ensures we match complete MathML elements, not partial strings
+    return (bool) preg_match('~<(?:mml:)?m(?:' . $elements . ')(?:\s|>|/)~i', $text);
 }

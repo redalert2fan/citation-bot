@@ -24,6 +24,8 @@ final class Template
     public const PLACEHOLDER_TEXT = '# # # CITATION_BOT_PLACEHOLDER_TEMPLATE %s # # #';
     public const REGEXP = ['~(?<!\{)\{\{\}\}(?!\})~su', '~\{\{[^\{\}\|]+\}\}~su', '~\{\{[^\{\}]+\}\}~su', '~\{\{(?>[^\{]|\{[^\{])+?\}\}~su']; // Please see https://stackoverflow.com/questions/1722453/need-to-prevent-php-regex-segfault for discussion of atomic regex
     public const TREAT_IDENTICAL_SEPARATELY = false; // This is safe because templates are the last thing we do AND we do not directly edit $all_templates that are sub-templates - we might remove them, but do not change their content directly
+    /** @var array<string> Parameters that should be checked for MathML content */
+    private const MATHML_CHECK_PARAMS = ['title', 'chapter', 'journal', 'work', 'publisher', 'series', 'booktitle'];
     /** @var array<Template> */
     public static array $all_templates = []; // List of all the Template() on the Page() including this one.  Can only be set by the page class after all templates are made
     public static DateStyle $date_style = DateStyle::DATES_WHATEVER;
@@ -3455,7 +3457,7 @@ final class Template
         }
         
         // Add MathML warning check for title-related parameters
-        if (in_array($param, ['title', 'chapter', 'journal', 'work', 'publisher', 'series', 'booktitle'], true)) {
+        if (in_array($param, self::MATHML_CHECK_PARAMS, true)) {
             if (!$this->blank($param)) {
                 $value = $this->get($param);
                 if (contains_mathml($value)) {
