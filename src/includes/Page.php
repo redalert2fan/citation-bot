@@ -947,7 +947,7 @@ class Page {
                         report_warning('invalid wiki in Template error message code');
                         exit(0);
                 }
-                echo '<p><h3>', $err1, '</h3><h4>', $err2, '</h4></p><p>', echoable($text), '</p>';
+                echo '<p><h3>', echoable($err1), '</h3><h4>', echoable($err2), '</h4></p><p>', echoable($text), '</p>';
             }
             // @codeCoverageIgnoreEnd
         }
