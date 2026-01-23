@@ -914,20 +914,92 @@ Citation Bot is a Wikipedia maintenance tool that automatically expands and form
      - **Code Location**: `src/includes/Template.php` - thesis identification
      - **Related**: Thesis template handling
 
+### MATHEMATICAL NOTATION CONVERSION
+
+172. **MathML to LaTeX conversion**
+     - **Description**: Converts MathML (Mathematical Markup Language) elements to LaTeX syntax for Wikipedia citations. Handles complex MathML structures including superscripts (msup), subscripts (msub), fractions (mfrac), square roots (mroot), isotope notation (mmultiscripts), and other mathematical expressions. **Only applies when adding NEW parameters** via `add_if_new()` - existing MathML in citations is preserved.
+     - **Code Location**: `src/includes/MathTools.php` - `convert_mathml_to_latex()` function
+     - **Related**: Called during parameter addition to convert mathematical notation
+
+173. **LaTeX formula formatting**
+     - **Description**: Properly formats LaTeX mathematical expressions for Wikipedia display. Wraps expressions in appropriate delimiters. Handles special mathematical symbols, operators, and notation. Ensures LaTeX syntax is wiki-compatible.
+     - **Code Location**: `src/includes/MathTools.php` - LaTeX formatting functions
+     - **Related**: Mathematical notation in titles and parameters
+
+174. **Chemical formula notation**
+     - **Description**: Handles chemical formulas and isotope notation in citations. Converts chemical elements to proper formatting with mass numbers as superscripts (e.g., ⁶⁷Ni becomes ^{67}\mathrm{Ni}). Preserves scientific notation in titles and other parameters.
+     - **Code Location**: `src/includes/MathTools.php` - isotope and chemical handling in `convert_mathml_to_latex()`
+     - **Related**: Scientific publication titles with formulas
+
+### ADDITIONAL IDENTIFIER OPERATIONS
+
+175. **PII (Publisher Item Identifier) to DOI conversion**
+     - **Description**: Converts Publisher Item Identifiers (PII) to DOIs when possible. PII is used by some publishers (especially Elsevier) as an alternative identifier. Queries publisher databases to find corresponding DOI.
+     - **Code Location**: `src/includes/api/APIpii.php` - `get_doi_from_pii()` function
+     - **Related**: Identifier consolidation and DOI discovery
+
+176. **SICI (Serial Item and Contribution Identifier) handling**
+     - **Description**: Processes SICI identifiers used for journal articles and contributions. SICI is a legacy identifier format. Extracts bibliographic data from SICI codes when present.
+     - **Code Location**: `src/includes/api/APIsici.php` - `use_sici()` function
+     - **Related**: Legacy identifier support
+
+### OPEN ACCESS DETECTION
+
+177. **Unpaywall open access URL discovery**
+     - **Description**: Queries Unpaywall API to find legal open access versions of paywalled articles. Discovers free PDF links from repositories, PubMed Central, and publisher websites. Adds open access URLs when available. Sets appropriate access indicators.
+     - **Code Location**: `src/includes/api/APIunpaywall.php` - `get_unpaywall_url()`, `get_open_access_url()` functions
+     - **Related**: DOI-access parameter setting, open access promotion
+
+178. **Semantic Scholar open access detection**
+     - **Description**: Uses Semantic Scholar API to detect open access status and find freely available versions. Retrieves license information. Discovers alternative access methods for scholarly articles.
+     - **Code Location**: `src/includes/api/APIS2.php` - `get_semanticscholar_license()`, `get_semanticscholar_url()` functions
+     - **Related**: S2CID operations, open access flagging
+
+### PUBLISHER-SPECIFIC OPERATIONS
+
+179. **IEEE-specific metadata expansion**
+     - **Description**: Handles IEEE (Institute of Electrical and Electronics Engineers) publication-specific metadata retrieval. Queries IEEE Xplore. Extracts conference paper vs. journal article distinctions. Handles IEEE's unique citation requirements.
+     - **Code Location**: `src/includes/api/APIieee.php` - `query_ieee_webpages()` function
+     - **Related**: DOI prefix 10.1109/ handling
+
+180. **Oxford DNB (Dictionary of National Biography) cleanup**
+     - **Description**: Applies special formatting rules for Oxford Dictionary of National Biography citations. Handles Oxford Academic URLs. Processes ODNB-specific identifiers and parameters. Ensures compliance with ODNB citation standards.
+     - **Code Location**: `src/includes/miscTools.php` - `clean_cite_odnb()` function, `src/includes/URLtools.php` - `clean_and_expand_up_oxford_stuff()` (line 365)
+     - **Related**: Journal-specific logic for Oxford publications
+
+### TEXT ENCODING & CHARACTER HANDLING
+
+181. **Character encoding normalization**
+     - **Description**: Converts various character encodings (ISO-8859-1, Windows-1252, UTF-16, etc.) to UTF-8 for consistent display. Detects encoding from metadata or content. Fixes mojibake (garbled text from encoding mismatches). Handles special characters, accented letters, and non-Latin scripts properly.
+     - **Code Location**: `src/includes/api/APIarchives.php` - `convert_to_utf8()`, `convert_to_utf8_inside()`, `smart_decode()` functions
+     - **Related**: Archive content processing, international character handling
+
+182. **Encoding validation**
+     - **Description**: Validates that character encoding is reasonable and doesn't contain control characters or invalid UTF-8 sequences. Checks for encoding artifacts. Rejects suspiciously encoded data.
+     - **Code Location**: `src/includes/api/APIarchives.php` - `is_encoding_reasonable()` function
+     - **Related**: Data quality validation
+
+### PUBLICATION TYPE DISAMBIGUATION
+
+183. **Conference vs journal article disambiguation**
+     - **Description**: Distinguishes conference papers from journal articles based on DOI prefixes, publisher patterns, and metadata. Some conference proceedings pretend to be journals. Adjusts template type and parameters accordingly. Critical for proper citation classification.
+     - **Code Location**: `src/includes/miscTools.php` - `handleConferencePretendingToBeAJournal()` function, `src/includes/doiTools.php` - `conference_doi()` function
+     - **Related**: Template type conversion (function 80-86)
+
 ---
 
 ## Summary
 
-This comprehensive list represents **171 distinct editing, expansion, and normalization operations** that Citation Bot performs on citation templates. The bot's main workflow uses `add_if_new()`, `tidy()`, and `final_tidy()` functions in `Template.php` to apply these operations systematically.
+This comprehensive list represents **183 distinct editing, expansion, and normalization operations** that Citation Bot performs on citation templates. The bot's main workflow uses `add_if_new()`, `tidy()`, and `final_tidy()` functions in `Template.php` to apply these operations systematically.
 
 ## Operating Modes
 
 ### Fast Mode (Gadget Default)
-- Operations 1-162: All identifier expansion, parameter addition, and cleanup operations
-- **Excludes**: Bibcode searches (function 8) and URL expansion via Zotero (functions 128-130)
+- Operations 1-176: All identifier expansion, parameter addition, and cleanup operations
+- **Excludes**: Bibcode searches (function 8), URL expansion via Zotero (functions 128-130), and some slow API operations
 
 ### Slow Mode (Web Interface Default)  
-- **All 171 operations** including bibcode searches and comprehensive URL expansion
+- **All 183 operations** including bibcode searches, comprehensive URL expansion, and full open access detection
 
 ## Source Code References
 
@@ -937,6 +1009,9 @@ This comprehensive list represents **171 distinct editing, expansion, and normal
 - **URL operations**: `src/includes/URLtools.php`
 - **Name formatting**: `src/includes/NameTools.php`
 - **Text processing**: `src/includes/TextTools.php`
+- **Mathematical notation**: `src/includes/MathTools.php`
+- **DOI utilities**: `src/includes/doiTools.php`
+- **Miscellaneous tools**: `src/includes/miscTools.php`
 
 ## More Information
 
