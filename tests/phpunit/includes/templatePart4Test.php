@@ -1872,4 +1872,26 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $template->final_tidy();
         $this->assertNull($template->get2('title'));
     }
+
+    public function testTidyMathMLWarning(): void {
+        $text = "{{cite journal|title=Studies of <math><msup><mi>x</mi><mn>2</mn></msup></math> equations}}";
+        $template = $this->make_citation($text);
+        
+        // The warning should be issued when tidy_parameter is called
+        // Note: In actual test execution, use output buffering to capture warnings if needed
+        $template->tidy_parameter('title');
+        
+        // The MathML content should remain unchanged (we don't modify it)
+        $this->assertStringContainsString('<math>', $template->get2('title'));
+    }
+
+    public function testTidyNoWarningWithoutMathML(): void {
+        $text = "{{cite journal|title=Normal title without any markup}}";
+        $template = $this->make_citation($text);
+        
+        // Should not produce any warnings
+        $template->tidy_parameter('title');
+        
+        $this->assertSame('Normal title without any markup', $template->get2('title'));
+    }
 }

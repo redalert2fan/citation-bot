@@ -151,3 +151,11 @@ function convert_mathml_to_latex(string $mathml): string {
 
     return $mathml;
 }
+
+/**
+ * Check if a string contains MathML markup
+ * @return bool True if MathML tags are detected
+ */
+function contains_mathml(string $text): bool {
+    return (bool) preg_match('~<(?:mml:)?m(?:ath|i|n|o|text|sup|sub|sqrt|frac|root|under|over|row|space|fenced|subsup|multiscripts|table|tr|td)[^>]*>~i', $text);
+}

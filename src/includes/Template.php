@@ -3453,6 +3453,17 @@ final class Template
         if ($this->get($param) !== $this->get3($param)) {
             return;
         }
+        
+        // Add MathML warning check for title-related parameters
+        if (in_array($param, ['title', 'chapter', 'journal', 'work', 'publisher', 'series', 'booktitle'], true)) {
+            if (!$this->blank($param)) {
+                $value = $this->get($param);
+                if (contains_mathml($value)) {
+                    report_warning("Parameter '{$param}' contains MathML markup that should be converted to LaTeX");
+                }
+            }
+        }
+        
         if ($this->has($param)) {
             if (
                 mb_stripos($param, 'separator') === false && // lone punctuation valid
