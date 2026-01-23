@@ -840,7 +840,7 @@ final class Zotero {
                                 }
                                 $template->add_if_new('work', (string) $result->publicationTitle);
                             } else {
-                                $template->add_if_new('journal', (string) $result->publicationTitle);
+                                $template->add_if_new('journal', correct_journal_name((string) $result->publicationTitle));
                             }
                         } else {
                             $template->add_if_new('work', (string) $result->publicationTitle);

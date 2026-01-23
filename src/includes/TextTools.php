@@ -1150,3 +1150,14 @@ function clean_volume(string $volume): string {
      'vol', 'issues', 'issue', 'iss.', 'iss', 'numbers', 'number',
      'num.', 'num', 'nos.', 'nos', 'nr.', 'nr', '°', '№'], '', $volume));
 }
+
+function correct_journal_name(string $journal): string {
+    if ($journal === '') {
+        return $journal;
+    }
+    $journal_lower = mb_strtolower(mb_trim($journal));
+    if (isset(JOURNAL_NAME_CORRECTIONS[$journal_lower])) {
+        return JOURNAL_NAME_CORRECTIONS[$journal_lower];
+    }
+    return $journal;
+}

@@ -181,7 +181,7 @@ function expand_by_doi(Template $template, bool $force = false): void {
                 }
             }
             $template->add_if_new('isbn', (string) $crossRef->isbn, 'crossref');
-            $template->add_if_new('journal', (string) $crossRef->journal_title); // add_if_new will format the title
+            $template->add_if_new('journal', correct_journal_name((string) $crossRef->journal_title)); // add_if_new will format the title
             if ((int) $crossRef->volume > 0) {
                 $template->add_if_new('volume', (string) $crossRef->volume, 'crossref');
             }
@@ -421,10 +421,16 @@ function process_doi_json(Template $template, string $doi, array $json): void {
             $type === 'conference-paper' ||
             $type === 'entry' ||
             ($type === '' && (isset($json['container-title']) || isset($json['issn']['0'])))) {
+        if (isset($json['container-title'])) {
+            $json['container-title'] = correct_journal_name((string) $json['container-title']);
+        }
         $try_to_add_it('journal', @$json['container-title']);
         $try_to_add_it('title', @$json['title']);
         $try_to_add_it('issn', @$json['issn']); // Will not add if journal is set
     } elseif ($type === 'journal-issue') { // Very rare: Do not add "title": should be blank anyway.  Got this once from DOI:10.7592/fejf2015.62
+        if (isset($json['container-title'])) {
+            $json['container-title'] = correct_journal_name((string) $json['container-title']);  // @codeCoverageIgnore
+        }
         $try_to_add_it('journal', @$json['container-title']);  // @codeCoverageIgnore
         $try_to_add_it('issn', @$json['issn']);          // @codeCoverageIgnore
     } elseif ($type === 'journal') { // Very rare: Do not add "title": should be blank anyway.  Got this once from DOI:10.1007/13539.2190-6009 and DOI:10.14296/rih/issn.1749.8155

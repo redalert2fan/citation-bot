@@ -651,7 +651,7 @@ function process_bibcode_data(Template $this_template, object $record): void {
                 $this_template->add_if_new('arxiv', mb_substr($journal_start, 13));    //@codeCoverageIgnore
             }
         } else {
-            $this_template->add_if_new('journal', $journal_string[0], 'adsabs');
+            $this_template->add_if_new('journal', correct_journal_name($journal_string[0]), 'adsabs');
         }
     }
     if (isset($record->page)) {

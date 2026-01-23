@@ -74,7 +74,7 @@ function entrez_api(array $ids, array &$templates, string $db): void {    // Poi
                                 }
                                 break;
                             case "FullJournalName":
-                                $this_template->add_if_new('journal', mb_ucwords((string) $item), 'entrez'); // add_if_new will format the title
+                                $this_template->add_if_new('journal', correct_journal_name(mb_ucwords((string) $item)), 'entrez'); // add_if_new will format the title
                                 break;
                             case "Volume":
                                 $this_template->add_if_new('volume', (string) $item, 'entrez');

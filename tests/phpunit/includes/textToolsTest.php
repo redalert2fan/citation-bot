@@ -881,4 +881,28 @@ final class textToolsTest extends testBaseClass {
         $expanded = $this->process_citation("{{Cite journal|journal=ejournal}}");
         $this->assertSame('eJournal', $expanded->get2('journal'));
     }
+
+    public function testCorrectJournalName1(): void {
+        $this->assertSame('Progress in Optics', correct_journal_name('Progess in optics'));
+    }
+
+    public function testCorrectJournalName2(): void {
+        $this->assertSame('Progress in Optics', correct_journal_name('PROGESS IN OPTICS'));
+    }
+
+    public function testCorrectJournalName3(): void {
+        $this->assertSame('Progress in Optics', correct_journal_name('progess in optics'));
+    }
+
+    public function testCorrectJournalName4(): void {
+        $this->assertSame('Other Journal', correct_journal_name('Other Journal'));
+    }
+
+    public function testCorrectJournalName5(): void {
+        $this->assertSame('', correct_journal_name(''));
+    }
+
+    public function testCorrectJournalName6(): void {
+        $this->assertSame('Progress in Optics', correct_journal_name(' Progess in optics '));
+    }
 }

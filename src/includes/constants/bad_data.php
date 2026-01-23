@@ -55,6 +55,12 @@ const PREFER_ISSUES = [
     'mammalian species',
 ];
 
+/** Known typos in journal names from external sources - case insensitive matching */
+const JOURNAL_NAME_CORRECTIONS = [
+    'progess in optics' => 'Progress in Optics',
+    // Add more corrections here as needed
+];
+
 const CONFERENCE_LIST = [
     ' of the Association for ',
     'Annual Meeting of the Association',
