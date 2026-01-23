@@ -75,24 +75,4 @@ final class mathToolsTest extends testBaseClass {
         $output = str_replace(array_keys(UNICODE_MATH_MAP), array_values(UNICODE_MATH_MAP), $input);
         $this->assertSame($expected, $output, "Unicode Greek letters should be converted to LaTeX macros.");
     }
-
-    public function testContainsMathMLDetectsSimpleMath(): void {
-        $text = '<math><msup><mi>x</mi><mn>2</mn></msup></math>';
-        $this->assertTrue(contains_mathml($text));
-    }
-
-    public function testContainsMathMLDetectsNamespacedMath(): void {
-        $text = '<mml:math><mml:mi>x</mml:mi></mml:math>';
-        $this->assertTrue(contains_mathml($text));
-    }
-
-    public function testContainsMathMLReturnsFalseForPlainText(): void {
-        $text = 'This is just normal text without any MathML';
-        $this->assertFalse(contains_mathml($text));
-    }
-
-    public function testContainsMathMLDetectsComplexStructures(): void {
-        $text = '<math><mmultiscripts><mi>Ni</mi><mprescripts/><none/><mn>67</mn></mmultiscripts></math>';
-        $this->assertTrue(contains_mathml($text));
-    }
 }

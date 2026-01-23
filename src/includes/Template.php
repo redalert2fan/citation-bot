@@ -3457,10 +3457,11 @@ final class Template
         }
         
         // Add MathML warning check for title-related parameters
+        // Reuses existing MathML detection pattern from wikify_external_text()
         if (in_array($param, self::MATHML_CHECK_PARAMS, true)) {
             if (!$this->blank($param)) {
                 $value = $this->get($param);
-                if (contains_mathml($value)) {
+                if (preg_match("~<(?:mml:)?math[^>]*>~", $value)) {
                     report_warning("Parameter '{$param}' contains MathML markup that should be converted to LaTeX");
                 }
             }
