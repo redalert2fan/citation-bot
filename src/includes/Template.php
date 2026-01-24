@@ -3470,6 +3470,7 @@ final class Template
                 mb_stripos($param, 'link') === false && // inter-wiki links
                 mb_stripos($param, 'mask') === false && // sometimes used for asian names is a very odd way
                 $param !== 'script-title' && // these can be very weird
+                $param !== 'at' && // complex page references with intentional formatting
                 (($param !== 'chapter' && $param !== 'title') || mb_strlen($this->get($param)) > 4) // Avoid tiny titles that might be a smiley face
             ) {
                 $this->set($param, safe_preg_replace('~[\x{1680}\x{2000}-\x{200A}\x{00A0}\x{202F}\x{205F}\x{3000}]~u', ' ', $this->get($param))); // Non-standard spaces
