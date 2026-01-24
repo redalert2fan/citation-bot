@@ -5192,6 +5192,12 @@ final class Template
                     if (str_equivalent($this->get($param), $this->get('work'))) {
                         $this->forget('work');
                     }
+                    // Correct series misspellings during tidy_parameter
+                    $series_value = $this->get('series');
+                    $lower = mb_strtolower($series_value);
+                    if (isset(SERIES_CORRECTIONS[$lower])) {
+                        $this->set('series', SERIES_CORRECTIONS[$lower]);
+                    }
                     if ($this->is_book_series('series')) {
                         $this->change_name_to('cite book');
                         if ($this->has('journal')) {
