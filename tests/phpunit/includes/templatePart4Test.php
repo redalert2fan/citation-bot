@@ -63,6 +63,19 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $template2 = $this->make_citation($text2);
         $template2->tidy_parameter('issue');
         $this->assertSame('Dog', $template2->get2('issue'));
+        
+        // Test with numeric HTML entities &#160; and &#xA0;
+        $text3 = "{{cite book|first=B.&#160;B.|publisher=Oxford&#xA0;University Press}}";
+        $template3 = $this->make_citation($text3);
+        $template3->tidy_parameter('first');
+        $template3->tidy_parameter('publisher');
+        $this->assertSame('B. B.', $template3->get2('first'));
+        $this->assertSame('Oxford University Press', $template3->get2('publisher'));
+        // And trimmed from the ends
+        $text4 = "{{citation|issue=&#160;Cat&#xA0;}}";
+        $template4 = $this->make_citation($text4);
+        $template4->tidy_parameter('issue');
+        $this->assertSame('Cat', $template4->get2('issue'));
     }
 
     public function testTidy5b(): void {
