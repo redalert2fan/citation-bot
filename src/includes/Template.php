@@ -3517,15 +3517,15 @@ final class Template
                 $param !== 'trans-title' // these can be very weird
             ) {
                 // Non-breaking spaces at ends
-                $this->set($param, mb_trim($this->get($param), " \t\n\r\0\x0B"));
+                $this->set($param, mb_trim($this->get($param), " \t\n\r\0\x0B\xc2\xa0"));
                 $this->set($param, safe_preg_replace("~^\xE2\x80\x8B~", " ", $this->get($param))); // Zero-width at start
                 $this->set($param, safe_preg_replace("~\xE2\x80\x8B$~", " ", $this->get($param))); // Zero-width at end
                 $this->set($param, safe_preg_replace("~\x{200B}~u", " ", $this->get($param))); //Zero-width anywhere
                 while (preg_match("~^&nbsp;(.+)$~u", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B"));
+                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\xc2\xa0"));
                 }
                 while (preg_match("~^(.+)&nbsp;$~u", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B"));
+                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\xc2\xa0"));
                 }
             }
         }

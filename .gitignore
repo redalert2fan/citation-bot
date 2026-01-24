@@ -12,3 +12,5 @@ src/includes/CodeCoverage
 src/includes/cookie.txt
 tmp/*
 vendor/*
+src/env.php
+composer.json.backup
