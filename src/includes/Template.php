@@ -5178,6 +5178,12 @@ final class Template
                     return;
 
                 case 'series':
+                    // Correct series misspellings
+                    $series_value = $this->get($param);
+                    $lower = mb_strtolower($series_value);
+                    if (isset(SERIES_CORRECTIONS[$lower])) {
+                        $this->set($param, SERIES_CORRECTIONS[$lower]);
+                    }
                     if (str_equivalent($this->get($param), $this->get('work'))) {
                         $this->forget('work');
                     }
