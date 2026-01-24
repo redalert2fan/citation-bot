@@ -91,6 +91,9 @@ final class Template
         } else {
             $trim_name = mb_trim($this->name);
         }
+        // Clean &nbsp; and other HTML entities from template name
+        $trim_name = str_replace(['&nbsp;', '&#160;', '&#xA0;'], ' ', $trim_name);
+        $this->name = $spacing[1] . $trim_name . $spacing[2];
         if (mb_strpos($trim_name, "_") !== false) {
             $tmp_name = str_replace("_", " ", $trim_name);
             if (in_array(mb_strtolower($tmp_name), [...TEMPLATES_WE_PROCESS, ...TEMPLATES_WE_SLIGHTLY_PROCESS, ...TEMPLATES_WE_BARELY_PROCESS, ...TEMPLATES_WE_RENAME], true)) {
@@ -3485,6 +3488,7 @@ final class Template
                 $this->set($param, safe_preg_replace('~&#8203;~u', ' ', $this->get($param)));
                 $this->set($param, safe_preg_replace('~&#160;~u', ' ', $this->get($param))); // Non-breaking space decimal entity
                 $this->set($param, safe_preg_replace('~&#xA0;~iu', ' ', $this->get($param))); // Non-breaking space hex entity
+                $this->set($param, safe_preg_replace('~&nbsp;~u', ' ', $this->get($param))); // Non-breaking space named entity
                 $this->set($param, safe_preg_replace('~  +~u', ' ', $this->get($param))); // multiple spaces
                 $this->set($param, safe_preg_replace('~(?<!\&)&[Aa]pos;(?!&)~u', "'", $this->get($param))); // $apos;
                 $this->set($param, safe_preg_replace('~(?<!\&)&[Aa]mp;(?!&)~u', '&', $this->get($param))); // &Amp; => & but not if next character is & or previous character is ;
