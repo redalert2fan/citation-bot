@@ -3527,12 +3527,6 @@ final class Template
                 $this->set($param, safe_preg_replace("~^\xE2\x80\x8B~", " ", $this->get($param))); // Zero-width at start
                 $this->set($param, safe_preg_replace("~\xE2\x80\x8B$~", " ", $this->get($param))); // Zero-width at end
                 $this->set($param, safe_preg_replace("~\x{200B}~u", " ", $this->get($param))); //Zero-width anywhere
-                while (preg_match("~^&nbsp;(.+)$~u", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\u{00A0}"));
-                }
-                while (preg_match("~^(.+)&nbsp;$~u", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\u{00A0}"));
-                }
             }
         }
         if (in_array(mb_strtolower($param), ['series', 'journal', 'newspaper'], true) && $this->has($param)) {
