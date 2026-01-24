@@ -296,7 +296,7 @@ function format_multiple_authors(string $authors): string {
     ## Split the citation into an author by author account
     $authors = preg_replace(["~\band\b~iu", "~[\d\+\*]+~u"], ";", $authors); //Remove "and" and affiliation symbols
 
-    $authors = str_replace(["&nbsp;", "(", ")"], [" "], $authors); //Remove spaces and weird punctuation
+    $authors = str_replace(["\u{00A0}", "(", ")"], [" "], $authors); //Remove non-breaking spaces and weird punctuation
     $authors = str_replace([".,", "&", "  "], ";", $authors); //Remove "and"
     if (preg_match("~[,;]$~", mb_trim($authors))) {
         $authors = mb_substr(mb_trim($authors), 0, mb_strlen(mb_trim($authors)) - 1); // remove trailing punctuation

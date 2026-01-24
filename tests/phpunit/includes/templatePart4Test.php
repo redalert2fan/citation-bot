@@ -63,7 +63,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $template2 = $this->make_citation($text2);
         $template2->tidy_parameter('issue');
         $this->assertSame('Dog', $template2->get2('issue'));
-        
+
         // Test with numeric HTML entities &#160; and &#xA0;
         $text3 = "{{cite book|first=B.&#160;B.|publisher=Oxford&#xA0;University Press}}";
         $template3 = $this->make_citation($text3);
@@ -76,7 +76,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $template4 = $this->make_citation($text4);
         $template4->tidy_parameter('issue');
         $this->assertSame('Cat', $template4->get2('issue'));
-        
+
         // Test with &nbsp; in middle of value (not just at ends)
         $text5 = "{{cite book|title=Bhakti&nbsp;and Embodiment|first=B. A.&nbsp;}}";
         $template5 = $this->make_citation($text5);
@@ -84,7 +84,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $template5->tidy_parameter('first');
         $this->assertSame('Bhakti and Embodiment', $template5->get2('title'));
         $this->assertSame('B. A.', $template5->get2('first'));
-        
+
         // Test with &nbsp; after template name
         $text6 = "{{cite book&nbsp;|last=Test}}";
         $template6 = $this->make_citation($text6);
