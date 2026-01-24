@@ -51,7 +51,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
 
     public function testTidy5a(): void {
         // Test with actual Unicode non-breaking space character (U+00A0)
-        $text = "{{cite book|first=A.\xc2\xa0A.|publisher=Taylor\xc2\xa0& Francis}}";
+        $text = "{{cite book|first=A.\u{00A0}A.|publisher=Taylor\u{00A0}& Francis}}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('first');
         $template->tidy_parameter('publisher');
@@ -59,7 +59,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $this->assertSame('A. A.', $template->get2('first'));
         $this->assertSame('Taylor & Francis', $template->get2('publisher'));
         // And trimmed from the ends
-        $text2 = "{{citation|issue=\xc2\xa0Dog\xc2\xa0}}";
+        $text2 = "{{citation|issue=\u{00A0}Dog\u{00A0}}}";
         $template2 = $this->make_citation($text2);
         $template2->tidy_parameter('issue');
         $this->assertSame('Dog', $template2->get2('issue'));

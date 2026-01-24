@@ -3529,19 +3529,6 @@ final class Template
                 while (preg_match("~^(.+)&nbsp;$~u", $this->get($param), $matches)) {
                     $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\u{00A0}"));
                 }
-                // Handle numeric HTML entities for non-breaking space at ends
-                while (preg_match("~^&#160;(.+)$~u", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\u{00A0}"));
-                }
-                while (preg_match("~^(.+)&#160;$~u", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\u{00A0}"));
-                }
-                while (preg_match("~^&#xA0;(.+)$~iu", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\u{00A0}"));
-                }
-                while (preg_match("~^(.+)&#xA0;$~iu", $this->get($param), $matches)) {
-                    $this->set($param, mb_trim($matches[1], " \t\n\r\0\x0B\u{00A0}"));
-                }
             }
         }
         if (in_array(mb_strtolower($param), ['series', 'journal', 'newspaper'], true) && $this->has($param)) {
