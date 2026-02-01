@@ -21,9 +21,9 @@ require_once __DIR__ . '/api/APIsici.php';
 
 final class Template
 {
-    public const PLACEHOLDER_TEXT = '# # # CITATION_BOT_PLACEHOLDER_TEMPLATE %s # # #';
-    public const REGEXP = ['~(?<!\{)\{\{\}\}(?!\})~su', '~\{\{[^\{\}\|]+\}\}~su', '~\{\{[^\{\}]+\}\}~su', '~\{\{(?>[^\{]|\{[^\{])+?\}\}~su']; // Please see https://stackoverflow.com/questions/1722453/need-to-prevent-php-regex-segfault for discussion of atomic regex
-    public const TREAT_IDENTICAL_SEPARATELY = false; // This is safe because templates are the last thing we do AND we do not directly edit $all_templates that are sub-templates - we might remove them, but do not change their content directly
+    public const string PLACEHOLDER_TEXT = '# # # CITATION_BOT_PLACEHOLDER_TEMPLATE %s # # #';
+    public const array REGEXP = ['~(?<!\{)\{\{\}\}(?!\})~su', '~\{\{[^\{\}\|]+\}\}~su', '~\{\{[^\{\}]+\}\}~su', '~\{\{(?>[^\{]|\{[^\{])+?\}\}~su']; // Please see https://stackoverflow.com/questions/1722453/need-to-prevent-php-regex-segfault for discussion of atomic regex
+    public const bool TREAT_IDENTICAL_SEPARATELY = false; // This is safe because templates are the last thing we do AND we do not directly edit $all_templates that are sub-templates - we might remove them, but do not change their content directly
     /** @var array<Template> */
     public static array $all_templates = []; // List of all the Template() on the Page() including this one.  Can only be set by the page class after all templates are made
     public static DateStyle $date_style = DateStyle::DATES_WHATEVER;
@@ -75,7 +75,17 @@ final class Template
         $this->rawtext = $text;
         $pipe_pos = mb_strpos($text, '|');
         if ($pipe_pos) {
-            $this->name = mb_substr($text, 2, $pipe_pos - 2); # Remove {{ and }}
+            $name = mb_trim(mb_substr($text, 2, $pipe_pos - 2));
+            if (mb_strpos($name, '#invoke:') === 0) {
+                if (mb_strpos($name, ' ') !== false) {
+                    $pipe_pos = false;
+                } else {
+                    $pipe_pos = mb_strpos($text, '|', $pipe_pos + 2);
+                }
+            }
+        }
+        if ($pipe_pos) {
+            $this->name = mb_substr($text, 2, $pipe_pos - 2);
             $this->split_params(mb_substr($text, $pipe_pos + 1, -2));
         } else {
             $this->name = mb_substr($text, 2, -2);
@@ -208,29 +218,7 @@ final class Template
                 return base64_decode($this->get(mb_strtolower('CITATION_BOT_PLACEHOLDER_BARE_URL')));
             }
         }
-        if (mb_stripos(mb_trim($this->name), '#invoke:') === 0) {
-            $add_pipe = false;
-            $wikiname = $this->wikiname();
-            if (
-                in_array($wikiname, TEMPLATES_WE_PROCESS, true) ||
-                in_array($wikiname, TEMPLATES_WE_SLIGHTLY_PROCESS, true) ||
-                in_array($wikiname, TEMPLATES_WE_BARELY_PROCESS, true) ||
-                in_array($wikiname, TEMPLATES_WE_RENAME, true) ||
-                mb_strpos($wikiname, 'cite ') === 0
-            ) {
-                $add_pipe = true;
-            }
-            if ($wikiname === 'citation') {
-                $add_pipe = false; // Do not double pipe this one - actually it is "cite"
-            }
-            $joined = str_replace(["\t", "\n", "\r", " "], '', $this->join_params());
-            if (mb_strpos($joined, "||") === 0) {
-                $add_pipe = false;
-            }
-            if ($add_pipe) {
-                return '{{' . $this->name . '|' . $this->join_params() . '}}';
-            }
-        }
+        $this->name = str_replace('#invoke:#invoke:', '#invoke:', $this->name); // TODO - find where/why
         return '{{' . $this->name . $this->join_params() . '}}';
     }
 
@@ -251,6 +239,40 @@ final class Template
         foreach ($params as $i => $text_found) {
             $this->param[$i] = new Parameter();
             $this->param[$i]->parse_text($text_found);
+        }
+    }
+
+    public function prepare_rxiv(): void {
+        set_time_limit(120);
+        if (in_array($this->wikiname(), ["cite biorxiv", "cite medrxiv"])) {
+            $preprint_param = ($this->wikiname() === 'cite biorxiv') ? 'biorxiv' : 'medrxiv';
+            $preprint_doi = $this->get($preprint_param);
+            if ($preprint_doi !== '') {
+                if (mb_strpos($preprint_doi, '10.1101/') !== 0 && mb_strpos($preprint_doi, '10.64898/') !== 0) {
+                    $preprint_doi = '10.1101/' . $preprint_doi;
+                }
+                $published_doi = get_biorxiv_published_doi($preprint_doi, $preprint_param);
+                if ($published_doi !== null) {
+                    $year = $this->year();
+                    $title = $this->get('title');
+                    $this->forget('title');
+                    $this->forget('date');
+                    $this->forget('year');
+                    $this->change_name_to('cite journal', false, false);
+                    $this->add_if_new('doi', $published_doi);
+                    expand_by_doi($this);
+                    $this->tidy();
+                    if ($this->blank('title')) {
+                        $this->add_if_new('title', $title);
+                    }
+                    if ($this->blank(['year', 'date'])) {
+                        $this->add_if_new('year', $year);
+                    }
+                    $mod_msg = 'Converted ' . $preprint_param . ' citation to published journal article';
+                    report_modification($mod_msg);
+                    use_sici($this);
+                }
+            }
         }
     }
 
@@ -1466,6 +1488,11 @@ final class Template
                     if ($value === 'Also known as:Official records of the Union and Confederate armies') {
                         return false;
                     }
+                    // Correct series misspellings before adding
+                    $lower = mb_strtolower($value);
+                    if (isset(SERIES_CORRECTIONS[$lower])) {
+                        $value = SERIES_CORRECTIONS[$lower];
+                    }
                     return $this->add($param_name, $value);
                 }
                 return false;
@@ -1836,6 +1863,9 @@ final class Template
 
             case 'doi':
                 if (doi_is_bad($value)) {
+                    return false;
+                }
+                if (in_array($this->wikiname(), ['cite biorxiv', 'cite medrxiv'])) {
                     return false;
                 }
                 if (preg_match(REGEXP_DOI, $value, $match)) {
@@ -3343,6 +3373,9 @@ final class Template
             if (ctype_upper(mb_substr($this->name, 0, 1))) {
                 $new_name_mapped = mb_ucfirst($new_name_mapped);
             }
+            if ($invoke !== '') {
+                $new_name_mapped = str_replace(' ', '|', $new_name_mapped);
+            }
             $this->name = $spacing[1] . $invoke . $new_name_mapped . $spacing[2];
             switch ($new_name) {
                 case 'cite journal':
@@ -3383,7 +3416,8 @@ final class Template
      */
     public function wikiname(): string {
         $name = mb_trim(mb_strtolower(str_replace('_', ' ', $this->name)));
-        $name = mb_trim(mb_strtolower(str_replace('#invoke:', '', $name)));
+        $name = mb_trim(str_replace('#invoke:', '', $name));
+        $name = str_replace('|', ' ', $name);
         // Treat the same since alias
         if ($name === 'cite work') {
             $name = 'cite book';
@@ -3464,7 +3498,7 @@ final class Template
                 $param !== 'script-title' && // these can be very weird
                 (($param !== 'chapter' && $param !== 'title') || mb_strlen($this->get($param)) > 4) // Avoid tiny titles that might be a smiley face
             ) {
-                $this->set($param, safe_preg_replace('~[\x{2000}-\x{200A}\x{00A0}\x{202F}\x{205F}\x{3000}]~u', ' ', $this->get($param))); // Non-standard spaces
+                $this->set($param, safe_preg_replace('~[\x{1680}\x{2000}-\x{200A}\x{00A0}\x{202F}\x{205F}\x{3000}]~u', ' ', $this->get($param))); // Non-standard spaces
                 $this->set($param, safe_preg_replace('~[\t\n\r\0\x0B]~u', ' ', $this->get($param))); // tabs, linefeeds, null bytes
                 $bom = pack('H*', 'EFBBBF');
                 $this->set($param, safe_preg_replace('~' . $bom . '~', ' ', $this->get($param)));
@@ -3627,6 +3661,10 @@ final class Template
 
                 case 'author':
                     $the_author = $this->get($param);
+                    // Check for all-caps author names
+                    if ($the_author && preg_match('/^[A-Z\s]{4,}$/', $the_author) && !preg_match('/^[IVX]+$/', $the_author)) {
+                        report_warning("Author name is in all-caps and should be properly capitalized: " . echoable($the_author));
+                    }
                     if ($this->blank('agency') && in_array(mb_strtolower($the_author), ['associated press', 'reuters'], true) && $this->wikiname() !== 'cite book') {
                         $this->rename('author' . $pmatch[2], 'agency');
                         if ($pmatch[2] === '1' || $pmatch[2] === '') {
@@ -3670,6 +3708,13 @@ final class Template
                     // no break; Continue from authors without break
                 case 'last':
                 case 'surname':
+                    // Check for all-caps last names
+                    if ($pmatch[1] === 'last' || $pmatch[1] === 'surname') {
+                        $the_last = $this->get($param);
+                        if ($the_last && preg_match('/^[A-Z\s]{4,}$/', $the_last) && !preg_match('/^[IVX]+$/', $the_last)) {
+                            report_warning("Author last name is in all-caps and should be properly capitalized: " . echoable($the_last));
+                        }
+                    }
                     if (!$this->had_initial_author()) {
                         if ($pmatch[2]) {
                             $translator_regexp = "~\b([Tt]r(ans(lat...?(by)?)?)?\.?)\s([\w\p{L}\p{M}\s]+)$~u";
@@ -5204,6 +5249,10 @@ final class Template
                         return;
                     }
                     $title = $this->get($param);
+                    // Check for MathML
+                    if (preg_match('~<(?:mml:)?m(?:sup|sub|subsup|frac|root|under|over|underover|row|i|n|o|text|multiscripts)[\s>]~', $title)) {
+                        report_warning("Title contains MathML markup that should be converted to LaTeX: " . echoable(mb_substr($title, 0, 100)));
+                    }
                     if (preg_match('~^(.+) # # # CITATION_BOT_PLACEHOLDER_TEMPLATE \d+ # # # Reuters(?:|\.com)$~i', $title, $matches)) {
                         if (mb_stripos($this->get('agency') . $this->get('work') . $this->get('website') . $this->get('newspaper') . $this->get('website') . $this->get('publisher'), 'reuters') !== false) {
                             $title = $matches[1];
@@ -5989,6 +6038,14 @@ final class Template
                     $this->forget('journal');
                 } elseif ($this->wikiname() === 'cite journal' || $this->wikiname() === 'citation') {
                     $this->forget('series');
+                }
+            }
+            // Correct existing series misspellings
+            if ($this->has('series')) {
+                $series_value = $this->get('series');
+                $lower = mb_strtolower($series_value);
+                if (isset(SERIES_CORRECTIONS[$lower])) {
+                    $this->set('series', SERIES_CORRECTIONS[$lower]);
                 }
             }
             if ($this->has('journal') && str_equivalent($this->get('title'), $this->get('journal'))) {

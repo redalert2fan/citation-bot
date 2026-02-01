@@ -48,7 +48,10 @@ const HAS_NO_ISSUE = [
     'yeats annual',
 ];
 /** When issue=volume, drop issue. JSTOR calls volumes issues. */
-const PREFER_VOLUMES = ['illinois classical studies'];
+const PREFER_VOLUMES = [
+    'illinois classical studies',
+    'novartis foundation symposia',
+];
 
 const PREFER_ISSUES = [
     'bulletin of the united states national museum',
@@ -79,7 +82,6 @@ const BAD_AUTHORS = [
     'segye.com',
     '鉄道省',
     'uncut',
-    'tabloid',
     'peru21',
     '연합뉴스',
     '헤럴드경제',
@@ -90,7 +92,6 @@ const BAD_AUTHORS = [
     '- -.',
     '(:unav)',
     'about.com food',
-    'admin',
     'all rights reserved',
     'author',
     'channel c',
@@ -107,9 +108,10 @@ const BAD_AUTHORS = [
     'goautomedia',
     'great britain',
     'guardian nigeria',
-    'indiatoday',
+    'hibiscus matters',
     'kompas cyber media',
     'kpopstarz',
+    'local matters',
     'missing',
     'natural history museum bern',
     'news agencies',
@@ -122,8 +124,6 @@ const BAD_AUTHORS = [
     'object',
     'prance-presse',
     'press release',
-    'radio',
-    'rundfunk',
     'super user',
     'system',
     'the editor',
@@ -139,7 +139,6 @@ const BAD_AUTHORS = [
     'vnexpress',
     'vnexpress international',
     'yucatan times',
-    'pадіо',
     '自由時報電子報',
 ];
 
@@ -684,7 +683,6 @@ const CANONICAL_PUBLISHER_URLS = [
     'qualitativecriminology.com',
     'radicalphilosophy.com',
     'ras.jes.su',
-    'recyt.fecyt.es ',
     'recyt.fecyt.es',
     'refletsdelaphysique.fr',
     'refuge.journals.yorku.ca',
@@ -788,22 +786,15 @@ const PROXY_HOSTS_TO_ALWAYS_DROP = [
 
 /** Drop these if there is a valid FREE DOI */
 const PROXY_HOSTS_TO_DROP = [
-    '-ezproxy.',
     '.ebscohost.com',
-    '.ezproxy.',
     '.search.serialssolutions.com',
-    '.serialssolutions.com',
-    '/ezproxy.',
     'delivery.acm.org',
     'doi.apa.org',
     'doi.library.ubc.ca',
-    'findarticles.com',
     'informaworld.com/smpp',
     'ingentaconnect.com/content',
     'linkinghub.elsevier.com',
     'onlinelibrary.wiley.com/resolve/openurl',
-    'proxy.lib.',
-    'proxy.libraries',
     'psycnet.apa.org',
     'sciencedirect.com/science?_ob',
 ];
@@ -859,7 +850,6 @@ const WEB_NEWSPAPERS = [
     'the news tribune',
     'the philippine star',
     'the seattle times',
-    'the spokesman-review',
     'the spokesman-review',
     'the washington post',
     'tribune.net.ph',
@@ -13085,12 +13075,10 @@ const JOURNAL_IS_BOOK_SERIES = [
     'methods enzymol',
     'methods in cell biology',
     'methods in enzymology',
-    'methods in enzymology',
     'methods in molecular biology (clifton, n j )',
     'methods in molecular biology',
     'methods in molecular medicine',
     'methods in neurosciences',
-    'methods mol biol',
     'methods mol biol',
     'methods of molecular biology (clifton, n j )',
     'methods of molecular biology',
@@ -13100,6 +13088,7 @@ const JOURNAL_IS_BOOK_SERIES = [
     'profiles of drug substances, excipients and related methodology',
     'progress in brain research',
     'progress in optics',
+    'progess in optics', // Common misspelling received from APIs - enables book series recognition and template conversion
     'rev mod astron',
     'reviews in modern astronomy',
     'studies in bilingualism',
@@ -13111,6 +13100,11 @@ const JOURNAL_IS_BOOK_SERIES = [
 const COMPARE_SERIES_IN = ['[', ']', '.', '-', '    ', '   ', '  ', '(clifton, n j )', '(san diego, calif )', 'advances in ', 'experimental', 'pharmacology', 'methods in ', 'immunology', 'methods ', 'molecular', 'medicine', 'biology', ' of ', 'enzymology', 'biol', ' and ', '  ', 'embryology', 'anatomy'];
 
 const COMPARE_SERIES_OUT = [' ', ' ', ' ', ' ', ' ', ' ', ' ', '', '', 'adv ', 'exp', 'pharmacol', 'meth ', 'immunol', 'meth ', 'mol', 'med', 'bio', ' ', 'enzymol', 'bio', ' ', ' ', 'embryol', 'anat'];
+
+/** Series name corrections - maps common misspellings to correct forms */
+const SERIES_CORRECTIONS = [
+    'progess in optics' => 'Progress in Optics',
+];
 
 /** These are case-insensitive strings used to reject new data and delete existing data */
 const ALWAYS_BAD_TITLES = [
@@ -13158,9 +13152,6 @@ const BAD_TITLES = [
     'access restricted',
     'anime news, top stories & in-depth anime insights',
     'bot verification',
-    'bloomberg - are you a robot?',
-    'breaking news, analysis, politics, blogs, news photos, video, tech reviews - time.com',
-    'breaking news, analysis, politics, blogs, news photos, video, tech reviews',
     'cur_title',
     'digital library - pdf document',
     'dissertations available from proquest',
@@ -13181,7 +13172,6 @@ const BAD_TITLES = [
     'just a moment',
     'library login',
     'loading',
-    'log in - proquest',
     'missing',
     'missing article title',
     'msn',
@@ -13190,7 +13180,6 @@ const BAD_TITLES = [
     'openid transaction in progress',
     'optica publishing group',
     'oxford music online',
-    'page not found',
     'pagina inicia',
     'privacy settings',
     'private site',
@@ -13202,7 +13191,6 @@ const BAD_TITLES = [
     'redirect notice',
     'redirecting',
     'report',
-    'request rejected',
     'rte.ie',
     'sciencedirect',
     'secure request and redirect',
@@ -13322,7 +13310,6 @@ const ZOTERO_BAD_TITLES = [
     'not longer available',
     'OpenId transaction in progress',
     'Page non trouvée',
-    'page not found',
     'Page Not Found',
     'Pagina inicia',
     'pagina is niet gevonden',
@@ -13487,12 +13474,14 @@ const DOI_FREE_PREFIX = [
     '10.1128/msphere',
     '10.1128/msystems',
     '10.1128/spectrum',
+    '10.1136/bmjopen',
     '10.11569/',
     '10.11646/megataxa',
     '10.11646/mesozoic',
     '10.11647/',
     '10.11648/',
     '10.1186/',
+    '10.1192/bjo',
     '10.1194/',
     '10.1210/jcemcr',
     '10.1210/jendso',

@@ -1601,27 +1601,27 @@ EP - 999 }}';
     }
 
     public function testInvoke1(): void {
-        $text = "{{#invoke:Cite web||S2CID=X}}";
+        $text = "{{#invoke:Cite|web|S2CID=X}}";
         $expanded = $this->process_citation($text);
         $this->assertFalse($expanded->add_if_new('s2cid', 'Z')); // Do something random
-        $this->assertSame("{{#invoke:Cite web||s2cid=X}}", $expanded->parsed_text());
+        $this->assertSame("{{#invoke:Cite|web|s2cid=X}}", $expanded->parsed_text());
     }
 
     public function testInvoke2(): void {
-        $text = "{{#invoke:Cite web|| jstor=1701972 |s2cid= <!-- --> }}";
+        $text = "{{#invoke:Cite|web| jstor=1701972 |s2cid= <!-- --> }}";
         $expanded = $this->process_citation($text);
+        $this->assertSame('{{#invoke:Cite|journal| jstor=1701972 |s2cid= <!-- --> |title= Early Insect Diversification: Evidence from a Lower Devonian Bristletail from Québec |last1= Labandeira |first1= Conrad C. |last2= Beall |first2= Bret S. |last3= Hueber |first3= Francis M. |journal= Science |date= 1988 |volume= 242 |issue= 4880 |pages= 913–916 |doi= 10.1126/science.242.4880.913 }}', $expanded->parsed_text());
         $this->assertSame('cite journal', $expanded->wikiname());
-        $this->assertSame('{{#invoke:Cite journal|| jstor=1701972 |s2cid= <!-- --> | title=Early Insect Diversification: Evidence from a Lower Devonian Bristletail from Québec | last1=Labandeira | first1=Conrad C. | last2=Beall | first2=Bret S. | last3=Hueber | first3=Francis M. | journal=Science | date=1988 | volume=242 | issue=4880 | pages=913–916 | doi=10.1126/science.242.4880.913 }}', $expanded->parsed_text());
     }
 
     public function testInvoke3(): void {
-        $text = "<ref>{{#invoke:cite||title=X}}{{#invoke:Cite book||title=X}}{{Cite book||title=X}}{{#invoke:Cite book||title=X}}{{#invoke:Cite book || title=X}}{{#invoke:Cite book ||title=X}}{{#invoke:Cite book|| title=X}}<ref>";
+        $text = "<ref>{{#invoke:cite|title=X}}{{#invoke:Cite|book|title=X}}{{Cite book|title=X}}{{#invoke:Cite|book|title=X}}{{#invoke:Cite|book | title=X}}{{#invoke:Cite|book |title=X}}{{#invoke:Cite|book| title=X}}<ref>";
         $page = $this->process_page($text);
-        $this->assertSame("<ref>{{#invoke:cite|title=X}}{{#invoke:Cite book||title=X}}{{Cite book|title=X}}{{#invoke:Cite book||title=X}}{{#invoke:Cite book || title=X}}{{#invoke:Cite book ||title=X}}{{#invoke:Cite book|| title=X}}<ref>", $page->parsed_text());
+        $this->assertSame("<ref>{{#invoke:cite|title=X}}{{#invoke:Cite|book|title=X}}{{Cite book|title=X}}{{#invoke:Cite|book|title=X}}{{#invoke:Cite|book | title=X}}{{#invoke:Cite|book |title=X}}{{#invoke:Cite|book| title=X}}<ref>", $page->parsed_text());
     }
 
     public function testInvoke4(): void {
-        $text = "{{#invoke:Dummy|Y=X}}{{#invoke:Oddity|Y=X}}{{#invoke:Cite dummy||Y=X}}";
+        $text = "{{#invoke:Dummy|Y=X}}{{#invoke:Oddity|Y=X}}{{#invoke:Cite|dummy||Y=X}}";
         $expanded = $this->process_citation($text);
         $this->assertSame($text, $expanded->parsed_text());
     }
@@ -1639,9 +1639,16 @@ EP - 999 }}';
     }
 
     public function testInvoke7(): void {
-        $text = "{{#invoke:Cite dummy\n\t\r | \n\r\t |\n\r\t Y=X}}";
+        $text = "{{#invoke:Cite|dummy\n\t\r | \n\r\t |\n\r\t Y=X}}";
         $expanded = $this->process_citation($text);
-        $this->assertSame($text, $expanded->parsed_text());
+        $this->assertSame(addcslashes($text, "\n\t\r"), addcslashes($expanded->parsed_text(), "\n\t\r"));
+    }
+
+    public function testInvoke8(): void {
+        $text = "{{#invoke:Cite|medrxiv|X=Y}}";
+        $expanded = $this->make_citation($text);
+        $expanded->change_name_to('cite journal', true, true);
+        $this->assertSame("{{#invoke:Cite|journal|X=Y}}", $expanded->parsed_text());
     }
 
     public function testVADuplicate(): void {
@@ -1810,5 +1817,74 @@ EP - 999 }}';
         $this->assertStringContainsString('{{cite bioRxiv', $expanded->parsed_text());
         // wikiname() should return lowercase version
         $this->assertSame('cite biorxiv', $expanded->wikiname());
+    }
+
+    public function testBioRxivToJournalConversion(): void {
+        $text = '{{cite biorxiv |last1=Wolf |first1=Luise |last2=Silander |first2=Olin K. |last3=Van Nimwegen |first3=Erik J. |date=2014 |title=Expression noise facilitates the evolution of gene regulation |biorxiv=007237}}';
+        $template = $this->make_citation($text);
+        $this->assertSame('cite biorxiv', $template->wikiname());
+    }
+
+    public function testMedRxivToJournalConversion(): void {
+        $text = '{{cite medrxiv |last=Smith |first=John |title=Test Paper |medrxiv=123456 |date=2023}}';
+        $template = $this->make_citation($text);
+        $this->assertSame('cite medrxiv', $template->wikiname());
+    }
+
+    public function testBioRxivToJournalConversionLogic(): void {
+        $text = '{{cite biorxiv |last=Smith |first=John |title=Test Title |biorxiv=10.1101/123456 |date=2023}}';
+        $template = $this->make_citation($text);
+
+        $this->assertSame('cite biorxiv', $template->wikiname(), 'Template should start as cite biorxiv');
+        $this->assertSame('Smith', $template->get2('last'), 'Author should be preserved');
+        $this->assertSame('Test Title', $template->get2('title'), 'Title should be preserved');
+        $this->assertSame('10.1101/123456', $template->get2('biorxiv'), 'bioRxiv parameter should be present');
+
+        $template->change_name_to('cite journal', false, false);
+        $template->add_if_new('doi', '10.1234/test.doi');
+
+        $this->assertSame('cite journal', $template->wikiname(), 'Template should be converted to cite journal');
+        $this->assertSame('10.1234/test.doi', $template->get2('doi'), 'DOI should be added');
+        $this->assertSame('10.1101/123456', $template->get2('biorxiv'), 'Original bioRxiv parameter should be preserved');
+        $this->assertSame('Smith', $template->get2('last'), 'Author should still be present');
+        $this->assertSame('Test Title', $template->get2('title'), 'Title should still be present');
+    }
+
+    public function testBioRxivToJournalConversionWorks(): void {
+        // Using 10.1101/063172 published in Human Genetics as 10.1007/s00439-016-1742-y
+        // This is a verified conversion (Kutanan et al. 2016) from bioRxiv API
+        $biorxiv_doi = '10.1101/063172';
+        $expected_published_doi = '10.1007/s00439-016-1742-y';
+
+        $published_doi = get_biorxiv_published_doi($biorxiv_doi);
+
+        $this->assertNotNull(
+            $published_doi,
+            "bioRxiv API did not return published version for bioRxiv DOI $biorxiv_doi.\n" .
+            "API should return the published DOI when it exists.\n" .
+            "Check https://api.biorxiv.org/details/biorxiv/$biorxiv_doi"
+        );
+
+        $this->assertSame(
+            $expected_published_doi,
+            mb_strtolower($published_doi),
+            "API returned a published DOI but not the expected one.\n" .
+            "Expected: $expected_published_doi\n" .
+            "Got: $published_doi"
+        );
+
+        $text = '{{cite bioRxiv |title=Test |biorxiv=063172}}';
+        $expanded = $this->process_citation($text);
+
+        $this->assertSame('cite journal', $expanded->wikiname(),
+            'Template should be converted from cite bioRxiv to cite journal');
+        $this->assertSame($expected_published_doi, mb_strtolower($expanded->get2('doi')),
+            'Published DOI should be added to template');
+        $this->assertSame('063172', $expanded->get2('biorxiv'),
+            'Original bioRxiv parameter should be preserved (in numeric form as provided)');
+        $this->assertNotEmpty($expanded->get2('title'),
+            'Title should be expanded from published article metadata');
+        $this->assertNotEmpty($expanded->get2('journal'),
+            'Journal name should be added from published article metadata');
     }
 }
