@@ -297,10 +297,10 @@ Citation Bot is a Wikipedia maintenance tool that automatically expands and form
     - **Code Location**: `src/includes/TextTools.php` - `sanitize_string()` (line 185)
     - **Related**: String cleaning in parameter processing
 
-56. **Non-standard space removal**
-    - **Description**: Removes Unicode spaces (U+2000-200A: en space, em space, thin space, hair space, etc.) and replaces with standard ASCII space (U+0020). Normalizes various whitespace characters to standard space.
-    - **Code Location**: `src/includes/TextTools.php` - `sanitize_string()` (line 185)
-    - **Related**: Unicode normalization
+56. **Non-standard space removal and normalization**
+    - **Description**: Removes and normalizes Unicode spaces (U+1680, U+2000-200A, U+00A0, U+202F, U+205F, U+3000: en space, em space, thin space, hair space, etc.) replacing them with standard ASCII space (U+0020). Normalizes various whitespace characters to standard space. Applied to parameter delimiters (pre, eq, post) during template reconstruction to prevent wiki markup issues from non-standard spacing.
+    - **Code Location**: `src/includes/TextTools.php` - `sanitize_string()` (line 185), `src/includes/Parameter.php` - `parsed_text()` function (line 82)
+    - **Related**: Unicode normalization, parameter reconstruction
 
 57. **Tab/newline/null byte removal**
     - **Description**: Cleans whitespace artifacts including tabs (\t), newlines (\n, \r), and null bytes (\0) that shouldn't appear in citation parameters. Prevents formatting issues and data corruption.
@@ -904,10 +904,10 @@ Citation Bot is a Wikipedia maintenance tool that automatically expands and form
      - **Code Location**: `src/includes/Template.php` - book chapter logic in `tidy()` (line 5950)
      - **Related**: Chapter parameter handling
 
-170. **Preprint handling**
-     - **Description**: Manages bioRxiv, medRxiv, and other preprint server templates. Attempts to find published versions. Handles transition from preprint to published article. Preserves preprint identifiers.
-     - **Code Location**: `src/includes/Template.php` - preprint template processing
-     - **Related**: Preprint server URL patterns
+170. **Preprint handling and automatic publication detection**
+     - **Description**: Manages bioRxiv and medRxiv preprint templates with automatic detection of published versions. Queries bioRxiv API to check if preprints have been formally published. When published DOI is found (non-10.1101/10.64898 prefix), automatically converts {{cite biorxiv}}/{{cite medrxiv}} to {{cite journal}} with published metadata while preserving preprint information. Handles version numbers in DOIs (removes v1, v2, etc.). Validates published DOIs before conversion. Provides clear reporting when preprint is upgraded to published article.
+     - **Code Location**: `src/includes/Template.php` - `prepare_rxiv()` function (line 245), `src/includes/api/APIdoi.php` - `get_biorxiv_published_doi()` function (line 636)
+     - **Related**: Template type conversion (functions 80-86), DOI validation (function 42)
 
 171. **Thesis detection**
      - **Description**: Identifies PhD dissertations, Master's theses, and other thesis types from metadata, URLs (ProQuest, institutional repositories), or degree parameter. Ensures appropriate thesis-specific parameters.
@@ -986,11 +986,37 @@ Citation Bot is a Wikipedia maintenance tool that automatically expands and form
      - **Code Location**: `src/includes/miscTools.php` - `handleConferencePretendingToBeAJournal()` function, `src/includes/doiTools.php` - `conference_doi()` function
      - **Related**: Template type conversion (function 80-86)
 
+### TEMPLATE PARSING & RECONSTRUCTION
+
+184. **Lua #invoke: template handling**
+     - **Description**: Properly handles Wikipedia Lua module invocations (#invoke:) that appear in citation template names. Detects #invoke: patterns and processes the embedded citation templates correctly. Prevents double-piping issues and malformed template reconstruction. Handles nested module calls and ensures proper parameter passing to Lua-based citation modules.
+     - **Code Location**: `src/includes/Template.php` - template constructor and `parsed_text()` function (lines 75-90, 218-221)
+     - **Related**: Template parsing and reconstruction
+
+### DOI VALIDATION LISTS
+
+185. **DOI whitelist management**
+     - **Description**: Maintains a curated list of DOIs that return null/404 errors but are actually valid and working (NULL_DOI_BUT_GOOD constant). These DOIs may be firewalled in certain countries, use hdl.handle.net redirects, or have other access issues that make them appear broken when they're functional. Prevents false-positive removal of valid DOIs.
+     - **Code Location**: `src/includes/constants/null_good_doi.php` - NULL_DOI_BUT_GOOD array
+     - **Related**: DOI validation (function 42), DOI broken-date marking
+
+186. **DOI blacklist management**
+     - **Description**: Maintains a comprehensive list of DOIs known to be permanently broken, return 404 errors, redirect to login pages, or otherwise don't work (NULL_DOI_LIST constant). Used to prevent re-adding known bad DOIs and to identify DOIs that should be marked as broken or removed. Regularly updated based on verification checks.
+     - **Code Location**: `src/includes/constants/null_bad_doi.php` - NULL_DOI_LIST array
+     - **Related**: DOI validation (function 42), bad DOI replacement (function 167)
+
+### DATA QUALITY CONSTANTS
+
+187. **Bad data pattern detection**
+     - **Description**: Maintains lists of known problematic publishers, journals, and publication patterns that produce low-quality metadata (bad_data.php constants). Includes publishers that provide incorrect data, journals with systematic metadata errors, and specific problematic publication series (e.g., "Novartis Foundation Symposia"). Used to filter out or specially handle citations from these sources.
+     - **Code Location**: `src/includes/constants/bad_data.php`
+     - **Related**: Data quality validation (functions 138-148), title validation (function 139)
+
 ---
 
 ## Summary
 
-This comprehensive list represents **183 distinct editing, expansion, and normalization operations** that Citation Bot performs on citation templates. The bot's main workflow uses `add_if_new()`, `tidy()`, and `final_tidy()` functions in `Template.php` to apply these operations systematically.
+This comprehensive list represents **187 distinct editing, expansion, and normalization operations** that Citation Bot performs on citation templates. The bot's main workflow uses `add_if_new()`, `tidy()`, and `final_tidy()` functions in `Template.php` to apply these operations systematically.
 
 ## Operating Modes
 
@@ -999,7 +1025,7 @@ This comprehensive list represents **183 distinct editing, expansion, and normal
 - **Excludes**: Bibcode searches (function 8), URL expansion via Zotero (functions 128-130), and some slow API operations
 
 ### Slow Mode (Web Interface Default)  
-- **All 183 operations** including bibcode searches, comprehensive URL expansion, and full open access detection
+- **All 187 operations** including bibcode searches, comprehensive URL expansion, and full open access detection
 
 ## Source Code References
 
@@ -1021,5 +1047,5 @@ This comprehensive list represents **183 distinct editing, expansion, and normal
 
 ---
 
-**Last updated**: January 2026  
+**Last updated**: February 2026  
 **Maintained by**: Citation Bot community
