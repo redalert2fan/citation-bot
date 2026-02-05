@@ -170,6 +170,7 @@ function expand_by_google_books_inner(Template $template, string $url_type, bool
         $removed_parts = '';
         normalize_google_books($url, $removed_redundant, $removed_parts, $gid);
         if ($url !== $orig_book_url && $url_type && mb_strpos($url_type, 'url') !== false) {
+            $template->mod_google_books = true;
             if ($removed_redundant > 1) {
                 // http:// is counted as 1 parameter
                 report_forget(echoable($removed_parts));
@@ -185,6 +186,7 @@ function expand_by_google_books_inner(Template $template, string $url_type, bool
     }
     if (preg_match("~^(.+\.google\.com/books/edition/[^\/]+/)([a-zA-Z0-9]+)(\?.+|)$~", $url, $gid)) {
         if ($url_type && $gid[3] === '?hl=en') {
+            $template->mod_google_books = true;
             report_forget('Anonymized/Standardized/Denationalized Google Books URL');
             $template->set($url_type, $gid[1] . $gid[2]);
         }
