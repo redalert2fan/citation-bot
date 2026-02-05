@@ -34,12 +34,15 @@ const HAS_NO_VOLUME = [
     'library and archives canada',
 ];
 /**
- * Some journals have volumes only, no issue numbers. Oceanic linguistics special publications has the problem that issues will not show up within temlpates.
+ * Some journals and book series have volumes only, no issue numbers.
+ * Oceanic linguistics special publications has the problem that issues will not show up within templates.
+ * Applies to both journal= and series= parameters.
  */
 const HAS_NO_ISSUE = [
     'archaeological reports',
     'ars orientalis',
     'cahiers balkaniques',
+    'novartis foundation symposia',
     'oceanic linguistics special publications',
     'res historica',
     'special papers in palaeontology',
@@ -50,7 +53,6 @@ const HAS_NO_ISSUE = [
 /** When issue=volume, drop issue. JSTOR calls volumes issues. */
 const PREFER_VOLUMES = [
     'illinois classical studies',
-    'novartis foundation symposia',
 ];
 
 const PREFER_ISSUES = [
@@ -1221,6 +1223,7 @@ const ZOTERO_AVOID_REGEX = [
     'olympics\.com', // Fails 100%
     'pep\-web\.org', // Does not parse very well at all
     'pressreader\.com', // Bad titles
+    'qmul\.ac\.uk', // Redirects cause data from other pages to be returned
     'radiomap\.eu', // Fails 100%
     'scholarlycommons\.pacific\.edu\/euler\-works', // returns journal reference to works, not the actual work
     'seapower\-digital\.com', // highjacked

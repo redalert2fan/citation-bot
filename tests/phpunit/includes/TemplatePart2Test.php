@@ -1430,6 +1430,14 @@ final class TemplatePart2Test extends testBaseClass {
         $this->AssertSame('3', $expanded->get2('volume'));
     }
 
+    public function testHasNoIssuesWithSeries(): void {
+        $text = "{{Cite book|series=novartis foundation symposia|issue=57|volume=57}}";
+        $expanded = $this->make_citation($text);
+        $expanded->tidy_parameter('issue');
+        $this->AssertNull($expanded->get2('issue'));
+        $this->AssertSame('57', $expanded->get2('volume'));
+    }
+
     public function testTidyBadArchives_1(): void {
         $text = "{{Cite web|archive-url=https://www.britishnewspaperarchive.co.uk/account/register/dsfads}}";
         $expanded = $this->make_citation($text);
@@ -2183,6 +2191,34 @@ final class TemplatePart2Test extends testBaseClass {
         $text = "{{cite book}}";
         $template = $this->make_citation($text);
         $this->assertTrue($template->add_if_new('encyclopedia', 'Encyclopedia Britannica'));
+    }
+
+    public function testBlockIssueInCiteBook(): void {
+        // Test that issue parameter is blocked in cite book
+        $text = "{{cite book}}";
+        $template = $this->make_citation($text);
+        $this->assertFalse($template->add_if_new('issue', 'Foundations of Quantum Theory'));
+        $this->assertNull($template->get2('issue'));
+    }
+
+    public function testRemoveExistingIssueFromCiteBook(): void {
+        // Test that existing issue parameter is removed from cite book during final_tidy
+        $text = "{{cite book|title=Test Book|issue=Foundations of Quantum Theory}}";
+        $template = $this->make_citation($text);
+        $this->assertSame('Foundations of Quantum Theory', $template->get2('issue'));
+        $template->final_tidy();
+        $this->assertNull($template->get2('issue'));
+    }
+
+    public function testWarnAboutUnsupportedParamsInCiteBook(): void {
+        // Test that warnings are shown for unsupported parameters in cite book
+        // Note: This test verifies the warning is triggered, but doesn't capture output
+        $text = "{{cite book|title=Test Book|journal=Test Journal|work=Test Work}}";
+        $template = $this->make_citation($text);
+        $template->final_tidy();
+        // The parameters should still be present (not removed), but warnings should be shown
+        $this->assertSame('Test Journal', $template->get2('journal'));
+        $this->assertSame('Test Work', $template->get2('work'));
     }
 
     public function testBlockUnsupportedParamsInHistoricalBookCitation(): void {

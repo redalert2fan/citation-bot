@@ -1622,6 +1622,9 @@ final class Template
                     return false;
                 }
                 $temp_string = mb_strtolower($this->get('journal'));
+                if ($temp_string === '') {
+                    $temp_string = mb_strtolower($this->get('series'));
+                }
                 if (mb_substr($temp_string, 0, 2) === "[[" && mb_substr($temp_string, -2) === "]]") {
                     // Wikilinked journal title
                     $temp_string = mb_substr(mb_substr($temp_string, 2), 0, -2); // Remove [[ and ]]
@@ -5699,6 +5702,9 @@ final class Template
                             return;
                         }
                         $temp_string = mb_strtolower($this->get('journal'));
+                        if ($temp_string === '') {
+                            $temp_string = mb_strtolower($this->get('series'));
+                        }
                         if (mb_substr($temp_string, 0, 2) === "[[" && mb_substr($temp_string, -2) === "]]") {
                             // Wikilinked journal title
                             $temp_string = mb_substr(mb_substr($temp_string, 2), 0, -2); // Remove [[ and ]]
@@ -6289,6 +6295,20 @@ final class Template
                     $this->forget('journal');
                 } else {
                     report_warning(echoable('Citation should probably not have journal = ' . $this->get('journal') . ' as well as chapter / ISBN ' . $this->get('chapter') . ' ' . $this->get('isbn')));
+                }
+            }
+            // Remove issue parameter from cite book as it is not supported
+            if ($this->wikiname() === 'cite book' && $this->has('issue') && !$this->blank('issue')) {
+                report_forget('Cite book does not support issue parameter, removing: ' . echoable($this->get('issue')));
+                $this->mod_issue_citebook = true;
+                $this->forget('issue');
+            }
+            // Warn about other unsupported parameters in cite book that are present but not automatically removed
+            if ($this->wikiname() === 'cite book') {
+                foreach (CITE_BOOK_UNSUPPORTED_PARAMS as $unsupported_param) {
+                    if ($unsupported_param !== 'issue' && $this->has($unsupported_param) && !$this->blank($unsupported_param)) {
+                        report_warning('Cite book template has unsupported parameter |' . echoable($unsupported_param) . '=' . echoable($this->get($unsupported_param)) . '| - consider reviewing');
+                    }
                 }
             }
             if ($this->wikiname() === 'cite book' && $this->blank(['issue', 'journal'])) {
