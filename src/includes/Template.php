@@ -47,7 +47,7 @@ final class Template
     private bool $mod_names = false;
     private bool $mod_ref = false;
     private bool $mod_na = false;
-    private bool $mod_google_books = false;
+    public bool $mod_google_books = false;
     private bool $mod_issue_citebook = false;
     private bool $no_initial_doi = false;
     private bool $held_work_done = false;
