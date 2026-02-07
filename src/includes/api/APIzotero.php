@@ -885,17 +885,20 @@ final class Zotero {
             unset($result->author[0]); // Do not add a single non-human author
         }
         $i = 0;
+        $author_i = 0;
         while (isset($result->author[$i])) {
             if (author_is_human(@$result->author[$i][0] . ' ' . @$result->author[$i][1])) {
-                $template->validate_and_add('author' . (string) ($i + 1), (string) @$result->author[$i][1], (string) @$result->author[$i][0],
+                ++$author_i;
+                $template->validate_and_add('author' . (string) $author_i, (string) @$result->author[$i][1], (string) @$result->author[$i][0],
                                                                 isset($result->rights) ? (string) $result->rights : '', false);
+                if ($template->blank(['author' . (string) $author_i, 'first' . (string) $author_i, 'last' . (string) $author_i])) {
+                    break; // Break out if nothing added
+                }
             }
             $i++;
-            if ($template->blank(['author' . (string) $i, 'first' . (string) $i, 'last' . (string) $i])) {
-                break; // Break out if nothing added
-            }
         }
         unset($i);
+        unset($author_i);
 
         if ((mb_stripos($url, '/sfdb.org') !== false || mb_stripos($url, '.sfdb.org') !== false) && $template->blank(WORK_ALIASES)) {
                 $template->add_if_new('website', 'sfdb.org');

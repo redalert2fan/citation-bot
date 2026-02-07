@@ -588,6 +588,65 @@ final class zoteroTest extends testBaseClass {
         $this->assertSame('Jackson', $template->get2('author3'));
     }
 
+    public function testZoteroResponse30a(): void {
+        // Test compact numbering when non-human authors are filtered
+        // This ensures no gaps in author numbering (e.g., author2 without author1)
+        $text = '{{cite web|id=}}';
+        $template = $this->make_citation($text);
+        $access_date = 0;
+        $url = '';
+        $author = [];
+        // First author is non-human (should be filtered out)
+        $author[0] = [0 => 'Times of Israel Staff', 1 => 'Staff'];
+        // Second and third authors are human (should become author1 and author2)
+        $author[1] = [0 => 'Smith', 1 => 'John'];
+        $author[2] = [0 => 'Johnson', 1 => 'Jane'];
+        $zotero_data = [];
+        $zotero_data[0] = (object) ['title' => 'Test Article', 'itemType' => 'webpage', 'author' => $author];
+        $zotero_response = json_encode($zotero_data);
+        Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
+        $this->assertSame('Test Article', $template->get2('title'));
+        // Verify compact numbering: first human author should be author1, not author2
+        $this->assertSame('Smith', $template->get2('author1'));
+        $this->assertSame('John', $template->get2('first1'));
+        $this->assertSame('Johnson', $template->get2('author2'));
+        $this->assertSame('Jane', $template->get2('first2'));
+        // Verify no author3 was added
+        $this->assertNull($template->get2('author3'));
+    }
+
+    public function testZoteroResponse30b(): void {
+        // Test compact numbering with multiple non-human authors
+        // Simulates cases like Times of Israel or NY Times with corporate authors
+        $text = '{{cite web|id=}}';
+        $template = $this->make_citation($text);
+        $access_date = 0;
+        $url = '';
+        $author = [];
+        // Multiple non-human authors (should all be filtered)
+        $author[0] = [0 => 'Associated Press', 1 => ''];
+        $author[1] = [0 => 'Reuters Staff', 1 => 'Staff'];
+        $author[2] = [0 => 'The New York Times', 1 => ''];
+        // Then human authors (should become author1, author2, author3)
+        $author[3] = [0 => 'Williams', 1 => 'Sarah'];
+        $author[4] = [0 => 'Brown', 1 => 'Michael'];
+        $author[5] = [0 => 'Davis', 1 => 'Emily'];
+        $zotero_data = [];
+        $zotero_data[0] = (object) ['title' => 'News Article', 'itemType' => 'webpage', 'author' => $author];
+        $zotero_response = json_encode($zotero_data);
+        Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
+        $this->assertSame('News Article', $template->get2('title'));
+        // All human authors should be numbered compactly starting from author1
+        $this->assertSame('Williams', $template->get2('author1'));
+        $this->assertSame('Sarah', $template->get2('first1'));
+        $this->assertSame('Brown', $template->get2('author2'));
+        $this->assertSame('Michael', $template->get2('first2'));
+        $this->assertSame('Davis', $template->get2('author3'));
+        $this->assertSame('Emily', $template->get2('first3'));
+        // Verify no author4 exists
+        $this->assertNull($template->get2('author4'));
+    }
+
     public function testZoteroResponse31(): void {
         $text = '{{cite web|id=}}';
         $template = $this->make_citation($text);
