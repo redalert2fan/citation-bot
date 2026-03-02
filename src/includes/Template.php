@@ -1343,19 +1343,6 @@ final class Template
 
             // JOURNAL IDENTIFIERS
 
-            case 'issn':
-                if ($this->blank(["journal", "periodical", "work", $param_name]) && preg_match('~^\d{4}-\d{3}[\dxX]$~', $value)) {
-                    // Only add ISSN if journal is unspecified
-                    return $this->add($param_name, $value);
-                }
-                return false;
-
-            case 'issn_force': // When dropping URL, force adding it
-                if ($this->blank('issn') && preg_match('~^\d{4}-\d{3}[\dxX]$~', $value)) {
-                    return $this->add('issn', $value);
-                }
-                return false;
-
             case 'ismn':
                 $value = str_ireplace('m', '9790', $value); // update them
                 if ($this->blank('ismn')) {
@@ -2559,13 +2546,10 @@ final class Template
                         case "V":
                             $endnote_parameter = "volume";
                             break;
-                        case "@": // ISSN / ISBN
+                        case "@": // ISBN
                             if (preg_match("~@\s*([\d\-]{9,}[\dxX])~", $endnote_line, $matches)) {
                                 $endnote_datum = $matches[1];
                                 $endnote_parameter = "isbn";
-                            } elseif (preg_match("~@\s*(\d{4}\-?\d{3}[\dxX])~", $endnote_line, $matches)) {
-                                $endnote_datum = $matches[1];
-                                $endnote_parameter = "issn";
                             } else {
                                 $endnote_parameter = false;
                             }
