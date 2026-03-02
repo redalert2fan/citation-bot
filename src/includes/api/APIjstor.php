@@ -311,10 +311,6 @@ function expand_by_RIS(Template $template, string &$dat, bool $add_url): void {
     if ($ris_issn) {
         if (preg_match("~[\d\-]{9,}[\dXx]~", $ris_issn)) {
             $template->add_if_new('isbn', $ris_issn);
-        } elseif (preg_match("~\d{4}\-?\d{3}[\dXx]~", $ris_issn)) {
-            if ($template->blank('journal')) {
-                  $template->add_if_new('issn', $ris_issn);
-            }
         }
     }
     if ($ris_publisher) {
