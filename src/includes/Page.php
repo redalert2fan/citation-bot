@@ -28,7 +28,7 @@ require_once __DIR__ . '/user_messages.php';
 require_once __DIR__ . '/api/APIzotero.php';
 require_once __DIR__ . '/api/APIpii.php';
 require_once __DIR__ . '/api/APIieee.php';
-require_once __DIR__ . '/api/APIissn.php'; // @codeCoverageIgnoreEnd
+// @codeCoverageIgnoreEnd
 
 const UNPROTECTED_PAGE = ["autoconfirmed", "extendedconfirmed", "editautoreviewprotected"];
 const PROTECTED_PAGE = ["sysop", "templateeditor"];
@@ -484,12 +484,6 @@ class Page {
         drop_urls_that_match_dois($our_templates);
         drop_urls_that_match_dois($our_templates_conferences);
 
-        // Last ditch usage of ISSN - This could mean running the bot again will add more things
-        foreach ($all_templates as $this_template) {
-            if (in_array($this_template->wikiname(), ISSN_TEMPLATES, true)) {
-                use_issn($this_template);
-            }
-        }
         expand_templates_from_archives($our_templates);
 
         report_phase('Remedial work to clean up templates');
