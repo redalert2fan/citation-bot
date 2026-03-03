@@ -1343,6 +1343,10 @@ final class Template
 
             // JOURNAL IDENTIFIERS
 
+            case 'issn':
+            case 'issn_force':
+                return false; // We no longer add ISSNs
+
             case 'ismn':
                 $value = str_ireplace('m', '9790', $value); // update them
                 if ($this->blank('ismn')) {
