@@ -1344,16 +1344,7 @@ final class Template
             // JOURNAL IDENTIFIERS
 
             case 'issn':
-                if ($this->blank(["journal", "periodical", "work", $param_name]) && preg_match('~^\d{4}-\d{3}[\dxX]$~', $value)) {
-                    // Only add ISSN if journal is unspecified
-                    return $this->add($param_name, $value);
-                }
-                return false;
-
-            case 'issn_force': // When dropping URL, force adding it
-                if ($this->blank('issn') && preg_match('~^\d{4}-\d{3}[\dxX]$~', $value)) {
-                    return $this->add('issn', $value);
-                }
+            case 'issn_force':
                 return false;
 
             case 'ismn':
@@ -2559,14 +2550,12 @@ final class Template
                         case "V":
                             $endnote_parameter = "volume";
                             break;
-                        case "@": // ISSN / ISBN
+                        case "@": // ISBN (ISSN no longer added)
                             if (preg_match("~@\s*([\d\-]{9,}[\dxX])~", $endnote_line, $matches)) {
                                 $endnote_datum = $matches[1];
                                 $endnote_parameter = "isbn";
-                            } elseif (preg_match("~@\s*(\d{4}\-?\d{3}[\dxX])~", $endnote_line, $matches)) {
-                                $endnote_datum = $matches[1];
-                                $endnote_parameter = "issn";
                             } else {
+                                $dat = mb_trim(str_replace("\n%" . $endnote_line, "", "\n" . $dat));
                                 $endnote_parameter = false;
                             }
                             break;
@@ -2800,7 +2789,7 @@ final class Template
             $this->forget('id');
             return;
         }
-        while (preg_match("~\b(PMID|DOI|ISBN|ISSN|ARXIV|LCCN|CiteSeerX|s2cid|PMC)[\s:]*(\d[\d\s\-][^\s\}\{\|,;]*)(?:[,;] )?~iu", $id, $match)) {
+        while (preg_match("~\b(PMID|DOI|ISBN|ARXIV|LCCN|CiteSeerX|s2cid|PMC)[\s:]*(\d[\d\s\-][^\s\}\{\|,;]*)(?:[,;] )?~iu", $id, $match)) {
             $the_type = mb_strtolower($match[1]);
             $the_data = $match[2];
             $the_all = $match[0];
@@ -2832,7 +2821,6 @@ final class Template
                     case "bibcode":
                     case "doi":
                     case "isbn":
-                    case "issn":
                     case "jfm":
                     case "jstor":
                     case "lccn":
@@ -2869,10 +2857,6 @@ final class Template
                         }
                         if ($subtemplate_name === 'oclc' && $subtemplate->has_multiple_params()) {
                             report_info("{{OCLC}} has multiple parameters: cannot convert. " . echoable($subtemplate->parsed_text()));
-                            break;
-                        }
-                        if ($subtemplate_name === 'issn' && $subtemplate->has_multiple_params()) {
-                            report_info("{{ISSN}} has multiple parameters: cannot convert. " . echoable($subtemplate->parsed_text()));
                             break;
                         }
                         if ($subtemplate_name === 'ismn' && $subtemplate->has_multiple_params()) {
@@ -3026,6 +3010,7 @@ final class Template
                     case "gbooks":
                     case "gburl": // TODO - should use
                     case "isbnt":
+                    case "issn":
                     case "issn link":
                     case "project euclid":
                     case "circa":
@@ -7158,7 +7143,6 @@ final class Template
         $old['template type'] = mb_trim($this->initial_name);
         $new['template type'] = mb_trim($this->name);
 
-        // Do not call ISSN to issn "Added issn, deleted ISSN"
         $old = array_change_key_case($old, CASE_LOWER);
         $new = array_change_key_case($new, CASE_LOWER);
 

@@ -155,7 +155,7 @@ EP - 999 }}';
 %@ 9999-9999}}';
         $prepared = $this->process_citation($code_coverage1);
         $this->assertSame('This Title', $prepared->get2('title'));
-        $this->assertSame('9999-9999', $prepared->get2('issn'));
+        $this->assertNull($prepared->get2('issn'));
         $this->assertNull($prepared->get2('doi'));
     }
 
@@ -1269,7 +1269,7 @@ EP - 999 }}';
         $template->add_if_new('issn', '1111-2222');
         $this->assertNull($template->get2('issn'));
         $template->add_if_new('issn_force', '1111-2222');
-        $this->assertSame('1111-2222', $template->get2('issn'));
+        $this->assertNull($template->get2('issn'));
         $text = '{{Cite journal|journal=Yes}}';
         $template = $this->prepare_citation($text);
         $template->add_if_new('issn_force', 'EEEE-3333'); // Won't happen
