@@ -116,9 +116,13 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
                     // If the CrossRef title represents the same content as the original title
                     // (just with different markup, e.g. ''s'' instead of <math>s</math>),
                     // prefer the original since it likely has higher-quality formatting.
-                    if ($the_arxiv_title !== '' && titles_are_similar($the_arxiv_title, $this_template->get('title'))) {
+                    // Strip <math> tags only for the comparison; the stored value is unchanged.
+                    $arxiv_for_compare = str_ireplace(['<math>', '</math>'], '', $the_arxiv_title);
+                    $crossref_for_compare = str_ireplace(['<math>', '</math>'], '', $this_template->get('title'));
+                    if ($the_arxiv_title !== '' && titles_are_similar($arxiv_for_compare, $crossref_for_compare)) {
                         $this_template->set('title', $the_arxiv_title);
                     }
+                    unset($arxiv_for_compare, $crossref_for_compare);
                 }
                 unset($the_arxiv_title);
                 unset($the_arxiv_contribution);
@@ -159,12 +163,13 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
             // markup such as ''s'' instead of <math>s</math>. If the arXiv title has <math>
             // formatting and the current title does not, prefer arXiv's version when the content
             // is the same. The <math> guard ensures we never downgrade an already-correct title.
+            // Strip <math> tags only for the comparison; the stored value is unchanged.
             $the_title_wiki = wikify_external_text($the_title);
             $the_current_title = $this_template->get('title');
             if ($the_title_wiki !== '' &&
                     mb_strpos($the_title_wiki, '<math>') !== false &&
                     mb_strpos($the_current_title, '<math>') === false &&
-                    titles_are_similar($the_current_title, $the_title_wiki)) {
+                    titles_are_similar(str_ireplace(['<math>', '</math>'], '', $the_title_wiki), $the_current_title)) {
                 $this_template->set('title', $the_title_wiki);
             }
             unset($the_title_wiki);
