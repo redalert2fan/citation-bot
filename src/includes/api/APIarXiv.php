@@ -113,16 +113,19 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
                     if ($the_arxiv_contribution !== '' && $this_template->blank('contribution')) {
                         $this_template->forget('contribution');
                     }
-                    // If the CrossRef title represents the same content as the original title
-                    // (just with different markup, e.g. ''s'' instead of <math>s</math>),
-                    // prefer the original since it likely has higher-quality formatting.
-                    // Strip <math> tags only for the comparison; the stored value is unchanged.
+                    // Do not replace a <math> title with one that lacks <math>
+                    $crossref_set_title = $this_template->get('title');
                     $arxiv_for_compare = str_ireplace(['<math>', '</math>'], '', $the_arxiv_title);
-                    $crossref_for_compare = str_ireplace(['<math>', '</math>'], '', $this_template->get('title'));
-                    if ($the_arxiv_title !== '' && titles_are_similar($arxiv_for_compare, $crossref_for_compare)) {
+                    $crossref_for_compare = str_ireplace(['<math>', '</math>'], '', $crossref_set_title);
+                    if ($the_arxiv_title !== '' &&
+                            mb_strpos($the_arxiv_title, '<math>') !== false &&
+                            mb_strpos($crossref_set_title, '<math>') === false &&
+                            titles_are_similar($arxiv_for_compare, $crossref_for_compare)) {
                         $this_template->set('title', $the_arxiv_title);
                     }
-                    unset($arxiv_for_compare, $crossref_for_compare);
+                    unset($crossref_set_title);
+                    unset($arxiv_for_compare);
+                    unset($crossref_for_compare);
                 }
                 unset($the_arxiv_title);
                 unset($the_arxiv_contribution);
@@ -155,15 +158,10 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
             $the_title = str_replace($match[0], ' ' . $match[1] . ' ', $the_title);    // @codeCoverageIgnore
             $the_title = str_replace('  ', ' ', $the_title);                          // @codeCoverageIgnore
         }
-        // Convert remaining LaTeX inline math $...$ to <math>...</math>
-        // (must be done after the specific $^{n}$ and $_n$ conversions above)
+        // Convert remaining $...$ to <math>...</math> after the $^{n}$/$_n$ conversions above
         $the_title = safe_preg_replace('~\$([^$\n]+)\$~u', '<math>$1</math>', $the_title);
         if (!$this_template->add_if_new("title", $the_title, 'arxiv')) { // Formatted by add_if_new
-            // add_if_new failed: title already set (e.g. by CrossRef) but possibly with inferior
-            // markup such as ''s'' instead of <math>s</math>. If the arXiv title has <math>
-            // formatting and the current title does not, prefer arXiv's version when the content
-            // is the same. The <math> guard ensures we never downgrade an already-correct title.
-            // Strip <math> tags only for the comparison; the stored value is unchanged.
+            // Upgrade to arXiv's <math> version if the current title lacks <math> and content matches
             $the_title_wiki = wikify_external_text($the_title);
             $the_current_title = $this_template->get('title');
             if ($the_title_wiki !== '' &&
