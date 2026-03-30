@@ -713,13 +713,13 @@ EP - 999 }}';
         if (in_array($title, [$title2, $title3], true)) {
             $this->assertFaker();
         } elseif ($title !== null && mb_strpos($title, '<math>') !== false) {
-            $this->assertFaker(); // arXiv title now uses <math> instead of raw $...$ - this is an improvement
+            $this->assertFaker();
         } else {
-            $this->assertSame('Should not have got this', $title); // What did we get
+            $this->assertSame('Should not have got this', $title);
         }
     }
 
-    public function testMathTitlePreservedOverCrossRefItalics(): void {   // Bug report: arXiv 1609.08688 with <math> title was replaced by CrossRef ''italic'' version
+    public function testMathTitlePreservedOverCrossRefItalics(): void { // arXiv 1609.08688: <math> title must not be replaced by CrossRef ''italic'' version
         $text = "{{citation|last1=Gowers|first1=W. T.|last2=Long|first2=J.|arxiv=1609.08688|title=The length of an <math>s</math>-increasing sequence of <math>r</math>-tuples|year=2016}}";
         $expanded = $this->process_citation($text);
         $title = $expanded->get2('title');
@@ -727,11 +727,10 @@ EP - 999 }}';
             $this->assertFaker();
             return;
         }
-        // The <math> formatting should be preserved, not replaced by ''s'' italics from CrossRef
-        $this->assertStringContainsString('<math>', $title, 'Math markup should be preserved in title');
+        $this->assertStringContainsString('<math>', $title);
     }
 
-    public function testArxivMathTitleUsedWhenNoTitlePresent(): void {   // When no title given, arXiv-sourced <math> title should be preferred over CrossRef ''italic'' version
+    public function testArxivMathTitleUsedWhenNoTitlePresent(): void { // arXiv 1609.08688: <math> title preferred over CrossRef ''italic'' even when no title was present
         $text = "{{citation|last1=Gowers|first1=W. T.|last2=Long|first2=J.|arxiv=1609.08688|year=2016}}";
         $expanded = $this->process_citation($text);
         $title = $expanded->get2('title');
@@ -739,9 +738,7 @@ EP - 999 }}';
             $this->assertFaker();
             return;
         }
-        // arXiv title contains $s$ and $r$ which should be converted to <math>s</math> and <math>r</math>,
-        // and that <math> version should win over CrossRef's ''s'' wiki-italic version
-        $this->assertStringContainsString('<math>', $title, 'Math markup should be used even when no title was originally present');
+        $this->assertStringContainsString('<math>', $title);
     }
 
     public function testDropGoogleWebsite(): void {
