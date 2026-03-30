@@ -113,6 +113,12 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
                     if ($the_arxiv_contribution !== '' && $this_template->blank('contribution')) {
                         $this_template->forget('contribution');
                     }
+                    // If the CrossRef title represents the same content as the original title
+                    // (just with different markup, e.g. ''s'' instead of <math>s</math>),
+                    // prefer the original since it likely has higher-quality formatting.
+                    if ($the_arxiv_title !== '' && titles_are_similar($the_arxiv_title, $this_template->get('title'))) {
+                        $this_template->set('title', $the_arxiv_title);
+                    }
                 }
                 unset($the_arxiv_title);
                 unset($the_arxiv_contribution);
@@ -145,7 +151,25 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
             $the_title = str_replace($match[0], ' ' . $match[1] . ' ', $the_title);    // @codeCoverageIgnore
             $the_title = str_replace('  ', ' ', $the_title);                          // @codeCoverageIgnore
         }
-        $this_template->add_if_new("title", $the_title, 'arxiv'); // Formatted by add_if_new
+        // Convert remaining LaTeX inline math $...$ to <math>...</math>
+        // (must be done after the specific $^{n}$ and $_n$ conversions above)
+        $the_title = safe_preg_replace('~\$([^$\n]+)\$~u', '<math>$1</math>', $the_title);
+        if (!$this_template->add_if_new("title", $the_title, 'arxiv')) { // Formatted by add_if_new
+            // add_if_new failed: title already set (e.g. by CrossRef) but possibly with inferior
+            // markup such as ''s'' instead of <math>s</math>. If the arXiv title has <math>
+            // formatting and the current title does not, prefer arXiv's version when the content
+            // is the same. The <math> guard ensures we never downgrade an already-correct title.
+            $the_title_wiki = wikify_external_text($the_title);
+            $the_current_title = $this_template->get('title');
+            if ($the_title_wiki !== '' &&
+                    mb_strpos($the_title_wiki, '<math>') !== false &&
+                    mb_strpos($the_current_title, '<math>') === false &&
+                    titles_are_similar($the_current_title, $the_title_wiki)) {
+                $this_template->set('title', $the_title_wiki);
+            }
+            unset($the_title_wiki);
+            unset($the_current_title);
+        }
         $this_template->add_if_new("class", (string) $entry->category["term"], 'arxiv');
         $int_time = strtotime((string) $entry->published);
         if ($int_time) {

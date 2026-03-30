@@ -288,6 +288,17 @@ final class textToolsTest extends testBaseClass {
         $this->assertFalse(str_i_same($x, $x));
     }
 
+    public function test_titles_are_similar_math_vs_italics(): void {
+        new TestPage(); // Fill page name with test name for debugging
+        // <math>s</math> and ''s'' are different markup for the same content.
+        // The spaces before the hyphens in the second string are intentional: they reproduce the
+        // exact CrossRef output from the bug report (doi:10.1017/S0963548320000371).
+        $this->assertTrue(titles_are_similar(
+            'The length of an <math>s</math>-increasing sequence of <math>r</math>-tuples',
+            "The length of an ''s'' -increasing sequence of ''r'' -tuples"
+        ));
+    }
+
     public function test_chapters_are_simple(): void {
         $this->assertSame('zbcder', titles_simple('Chapter 3 - Zbcder'));
     }

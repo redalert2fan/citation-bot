@@ -249,7 +249,7 @@ function str_remove_irrelevant_bits(string $str): string {
         ['Proc', 'Proc', 'Sym', 'Huff ', 'journal of ', 'New York Times', 'and ', '', ''],
         $str
     );
-    $str = str_ireplace(['<sub>', '<sup>', '<i>', '<b>', '</sub>', '</sup>', '</i>', '</b>', '<p>', '</p>', '<title>', '</title>'], '', $str);
+    $str = str_ireplace(['<sub>', '<sup>', '<i>', '<b>', '</sub>', '</sup>', '</i>', '</b>', '<p>', '</p>', '<title>', '</title>', '<math>', '</math>'], '', $str);
     $str = str_ireplace(
         ['SpringerVerlag', 'Springer Verlag Springer', 'Springer Verlag', 'Springer Springer'],
         ['Springer', 'Springer', 'Springer', 'Springer'],
