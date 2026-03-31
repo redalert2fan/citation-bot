@@ -39,9 +39,9 @@ final class unpaywallApiTest extends testBaseClass {
         $this->assertNull($expanded->get2('url'));
     }
 
-    /** Test Unpaywall URL gets added. DOI gets an URL on BHL */
+    /** Test Unpaywall URL gets added. DOI gets an URL on BHL. Uses Bulletin AMNH (not on BioOne S2O) */
     public function testUnPaywall1(): void {
-        $text = "{{cite journal|doi=10.1635/0097-3157(2002)152[0215:HPOVBM]2.0.CO;2}}";
+        $text = "{{cite journal|doi=10.1206/0003-0090(2004)286<0001:MPTASO>2.0.CO;2}}";
         $template = $this->make_citation($text);
         get_unpaywall_url($template, $template->get('doi'));
         $this->assertNotNull($template->get2('url'));
