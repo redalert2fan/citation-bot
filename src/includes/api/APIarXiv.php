@@ -113,12 +113,13 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
                     if ($the_arxiv_contribution !== '' && $this_template->blank('contribution')) {
                         $this_template->forget('contribution');
                     }
-                    // Do not replace a <math> title with one that lacks <math>
+                    // Do not replace a <math> title with one that lacks <math>; also handle titles stored as PLACEHOLDER_MATHEMATICS
                     $crossref_set_title = $this_template->get('title');
                     $arxiv_for_compare = str_ireplace(['<math>', '</math>'], '', $the_arxiv_title);
                     $crossref_for_compare = str_ireplace(['<math>', '</math>'], '', $crossref_set_title);
                     if ($the_arxiv_title !== '' &&
-                            mb_strpos($the_arxiv_title, '<math>') !== false &&
+                            (mb_strpos($the_arxiv_title, '<math>') !== false ||
+                             mb_strpos($the_arxiv_title, 'CITATION_BOT_PLACEHOLDER_MATHEMATICS') !== false) &&
                             mb_strpos($crossref_set_title, '<math>') === false &&
                             titles_are_similar($arxiv_for_compare, $crossref_for_compare)) {
                         $this_template->set('title', $the_arxiv_title);

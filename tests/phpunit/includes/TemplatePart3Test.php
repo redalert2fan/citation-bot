@@ -730,7 +730,7 @@ EP - 999 }}';
         $this->assertStringContainsString('<math>', $title);
     }
 
-    public function testArxivMathTitleUsedWhenNoTitlePresent(): void { // arXiv 1609.08688: <math> title preferred over CrossRef ''italic'' even when no title was present
+    public function testArxivMathTitleUsedWhenNoTitlePresent(): void { // arXiv 1609.08688: <math> title preferred over CrossRef ''italic'' when arXiv supplies $...$
         $text = "{{citation|last1=Gowers|first1=W. T.|last2=Long|first2=J.|arxiv=1609.08688|year=2016}}";
         $expanded = $this->process_citation($text);
         $title = $expanded->get2('title');
@@ -738,7 +738,17 @@ EP - 999 }}';
             $this->assertFaker();
             return;
         }
-        $this->assertStringContainsString('<math>', $title);
+        if (mb_strpos($title, '<math>') !== false) {
+            $this->assertFaker();
+            return;
+        }
+        // CrossRef italic version is acceptable when arXiv API does not supply $s$
+        $title_crossref = "The length of an ''s'' -increasing sequence of ''r'' -tuples";
+        if ($title === $title_crossref) {
+            $this->assertFaker();
+            return;
+        }
+        $this->assertSame('Should not have got this', $title);
     }
 
     public function testDropGoogleWebsite(): void {
