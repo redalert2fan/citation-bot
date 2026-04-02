@@ -1690,13 +1690,7 @@ function find_indentifiers_in_urls_INSIDE(Template $template, string $url, strin
                 }
                 if (!$url_sent) {
                     if (mb_stripos($url, ".pdf") !== false) {
-                        $test_url = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC" . $new_pmc . "/";
-                        curl_setopt($ch_pmc, CURLOPT_URL, $test_url);
-                        $the_pmc_body = bot_curl_exec($ch_pmc);
-                        $httpCode = (int) curl_getinfo($ch_pmc, CURLINFO_HTTP_CODE);
-                        if ($httpCode > 399 || $httpCode === 0 || mb_strpos($the_pmc_body, 'Administrative content — journal masthead, notices, indexes, etc - PMC') !== false) { // Some PMCs do NOT resolve. So leave URL
-                            return $template->add_if_new('pmc', $new_pmc);
-                        }
+                        return $template->add_if_new('pmc', $new_pmc); // PDF is a specific resource; keep URL and do not rename template
                     }
                     if (mb_stripos(str_replace("printable", "", $url), "table") === false) {
                         $template->forget($url_type); // This is the same as PMC auto-link
