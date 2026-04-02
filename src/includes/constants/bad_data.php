@@ -1239,7 +1239,6 @@ const ZOTERO_AVOID_REGEX = [
     'tnmaps\.tn\.nic\.in', // maps
     'twitter\.', // This should be {{cite tweet}}
     'usnews\.com', // Fails 100%
-    'washingtonpost\.com', // Fails 100%
     'weblio\.jp/', // just scrapes other website like wiki and has bogus issue and volume numbers
     'worldcat\.org', // Should use parameters and google instead
     'www\.almasdarnews\.com', // Fails 100%

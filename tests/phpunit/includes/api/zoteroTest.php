@@ -1508,4 +1508,25 @@ final class zoteroTest extends testBaseClass {
         $this->assertSame('Gilliland', $template->get2('last1'));
         $this->assertSame('John', $template->get2('first1'));
     }
+
+    public function testWashingtonPostTitleAdded(): void {
+        // washingtonpost.com was previously blocked in ZOTERO_AVOID_REGEX; Zotero now returns good data
+        $text = '{{cite news|newspaper=[[The Washington Post]]|url=https://www.washingtonpost.com/national-security/2026/03/16/iran-regime-intelligence-irgc-war/}}';
+        $template = $this->make_citation($text);
+        $access_date = 0;
+        $url = 'https://www.washingtonpost.com/national-security/2026/03/16/iran-regime-intelligence-irgc-war/';
+        $zotero_data = [];
+        $zotero_data[0] = (object) [
+            'title' => "U.S. intelligence says Iran's regime is consolidating power",
+            'itemType' => 'newspaperArticle',
+            'publicationTitle' => 'The Washington Post',
+            'date' => '2026-03-16',
+            'url' => $url,
+            'language' => 'en-US',
+            'ISSN' => '0190-8286',
+        ];
+        $zotero_response = json_encode($zotero_data);
+        Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
+        $this->assertSame("U.S. intelligence says Iran's regime is consolidating power", $template->get2('title'));
+    }
 }
