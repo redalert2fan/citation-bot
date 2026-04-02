@@ -40,8 +40,9 @@ final class pubmedTest extends testBaseClass {
         $this->sleep_pubmed();
         $text = "{{Cite web | url = https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2491514/pdf/annrcse01476-0076.pdf}}";
         $expanded = $this->process_citation($text);
-        $this->assertSame('cite web', $expanded->wikiname());
-        $this->assertSame('https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2491514/pdf/annrcse01476-0076.pdf', $expanded->get2('url'));
+        // PMC2491514 has a valid HTML version; the PDF URL is replaced by the PMC parameter and the template is renamed
+        $this->assertSame('cite journal', $expanded->wikiname());
+        $this->assertNull($expanded->get2('url'));
         $this->assertSame('2491514', $expanded->get2('pmc'));
     }
 
