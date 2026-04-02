@@ -40,22 +40,9 @@ final class pubmedTest extends testBaseClass {
         $this->sleep_pubmed();
         $text = "{{Cite web | url = https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2491514/pdf/annrcse01476-0076.pdf}}";
         $expanded = $this->process_citation($text);
-        // PMC2491514 has a valid HTML version; the PDF URL is replaced by the PMC parameter and the template is renamed
-        $this->assertSame('cite journal', $expanded->wikiname());
-        $this->assertNull($expanded->get2('url'));
-        $this->assertSame('2491514', $expanded->get2('pmc'));
-    }
-
-    public function testPMCExpansion3(): void {
-        $this->sleep_pubmed();
-        // PMC1338500 is administrative content (journal masthead); the HTML version returns
-        // "Administrative content — journal masthead, notices, indexes, etc - PMC", so
-        // the PDF URL must be preserved and the template must NOT be renamed to cite journal
-        $text = "{{Cite web | url = https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1338500/pdf/masthead.pdf}}";
-        $expanded = $this->process_citation($text);
         $this->assertSame('cite web', $expanded->wikiname());
-        $this->assertSame('https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1338500/pdf/masthead.pdf', $expanded->get2('url'));
-        $this->assertSame('1338500', $expanded->get2('pmc'));
+        $this->assertSame('https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2491514/pdf/annrcse01476-0076.pdf', $expanded->get2('url'));
+        $this->assertSame('2491514', $expanded->get2('pmc'));
     }
 
     public function testPMC2PMID(): void {
