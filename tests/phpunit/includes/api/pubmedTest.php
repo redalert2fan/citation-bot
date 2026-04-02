@@ -45,6 +45,18 @@ final class pubmedTest extends testBaseClass {
         $this->assertSame('2491514', $expanded->get2('pmc'));
     }
 
+    public function testPMCExpansion3(): void {
+        // PMC9999999999 is intentionally non-existent: NCBI returns HTTP 404,
+        // triggering the early-return that preserves the PDF URL and cite-web type.
+        // This guards the code path: PDF URL + HTTP 4xx/000 → URL kept, rename skipped.
+        $this->sleep_pubmed();
+        $text = "{{Cite web | url = https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9999999999/pdf/nonexistent.pdf}}";
+        $expanded = $this->process_citation($text);
+        $this->assertSame('cite web', $expanded->wikiname());
+        $this->assertSame('https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9999999999/pdf/nonexistent.pdf', $expanded->get2('url'));
+        $this->assertSame('9999999999', $expanded->get2('pmc'));
+    }
+
     public function testPMC2PMID(): void {
         $this->sleep_pubmed();
         $text = '{{cite journal|pmc=58796}}';
