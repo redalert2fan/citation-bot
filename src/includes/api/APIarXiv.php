@@ -113,20 +113,18 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
                     if ($the_arxiv_contribution !== '' && $this_template->blank('contribution')) {
                         $this_template->forget('contribution');
                     }
-                    // Do not replace a <math> title with one that lacks <math>; also handle titles stored as PLACEHOLDER_MATHEMATICS
+                    // Do not discard a <math> title in favour of a CrossRef title that lacks <math>.
+                    // The title may have been stored as CITATION_BOT_PLACEHOLDER_MATHEMATICS because
+                    // Page::extract_object('Mathematics') runs before template expansion.
                     $crossref_set_title = $this_template->get('title');
-                    $arxiv_for_compare = str_ireplace(['<math>', '</math>'], '', $the_arxiv_title);
-                    $crossref_for_compare = str_ireplace(['<math>', '</math>'], '', $crossref_set_title);
                     if ($the_arxiv_title !== '' &&
                             (mb_strpos($the_arxiv_title, '<math>') !== false ||
                              mb_strpos($the_arxiv_title, 'CITATION_BOT_PLACEHOLDER_MATHEMATICS') !== false) &&
                             mb_strpos($crossref_set_title, '<math>') === false &&
-                            titles_are_similar($arxiv_for_compare, $crossref_for_compare)) {
+                            titles_are_similar(str_ireplace(['<math>', '</math>'], '', $the_arxiv_title), $crossref_set_title)) {
                         $this_template->set('title', $the_arxiv_title);
                     }
                     unset($crossref_set_title);
-                    unset($arxiv_for_compare);
-                    unset($crossref_for_compare);
                 }
                 unset($the_arxiv_title);
                 unset($the_arxiv_contribution);
@@ -162,7 +160,7 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
         // Convert remaining $...$ to <math>...</math> after the $^{n}$/$_n$ conversions above
         $the_title = safe_preg_replace('~\$([^$\n]+)\$~u', '<math>$1</math>', $the_title);
         if (!$this_template->add_if_new("title", $the_title, 'arxiv')) { // Formatted by add_if_new
-            // Upgrade to arXiv's <math> version if the current title lacks <math> and content matches
+            // Upgrade a CrossRef ''italic'' title to arXiv's <math> version when content matches
             $the_title_wiki = wikify_external_text($the_title);
             $the_current_title = $this_template->get('title');
             if ($the_title_wiki !== '' &&
@@ -171,8 +169,7 @@ function arxiv_api(array $ids, array &$templates): void {  // Pointer to save me
                     titles_are_similar(str_ireplace(['<math>', '</math>'], '', $the_title_wiki), $the_current_title)) {
                 $this_template->set('title', $the_title_wiki);
             }
-            unset($the_title_wiki);
-            unset($the_current_title);
+            unset($the_title_wiki, $the_current_title);
         }
         $this_template->add_if_new("class", (string) $entry->category["term"], 'arxiv');
         $int_time = strtotime((string) $entry->published);

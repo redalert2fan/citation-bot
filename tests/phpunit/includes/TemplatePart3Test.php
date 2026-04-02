@@ -742,7 +742,6 @@ EP - 999 }}';
             $this->assertFaker();
             return;
         }
-        // CrossRef italic version is acceptable when arXiv API does not supply $s$
         $title_crossref = "The length of an ''s'' -increasing sequence of ''r'' -tuples";
         if ($title === $title_crossref) {
             $this->assertFaker();
