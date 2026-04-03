@@ -37,10 +37,7 @@ final class pubmedTest extends testBaseClass {
     }
 
     public function testPMCExpansion2(): void {
-        // Tests that the PMC ID is correctly extracted from a PDF URL.
-        // The URL and template-type outcome depend on whether NCBI returns HTTP 200 (URL dropped,
-        // renamed to cite journal) or non-200 (URL preserved, cite web kept); that network-dependent
-        // behaviour is covered deterministically by testPMCExpansion3.
+        // PMC ID extraction from PDF URL. Network-dependent URL/template-type outcome covered by testPMCExpansion3.
         $this->sleep_pubmed();
         $text = "{{Cite web | url = https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2491514/pdf/annrcse01476-0076.pdf}}";
         $expanded = $this->process_citation($text);
@@ -48,9 +45,7 @@ final class pubmedTest extends testBaseClass {
     }
 
     public function testPMCExpansion3(): void {
-        // PMC9999999999 is intentionally non-existent: NCBI returns HTTP 404,
-        // triggering the early-return that preserves the PDF URL and cite-web type.
-        // This guards the code path: PDF URL + HTTP 4xx/000 → URL kept, rename skipped.
+        // Non-existent PMC: NCBI returns 404, early-return fires → PDF URL kept, rename skipped.
         $this->sleep_pubmed();
         $text = "{{Cite web | url = https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9999999999/pdf/nonexistent.pdf}}";
         $expanded = $this->process_citation($text);
