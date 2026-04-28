@@ -386,7 +386,7 @@ final class WikipediaBot {
             $res = @json_decode($res);
         }
         if (!isset($res->query->pages) && CI) {
-            sleep(10);
+            sleep(3); // Short pause to outlast a transient blip
             $res = self::QueryAPI([
                 "action" => "query",
                 "prop" => "info",
