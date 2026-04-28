@@ -385,7 +385,7 @@ final class WikipediaBot {
             ]);
             $res = @json_decode($res);
         }
-        if (!isset($res->query->pages)) {
+        if (!isset($res->query->pages) && CI) {
             sleep(10);
             $res = self::QueryAPI([
                 "action" => "query",
