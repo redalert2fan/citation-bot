@@ -398,33 +398,32 @@ function process_doi_json(Template $template, string $doi, array $json): void {
         }
     }
     if (isset($json['editor']) && $template->wikiname() !== 'cite journal') {
-        // Collect existing template author names (normalized) to detect when an editor
+        // Collect existing template author family names (normalized) to detect when an editor
         // is already listed as a chapter author, which avoids adding duplicate editor fields.
         // This handles the common case where a book chapter's author also edited the volume.
-        $template_author_names = [];
+        // We compare only family names because CrossRef may return given names with different
+        // formatting than the template (e.g. "B." vs "Brian"), making exact pair matching unreliable.
+        $template_author_surnames = [];
         foreach (['last', 'last1'] as $plain_param) {
             $fam = mb_strtolower(mb_trim($template->get($plain_param)));
             if ($fam !== '') {
-                $template_author_names[] = $fam . '|' . mb_strtolower(mb_trim($template->get(str_replace('last', 'first', $plain_param))));
+                $template_author_surnames[] = $fam;
             }
         }
         for ($ai = 2; $ai <= 30; $ai++) { // 30 is the max supported by Template::add_if_new
             $fam = mb_strtolower(mb_trim($template->get('last' . (string) $ai)));
             if ($fam !== '') {
-                $template_author_names[] = $fam . '|' . mb_strtolower(mb_trim($template->get('first' . (string) $ai)));
+                $template_author_surnames[] = $fam;
             }
         }
         // If every editor from the API is already present as an author in the template,
         // skip adding editor fields to prevent duplicating chapter-author = book-editor data.
-        // The pipe character '|' is used as a separator between family and given name because
-        // Wikipedia template parameter values cannot legally contain a bare '|', so no collision is possible.
         $skip_editors = false;
-        if ($template_author_names !== []) {
+        if ($template_author_surnames !== []) {
             $skip_editors = true;
             foreach ($json['editor'] as $ed) {
                 $ed_fam = mb_strtolower(mb_trim((string) @$ed['family']));
-                $ed_giv = mb_strtolower(mb_trim((string) @$ed['given']));
-                if ($ed_fam === '' || !in_array($ed_fam . '|' . $ed_giv, $template_author_names, true)) {
+                if ($ed_fam === '' || !in_array($ed_fam, $template_author_surnames, true)) {
                     $skip_editors = false;
                     break;
                 }
