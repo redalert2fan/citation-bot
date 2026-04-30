@@ -316,6 +316,19 @@ final class DoiTest extends testBaseClass {
         $this->assertSame($text, $template->parsed_text());
     }
 
+    public function testNoAddEditorWhenAlreadyAuthor(): void {
+        // Regression test: bot must not add editor-first/editor-last fields when the same people
+        // are already listed as chapter authors (common for edited volumes where a chapter
+        // author is also the book editor). DOI 10.4324/9780203208915 returns Jenkins and Sofos
+        // as both authors and editors in CrossRef.
+        $text = "{{cite book|publication-date=11 July 1996|publisher=Routledge|page=145|edition=1st|isbn=9780415123136|publication-place=London|title=Nation and identity in contemporary Europe|chapter=Chapter 7: Multiple national identities, immigration and racism in Spain and Portugal|first1=Brian|first2=Spyros A.|last1=Jenkins|last2=Sofos|oclc=33335411|doi=10.4324/9780203208915|pmid=<!-- -->|pmc=<!-- -->}}";
+        $template = $this->process_citation($text);
+        $this->assertSame('', $template->get2('editor-last1'));
+        $this->assertSame('', $template->get2('editor-first1'));
+        $this->assertSame('', $template->get2('editor-last2'));
+        $this->assertSame('', $template->get2('editor-first2'));
+    }
+
     public function testGetBioRxivPublishedDoi(): void {
         $result = get_biorxiv_published_doi('10.1234/invalid');
         $this->assertNull($result);

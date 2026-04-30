@@ -398,19 +398,51 @@ function process_doi_json(Template $template, string $doi, array $json): void {
         }
     }
     if (isset($json['editor']) && $template->wikiname() !== 'cite journal') {
-        $i = 0;
-        foreach ($json['editor'] as $auth) {
-            $i += 1;
-            $full_name = mb_strtolower(mb_trim((string) @$auth['given'] . ' ' . (string) @$auth['family'] . (string) @$auth['literal']));
-            if (in_array($full_name, BAD_AUTHORS, true)) {
-                break;
+        // Collect existing template author names (normalized) to detect when an editor
+        // is already listed as a chapter author, which avoids adding duplicate editor fields.
+        // This handles the common case where a book chapter's author also edited the volume.
+        $template_author_names = [];
+        foreach (['last', 'last1'] as $plain_param) {
+            $fam = mb_strtolower(mb_trim($template->get($plain_param)));
+            if ($fam !== '') {
+                $template_author_names[] = $fam . '|' . mb_strtolower(mb_trim($template->get(str_replace('last', 'first', $plain_param))));
             }
-            if (((string) @$auth['family'] === '') && ((string) @$auth['given'] !== '')) {
-                $try_to_add_it('editor' . (string) $i, @$auth['given']); // First name without last name.  Probably an organization or chinese/korean/japanese name
-            } else {
-                $try_to_add_it('editor-last' . (string) $i, @$auth['family']);
-                $try_to_add_it('editor-first' . (string) $i, @$auth['given']);
-                $try_to_add_it('editor' . (string) $i, @$auth['literal']);
+        }
+        for ($ai = 2; $ai <= 30; $ai++) {
+            $fam = mb_strtolower(mb_trim($template->get('last' . (string) $ai)));
+            if ($fam !== '') {
+                $template_author_names[] = $fam . '|' . mb_strtolower(mb_trim($template->get('first' . (string) $ai)));
+            }
+        }
+        // If every editor from the API is already present as an author in the template,
+        // skip adding editor fields to prevent duplicating chapter-author = book-editor data.
+        $skip_editors = false;
+        if ($template_author_names !== []) {
+            $skip_editors = true;
+            foreach ($json['editor'] as $ed) {
+                $ed_fam = mb_strtolower(mb_trim((string) @$ed['family']));
+                $ed_giv = mb_strtolower(mb_trim((string) @$ed['given']));
+                if ($ed_fam === '' || !in_array($ed_fam . '|' . $ed_giv, $template_author_names, true)) {
+                    $skip_editors = false;
+                    break;
+                }
+            }
+        }
+        if (!$skip_editors) {
+            $i = 0;
+            foreach ($json['editor'] as $auth) {
+                $i += 1;
+                $full_name = mb_strtolower(mb_trim((string) @$auth['given'] . ' ' . (string) @$auth['family'] . (string) @$auth['literal']));
+                if (in_array($full_name, BAD_AUTHORS, true)) {
+                    break;
+                }
+                if (((string) @$auth['family'] === '') && ((string) @$auth['given'] !== '')) {
+                    $try_to_add_it('editor' . (string) $i, @$auth['given']); // First name without last name.  Probably an organization or chinese/korean/japanese name
+                } else {
+                    $try_to_add_it('editor-last' . (string) $i, @$auth['family']);
+                    $try_to_add_it('editor-first' . (string) $i, @$auth['given']);
+                    $try_to_add_it('editor' . (string) $i, @$auth['literal']);
+                }
             }
         }
     }
