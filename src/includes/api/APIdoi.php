@@ -410,7 +410,7 @@ function process_doi_json(Template $template, string $doi, array $json): void {
                 $template_author_surnames[] = $fam;
             }
         }
-        for ($ai = 2; $ai <= 30; $ai++) { // 30 is the max supported by Template::add_if_new
+        for ($ai = 2; $ai <= 30; $ai++) { // 30 matches the Wikipedia cap on author count
             $fam = mb_strtolower(mb_trim($template->get('last' . (string) $ai)));
             if ($fam !== '') {
                 $template_author_surnames[] = $fam;
