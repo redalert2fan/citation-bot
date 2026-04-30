@@ -408,7 +408,7 @@ function process_doi_json(Template $template, string $doi, array $json): void {
                 $template_author_names[] = $fam . '|' . mb_strtolower(mb_trim($template->get(str_replace('last', 'first', $plain_param))));
             }
         }
-        for ($ai = 2; $ai <= 30; $ai++) {
+        for ($ai = 2; $ai <= 30; $ai++) { // 30 is the max supported by Template::add_if_new
             $fam = mb_strtolower(mb_trim($template->get('last' . (string) $ai)));
             if ($fam !== '') {
                 $template_author_names[] = $fam . '|' . mb_strtolower(mb_trim($template->get('first' . (string) $ai)));
@@ -416,6 +416,8 @@ function process_doi_json(Template $template, string $doi, array $json): void {
         }
         // If every editor from the API is already present as an author in the template,
         // skip adding editor fields to prevent duplicating chapter-author = book-editor data.
+        // The pipe character '|' is used as a separator between family and given name because
+        // Wikipedia template parameter values cannot legally contain a bare '|', so no collision is possible.
         $skip_editors = false;
         if ($template_author_names !== []) {
             $skip_editors = true;
