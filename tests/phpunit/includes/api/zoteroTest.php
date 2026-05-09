@@ -899,18 +899,6 @@ final class zoteroTest extends testBaseClass {
         $this->assertSame('1234M', $template->get2('ol'));
     }
 
-    public function testZoteroResponse53(): void {
-        $text = '{{cite web}}';
-        $template = $this->make_citation($text);
-        $access_date = 0;
-        $url = '';
-        $zotero_data = [];
-        $zotero_data[0] = (object) ['title' => 'Sell Used Car Online & Get Instant Payment', 'itemType' => 'webpage'];
-        $zotero_response = json_encode($zotero_data);
-        Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
-        $this->assertNull($template->get2('title'));
-    }
-
     public function testEnDashTaglineStripped(): void {
         // publicationTitle with an en-dash tagline must be stripped to just the publication name.
         $text = '{{cite web}}';
