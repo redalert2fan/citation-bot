@@ -470,6 +470,18 @@ final class Zotero {
             return;
         }
 
+        // Reject titles that use Unicode Mathematical Alphanumeric Symbols (U+1D400–U+1D7FF).
+        // These characters are used to fake bold/italic text in promotional and spam content
+        // (e.g. "𝗦𝗲𝗹𝗹 𝗨𝘀𝗲𝗱 𝗖𝗮𝗿") and should never appear in a legitimate article title.
+        if (preg_match('~[\x{1D400}-\x{1D7FF}]~u', $result->title)) {
+            report_info("Received title with spam unicode formatting for URL " . echoable($url));
+            return;
+        }
+        if (isset($result->bookTitle) && preg_match('~[\x{1D400}-\x{1D7FF}]~u', $result->bookTitle)) {
+            report_info("Received book title with spam unicode formatting for URL " . echoable($url));
+            return;
+        }
+
         report_info("Retrieved info from " . echoable($url));
         // Verify that Zotero translation server did not think that this was a website and not a journal
         if (mb_strtolower(mb_substr(mb_trim($result->title), -9)) === ' on jstor') {  // Not really "expanded", just add the title without " on jstor"

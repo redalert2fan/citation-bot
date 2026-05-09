@@ -899,6 +899,33 @@ final class zoteroTest extends testBaseClass {
         $this->assertSame('1234M', $template->get2('ol'));
     }
 
+    public function testZoteroResponse53(): void {
+        // Titles with Unicode Mathematical Alphanumeric Symbols (used for fake bold in spam/promo content)
+        // should be rejected.  Example: gaadi.com URL returning a car-sales promotional title.
+        $text = '{{cite web}}';
+        $template = $this->make_citation($text);
+        $access_date = 0;
+        $url = 'http://www.gaadi.com/cycles/news/5-places-to-cycle-near-bangalore';
+        $zotero_data = [];
+        $zotero_data[0] = (object) ['title' => 'Sell Used Car Online & Get Instant Payment - 𝗖𝗮𝗿𝗗𝗲𝗸𝗵𝗼 𝗚𝗮𝗮𝗱𝗶 𝗦𝘁𝗼𝗿𝗲', 'itemType' => 'webpage'];
+        $zotero_response = json_encode($zotero_data);
+        Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
+        $this->assertNull($template->get2('title'));
+    }
+
+    public function testZoteroResponse53b(): void {
+        // bookTitle with Unicode Mathematical Alphanumeric Symbols should also be rejected.
+        $text = '{{cite web}}';
+        $template = $this->make_citation($text);
+        $access_date = 0;
+        $url = 'http://www.example.com/some-article';
+        $zotero_data = [];
+        $zotero_data[0] = (object) ['title' => 'Normal article title', 'bookTitle' => '𝗕𝘂𝘆 𝗡𝗼𝘄 - 𝗦𝗽𝗮𝗺 𝗦𝘁𝗼𝗿𝗲', 'itemType' => 'bookSection'];
+        $zotero_response = json_encode($zotero_data);
+        Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
+        $this->assertNull($template->get2('title'));
+    }
+
     public function testEnDashTaglineStripped(): void {
         // publicationTitle with an en-dash tagline must be stripped to just the publication name.
         $text = '{{cite web}}';
