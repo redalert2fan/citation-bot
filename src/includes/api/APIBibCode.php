@@ -250,7 +250,7 @@ function expand_by_adsabs(Template $template): void {
             return;
         }
         $result = query_adsabs(
-        ($template->has('issn') ? "issn:" . urlencode($template->get('issn')) : "pub:" . urlencode('"' . remove_brackets($journal) . '"')) .
+        ($template->has('journal') ? "pub:" . urlencode('"' . remove_brackets($journal) . '"') : "&fq=issn:" . urlencode($template->get('issn'))) .
         ($template->year() ? "&fq=year:" . urlencode($template->year()) : '') .
         ($template->has('volume') ? "&fq=volume:" . urlencode('"' . $template->get('volume') . '"') : '') .
         ("&fq=page:" . urlencode('"' . $pages[1] . '"'))
@@ -261,7 +261,7 @@ function expand_by_adsabs(Template $template): void {
         }
         $journal_string = explode(",", (string) $result->docs[0]->pub);
         $journal_fuzzyer = "~\([iI]ncorporating.+|\bof\b|\bthe\b|\ba|eedings\b|\W~";
-        if ($template->has('journal') && mb_strlen($journal_string[0]) && mb_strpos(mb_strtolower(safe_preg_replace($journal_fuzzyer, "", $journal)), mb_strtolower(safe_preg_replace($journal_fuzzyer, "", $journal_string[0]))) === false) {
+        if (mb_strlen($journal_string[0]) && mb_strpos(mb_strtolower(safe_preg_replace($journal_fuzzyer, "", $journal)), mb_strtolower(safe_preg_replace($journal_fuzzyer, "", $journal_string[0]))) === false) {
             report_inline(   // @codeCoverageIgnoreStart
             "Partial match but database journal \"" .
             echoable($journal_string[0]) .
