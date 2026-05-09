@@ -13335,6 +13335,7 @@ const ZOTERO_BAD_TITLES = [
     'Secure Request and Redirect',
     'Seite nicht gefunden',
     'Sell Used Car',
+    'Get Instant Payment',
     'sex cams',
     'Shibboleth Authentication Request',
     'ShieldSquare',
