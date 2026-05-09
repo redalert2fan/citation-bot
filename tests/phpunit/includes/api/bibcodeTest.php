@@ -535,7 +535,7 @@ final class bibcodeTest extends testBaseClass {
             expand_by_adsabs($expanded);
             $found_bibcode = $expanded->get2('bibcode');
             if ($found_bibcode === null) {
-                usleep(500000); // reduce flaky failures from ADSAbs rate limiting
+                usleep(500000); // Wait and reset throttle state to handle AdsAbs rate limiting
                 AdsAbsControl::small_back_on();
                 $expanded = $this->make_citation($text);
                 expand_by_adsabs($expanded);
