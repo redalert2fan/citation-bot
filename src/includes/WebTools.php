@@ -40,6 +40,15 @@ function edit_a_list_of_pages(array $pages_in_category, WikipediaBot $api, strin
         flush(); // Only call to flush in normal code, since calling flush breaks headers and sessions
         big_jobs_check_killed();
         $done++;
+
+        // Show progress for multi-page runs in HTML mode
+        if (HTML_OUTPUT && $total > 1) {
+            progress_status("Processing page " . (string)$done . " of " . (string)$total . "...");
+        }
+
+        // Open a card for this page before processing (wraps all report_* output)
+        card_open($page_title, 'pending', 'Processing...');
+
         if (mb_strpos($page_title, 'Wikipedia:Requests') === false && $page->get_text_from($page_title) && $page->expand_text()) {
             $pages_changed++;
             if (SAVETOFILES_MODE) {
@@ -55,6 +64,7 @@ function edit_a_list_of_pages(array $pages_in_category, WikipediaBot $api, strin
                     report_warning("Save to file failed.");
                 }
                 unset($body);
+                card_close();
             } else {
                 report_phase("Writing to " . echoable($page_title) . '... ');
                 $attempts = 0;
@@ -69,10 +79,12 @@ function edit_a_list_of_pages(array $pages_in_category, WikipediaBot $api, strin
                 if ($attempts < MAX_TRIES) {
                     $last_rev = WikipediaBot::get_last_revision($page_title);
                     html_echo(
-                    "\n  <a href=\"" . WIKI_ROOT . "?title=" . urlencode($page_title) . "&amp;diff=prev&amp;oldid="
-                    . $last_rev . "\">diff</a>" .
-                    " | <a href=\"" . WIKI_ROOT . "?title=" . urlencode($page_title) . "&amp;action=history\">history</a>",
+                    "",
                     "\n" . WIKI_ROOT . "?title=" . urlencode($page_title) . "&diff=prev&oldid=" . $last_rev . "\n");
+                    if (HTML_OUTPUT) {
+                        card_footer_with_links($page_title, $last_rev);
+                        card_close_after_footer();
+                    }
                     $final_edit_overview .=
                         "\n [ <a href=\"" . WIKI_ROOT . "?title=" . urlencode($page_title) . "&amp;diff=prev&amp;oldid="
                     . $last_rev . "\">diff</a>" .
@@ -80,13 +92,16 @@ function edit_a_list_of_pages(array $pages_in_category, WikipediaBot $api, strin
                 } else {
                     report_warning("Write failed.");
                     $final_edit_overview .= "\n Write failed.            " . "<a href=\"" . WIKI_ROOT . "?title=" . urlencode($page_title) . "\">" . echoable($page_title) . "</a>";
+                    card_close();
                 }
             }
         } else {
             $pages_unchanged++;
             report_phase($page->parsed_text() ? "No changes required. \n\n      # # # " : "Blank page. \n\n      # # # ");
                 $final_edit_overview .= "\n No changes needed. " . "<a href=\"" . WIKI_ROOT . "?title=" . urlencode($page_title) . "\">" . echoable($page_title) . "</a>";
+                card_close();
         }
+
         echo "\n";
         check_memory_usage("After writing page");
         $page->parse_text("");  // Clear variables before doing GC
@@ -97,7 +112,14 @@ function edit_a_list_of_pages(array $pages_in_category, WikipediaBot $api, strin
         if (!HTML_OUTPUT) {
             $final_edit_overview = '';
         }
-        echo "\n Done all " . (string) $total . " pages: " . (string) $pages_changed . " changed, " . (string) $pages_unchanged . " unchanged. \n  # # # \n" . $final_edit_overview;
+        if (HTML_OUTPUT) {
+            summary_section(
+                "Done all " . (string) $total . " pages: " . (string) $pages_changed . " changed, " . (string) $pages_unchanged . " unchanged.",
+                '<li>' . $final_edit_overview . '</li>'
+            );
+        } else {
+            echo "\n Done all " . (string) $total . " pages: " . (string) $pages_changed . " changed, " . (string) $pages_unchanged . " unchanged. \n  # # # \n" . $final_edit_overview;
+        }
     } else {
         echo "\n Done with page.";
     }
@@ -122,17 +144,17 @@ function bot_html_header(): void {
     ' </head>', "\n",
     ' <body>', "\n",
     '  <a href="#main-content" class="skip-link">Skip to main content</a>', "\n",
-    '  <header>', "\n",
-    '   <p>Follow Citation bots progress below.</p>', "\n",
+    '  <header class="results-header">', "\n",
+    '   <p>Citation Bot progress</p>', "\n",
     '   <p>', "\n",
-    '    <a href="https://en.wikipedia.org/wiki/User:Citation_bot/use" target="_blank" rel="noopener noreferrer" title="Using Citation Bot" aria-label="Using Citation Bot (opens new window)">How&nbsp;to&nbsp;Use&nbsp;/&nbsp;Tips&nbsp;and&nbsp;Tricks</a> |', "\n",
-    '    <a href="https://en.wikipedia.org/wiki/User_talk:Citation_bot" title="Report bugs at Wikipedia" target="_blank" rel="noopener noreferrer" aria-label="Report bugs at Wikipedia (opens new window)">Report&nbsp;bugs</a> |', "\n",
-    '    <a href="https://github.com/ms609/citation-bot" target="_blank" rel="noopener noreferrer" title="GitHub repository"  aria-label="GitHub repository (opens new window)">Source&nbsp;code</a>', "\n",
+    '    <a href="https://en.wikipedia.org/wiki/User:Citation_bot/use" target="_blank" rel="noopener noreferrer" title="Using Citation Bot">How&nbsp;to&nbsp;Use&nbsp;/&nbsp;Tips&nbsp;and&nbsp;Tricks</a> |',
+    '    <a href="https://en.wikipedia.org/wiki/User_talk:Citation_bot" target="_blank" rel="noopener noreferrer" title="Report bugs at Wikipedia">Report&nbsp;bugs</a> |',
+    '    <a href="https://github.com/ms609/citation-bot" target="_blank" rel="noopener noreferrer" title="GitHub repository">Source&nbsp;code</a>',
     '   </p>', "\n",
     '  </header>', "\n",
     '  <main id="main-content">', "\n",
-    '   <h1 class="sr-only">Citation Bot progress</h1>', "\n",
-    '  <pre id="botOutput" aria-label="Bot progress output">', "\n";
+    '   <h1 class="sr-only">Citation Bot results</h1>', "\n",
+    '   <div class="results-container">', "\n";
     if (ini_get('pcre.jit') === '0') {
         report_warning('PCRE JIT Disabled');
     }
@@ -143,7 +165,11 @@ function bot_html_header(): void {
  */
 function bot_html_footer(): void {
     if (HTML_OUTPUT) {
-        echo '</pre></main><footer><a href="./" title="Use Citation Bot again" aria-label="Use Citation Bot again (return to main page)">Edit another page</a>?</footer></body></html>'; // @codeCoverageIgnore
+        echo '</div></main>', "\n",
+        '<footer class="results-footer">', "\n",
+        '  <p><a href="./">Edit another page</a></p>', "\n",
+        '</footer>', "\n",
+        '</body></html>';
     }
     echo "\n";
 }

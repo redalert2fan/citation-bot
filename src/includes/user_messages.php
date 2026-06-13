@@ -139,3 +139,128 @@ function wiki_link(string $page): string {
     ? '<a href="' . WIKI_ROOT . '?title=' . urlencode(str_replace(' ', '_', $page)) . '" target="_blank" rel="noopener noreferrer" aria-label="Open wiki in new window">Wikipedia page: ' . echoable($page) . '</a>'    // @codeCoverageIgnore
     : "Wikipedia page : " . echoable($page);
 }
+
+/**
+ * Open a result card for a processed page
+ * @codeCoverageIgnore
+ */
+function card_open(string $page_title, string $status, string $status_label): void {
+    if (!HTML_OUTPUT || CI) {
+        return;
+    }
+    $status_class = match($status) {
+        'changed' => 'status-changed',
+        'unchanged' => 'status-unchanged',
+        'error' => 'status-error',
+        default => 'status-unchanged'
+    };
+    $escaped_title = echoable($page_title);
+    ob_start();
+    echo "\n" . '<article class="result-card" data-status="' . $status . '">' . "\n";
+    echo '  <header class="card-header">' . "\n";
+    echo '    <h2 class="card-title"><a href="' . WIKI_ROOT . '?title=' . urlencode($page_title) . '">' . $escaped_title . '</a></h2>' . "\n";
+    echo '    <span class="status-badge ' . $status_class . '">' . echoable($status_label) . '</span>' . "\n";
+    echo '  </header>' . "\n";
+    echo '  <div class="card-body">' . "\n";
+    ob_end_flush();
+}
+
+/**
+ * Add a change item to the current card
+ * @codeCoverageIgnore
+ */
+function card_change_item(string $symbol, string $class, string $text): void {
+    if (!HTML_OUTPUT || CI) {
+        return;
+    }
+    ob_start();
+    $class_map = [
+        'phase' => 'change-info',
+        'subitem' => 'change-info',
+        'subsubitem' => 'change-info',
+        'warning' => 'change-warning',
+        'changed' => 'change-modified',
+        'added' => 'change-added',
+        'removed' => 'change-removed',
+        'boring' => 'change-info',
+    ];
+    $li_class = $class_map[$class] ?? 'change-info';
+    echo '      <li class="change ' . $li_class . '">' . echoable($symbol . ' ' . $text) . '</li>' . "\n";
+    ob_end_flush();
+}
+
+/**
+ * Close the current card
+ * @codeCoverageIgnore
+ */
+function card_close(): void {
+    if (!HTML_OUTPUT || CI) {
+        return;
+    }
+    ob_start();
+    echo '  </div>' . "\n"; // Close card-body
+    echo '</article>' . "\n";
+    ob_end_flush();
+}
+
+/**
+ * Close card after footer was already output (changed pages)
+ * @codeCoverageIgnore
+ */
+function card_close_after_footer(): void {
+    if (!HTML_OUTPUT || CI) {
+        return;
+    }
+    ob_start();
+    echo '</article>' . "\n";
+    ob_end_flush();
+}
+
+/**
+ * Add action links footer to the current card
+ * @codeCoverageIgnore
+ */
+function card_footer_with_links(string $page_title, string $rev_id): void {
+    if (!HTML_OUTPUT || CI) {
+        return;
+    }
+    ob_start();
+    echo '  </div>' . "\n"; // Close card-body before opening footer
+    echo '  <footer class="card-footer">' . "\n";
+    echo '    <a class="action-link" href="' . WIKI_ROOT . '?title=' . urlencode($page_title) . '&amp;diff=prev&amp;oldid=' . $rev_id . '">diff</a>' . "\n";
+    echo '    <a class="action-link" href="' . WIKI_ROOT . '?title=' . urlencode($page_title) . '&amp;action=history">history</a>' . "\n";
+    echo '    <a class="action-link" href="' . WIKI_ROOT . '?title=' . urlencode($page_title) . '">view page</a>' . "\n";
+    echo '  </footer>' . "\n";
+    ob_end_flush();
+}
+
+/**
+ * Show processing progress status
+ * @codeCoverageIgnore
+ */
+function progress_status(string $text): void {
+    if (!HTML_OUTPUT || CI) {
+        return;
+    }
+    ob_start();
+    echo '<div class="progress-bar" role="status" aria-live="polite">' . echoable($text) . '</div>' . "\n";
+    ob_end_flush();
+}
+
+/**
+ * Show final summary section after all pages processed
+ * @codeCoverageIgnore
+ */
+function summary_section(string $text, string $links_html): void {
+    if (!HTML_OUTPUT || CI) {
+        return;
+    }
+    ob_start();
+    echo '<section class="summary-bar" aria-live="polite">' . "\n";
+    echo '  <p>' . echoable($text) . '</p>' . "\n";
+    echo '  <ul class="summary-links">' . "\n";
+    echo $links_html;
+    echo '  </ul>' . "\n";
+    echo '</section>' . "\n";
+    ob_end_flush();
+}
