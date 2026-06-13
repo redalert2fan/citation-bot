@@ -1,0 +1,5 @@
+{
+    "sanitizers": [
+        {"name": "echoable", "language": "php", "prevent": ["xss"]}
+    ]
+}

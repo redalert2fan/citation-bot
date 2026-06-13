@@ -148,7 +148,7 @@ function card_open(string $page_title, string $status, string $status_label): vo
     if (!HTML_OUTPUT || CI) {
         return;
     }
-    $status_class = match($status) {
+    $status_class = match ($status) {
         'changed' => 'status-changed',
         'unchanged' => 'status-unchanged',
         'error' => 'status-error',
