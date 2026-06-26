@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @performance Stores results in 6 memory caches to avoid checking the same things repeatedly.
  * Clears all caches when they get too large (over 100,000 items, counting full URLs as 10 items each).
  */
-final class DoiTools {
+final class HandleCache {
     // Greatly speed-up by having one array of each kind and only look for hash keys, not values
     private const int MAX_CACHE_SIZE = 100000;
     public const int MAX_HDL_SIZE = 1024;
@@ -61,10 +61,10 @@ final class DoiTools {
  */
 function doi_active(string $doi): ?bool {
     $doi = mb_trim($doi);
-    if (isset(DoiTools::$cache_active[$doi])) {
+    if (isset(HandleCache::$cache_active[$doi])) {
         return true;
     }
-    if (isset(DoiTools::$cache_inactive[$doi])) {
+    if (isset(HandleCache::$cache_inactive[$doi])) {
         return false;
     }
     $works = is_doi_active($doi);
@@ -72,10 +72,10 @@ function doi_active(string $doi): ?bool {
         return null; // @codeCoverageIgnore
     }
     if ($works === false) {
-        DoiTools::$cache_inactive[$doi] = true;
+        HandleCache::$cache_inactive[$doi] = true;
         return false;
     }
-    DoiTools::$cache_active[$doi] = true;
+    HandleCache::$cache_active[$doi] = true;
     return true;
 }
 
@@ -92,23 +92,23 @@ function doi_works(string $doi): ?bool {
             return false; // all gone
         }
     }
-    if (mb_strlen($doi) > DoiTools::MAX_HDL_SIZE) {
+    if (mb_strlen($doi) > HandleCache::MAX_HDL_SIZE) {
         return null;   // @codeCoverageIgnore
     }
-    if (isset(DoiTools::$cache_good[$doi])) {
+    if (isset(HandleCache::$cache_good[$doi])) {
         return true;
     }
-    if (isset(DoiTools::$cache_hdl_bad[$doi])) {
+    if (isset(HandleCache::$cache_hdl_bad[$doi])) {
         return false;
     }
-    if (isset(DoiTools::$cache_hdl_null[$doi])) {
+    if (isset(HandleCache::$cache_hdl_null[$doi])) {
         return null;   // @codeCoverageIgnore
     }
-    DoiTools::check_memory_use();
+    HandleCache::check_memory_use();
 
     $works = is_doi_works($doi);
     if ($works === null) {  // These are unexpected nulls
-        DoiTools::$cache_hdl_null[$doi] = true;   // @codeCoverageIgnore
+        HandleCache::$cache_hdl_null[$doi] = true;   // @codeCoverageIgnore
         return null;   // @codeCoverageIgnore
     }
     if ($works === false) {
@@ -116,10 +116,10 @@ function doi_works(string $doi): ?bool {
             bot_debug_log('Got bad for good HDL: ' . echoable_doi($doi));
             return true; // We log these and see if they have changed
         }
-        DoiTools::$cache_hdl_bad[$doi] = true;
+        HandleCache::$cache_hdl_bad[$doi] = true;
         return false;
     }
-    DoiTools::$cache_good[$doi] = true;
+    HandleCache::$cache_good[$doi] = true;
     if (isset(NULL_DOI_LIST[$doi])) {
         bot_debug_log('Got good for bad HDL: ' . echoable_doi($doi));
     }
@@ -540,16 +540,16 @@ function hdl_works(string $hdl): string|null|false {
     if (mb_strpos($hdl, '123456789') === 0) {
         return false;
     }
-    if (mb_strlen($hdl) > DoiTools::MAX_HDL_SIZE) {
+    if (mb_strlen($hdl) > HandleCache::MAX_HDL_SIZE) {
         return null;
     }
-    if (isset(DoiTools::$cache_hdl_loc[$hdl])) {
-        return DoiTools::$cache_hdl_loc[$hdl];
+    if (isset(HandleCache::$cache_hdl_loc[$hdl])) {
+        return HandleCache::$cache_hdl_loc[$hdl];
     }
-    if (isset(DoiTools::$cache_hdl_bad[$hdl])) {
+    if (isset(HandleCache::$cache_hdl_bad[$hdl])) {
         return false;
     }
-    if (isset(DoiTools::$cache_hdl_null[$hdl])) {
+    if (isset(HandleCache::$cache_hdl_null[$hdl])) {
         return null; // @codeCoverageIgnore
     }
     if (mb_strpos($hdl, '10.') === 0 && doi_works($hdl) === false) {
@@ -558,23 +558,23 @@ function hdl_works(string $hdl): string|null|false {
     $works = is_hdl_works($hdl);
     if ($works === null) {
         if (isset(NULL_DOI_LIST[$hdl])) {                // @codeCoverageIgnoreStart
-            DoiTools::$cache_hdl_bad[$hdl] = true;    // These are know to be bad, so only check one time during run
+            HandleCache::$cache_hdl_bad[$hdl] = true;    // These are know to be bad, so only check one time during run
             return false;
         }
         foreach (NULL_DOI_STARTS_BAD as $bad_start) {
             if (mb_stripos($hdl, $bad_start) === 0) {
-                DoiTools::$cache_hdl_bad[$hdl] = true;  // all bad
+                HandleCache::$cache_hdl_bad[$hdl] = true;  // all bad
                 return false;
             }
         }
-        DoiTools::$cache_hdl_null[$hdl] = true;
+        HandleCache::$cache_hdl_null[$hdl] = true;
         return null;                                     // @codeCoverageIgnoreEnd
     }
     if ($works === false) {
-        DoiTools::$cache_hdl_bad[$hdl] = true;
+        HandleCache::$cache_hdl_bad[$hdl] = true;
         return false;
     }
-    DoiTools::$cache_hdl_loc[$hdl] = $works;
+    HandleCache::$cache_hdl_loc[$hdl] = $works;
     return $works;
 }
 

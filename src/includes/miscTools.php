@@ -220,7 +220,7 @@ function throttle(): void {
         unset($matches);
         $mem_used = (int) (memory_get_usage() / 1048576);
         if (($mem_max !== 0) && ($mem_used > $mem_max)) {    // Clear every buffer we have
-                DoiTools::free_memory();                                                 // @codeCoverageIgnoreStart
+                HandleCache::free_memory();                                                 // @codeCoverageIgnoreStart
                 $mem_used1 = (string) (int) (memory_get_usage() / 1048576);
                 AdsAbsControl::free_memory();
                 $mem_used2 = (string) (int) (memory_get_usage() / 1048576);

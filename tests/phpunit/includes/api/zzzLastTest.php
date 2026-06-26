@@ -11,7 +11,7 @@ final class zzzLastTest extends testBaseClass {
 
     public function testFlushCacheAtEnd(): void {
         new TestPage(); // Fill page name with test name for debugging
-        DoiTools::free_memory();
+        HandleCache::free_memory();
         AdsAbsControl::free_memory();
         $this->assertFaker();
     }

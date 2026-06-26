@@ -1174,13 +1174,13 @@ EP - 999 }}';
     }
 
     private function skipIfHdlUnavailable(string $handle): void {
-        if (isset(DoiTools::$cache_hdl_null[$handle])) {
+        if (isset(HandleCache::$cache_hdl_null[$handle])) {
             $this->markTestSkipped('HDL API did not respond (rate limit or outage)');
         }
     }
 
     public function testHandles1(): void {
-        unset(DoiTools::$cache_hdl_null['10125/20269']);
+        unset(HandleCache::$cache_hdl_null['10125/20269']);
         $template = $this->make_citation('{{Cite web|url=http://hdl.handle.net/10125/20269////;jsessionid=dfasddsa|journal=X}}');
         $result = $template->get_identifiers_from_url();
         if (!$result) {
@@ -1193,16 +1193,16 @@ EP - 999 }}';
     }
 
     public function testHandles2(): void {
-        unset(DoiTools::$cache_hdl_null['10125/20269']);
+        unset(HandleCache::$cache_hdl_null['10125/20269']);
         $template = $this->make_citation('{{Cite web|url=https://hdl.handle.net/handle////10125/20269}}');
         $template->get_identifiers_from_url();
         if ($template->get2('hdl') !== '10125/20269') {
-            unset(DoiTools::$cache_hdl_null['10125/20269']);
+            unset(HandleCache::$cache_hdl_null['10125/20269']);
             sleep(run_type_mods(-1, 15, 15, 5, 15));
             $template->get_identifiers_from_url(); // This test is finicky sometimes
         }
         if ($template->get2('hdl') !== '10125/20269') {
-            unset(DoiTools::$cache_hdl_null['10125/20269']);
+            unset(HandleCache::$cache_hdl_null['10125/20269']);
             sleep(run_type_mods(-1, 15, 15, 5, 15));
             $template->get_identifiers_from_url(); // This test is finicky sometimes
         }
@@ -1222,7 +1222,7 @@ EP - 999 }}';
     }
 
     public function testHandles4(): void {
-        unset(DoiTools::$cache_hdl_null['10125/20269']);
+        unset(HandleCache::$cache_hdl_null['10125/20269']);
         $template = $this->make_citation('{{Cite journal|url=https://scholarspace.manoa.hawaii.edu/handle/10125/20269}}');
         $template->get_identifiers_from_url();
         if ($template->get2('hdl') !== '10125/20269') {
@@ -1234,7 +1234,7 @@ EP - 999 }}';
 
     public function testHandles5(): void {
         $expected_hdl = '2027/loc.ark:/13960/t6349vh5n?urlappend=%3Bseq=672';
-        unset(DoiTools::$cache_hdl_null[$expected_hdl]);
+        unset(HandleCache::$cache_hdl_null[$expected_hdl]);
         $template = $this->make_citation('{{Cite journal|url=http://hdl.handle.net/2027/loc.ark:/13960/t6349vh5n?urlappend=%3Bseq=672}}');
         $template->get_identifiers_from_url();
         $this->assertSame($expected_hdl, $template->get2('hdl'));
