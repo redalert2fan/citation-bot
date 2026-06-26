@@ -16,7 +16,7 @@ const START_ALPHA = '/* The following will be automatically updated to alphabeti
 const END_ALPHA = '/* The above will be automatically updated to alphabetical order */';
 const ALPHA_FILE = __DIR__ . '/../../../src/includes/constants/capitalization.php';
 
-final class ConstantsTest extends testBaseClass {
+final class ConstantsTest extends TestBaseClass {
 
     public function testConstantsDefined(): void {
         new TestPage(); // Fill page name with test name for debugging
@@ -70,11 +70,11 @@ final class ConstantsTest extends testBaseClass {
         $this->assertSame('TheMarker', title_capitalization('Themarker', true));
         $this->assertSame('Algebra i Analiz', title_capitalization('Algebra I Analiz', true));
         $this->assertSame('ChemSystemsChem', title_capitalization('Chemsystemschem', true));
-        $this->assertSame('hessenARCHÄOLOGIE', title_capitalization('HessenARCHÄOLOGIE', true));
+        $this->assertSame('hessenARCHÃƒâ€žOLOGIE', title_capitalization('HessenARCHÃƒâ€žOLOGIE', true));
         $this->assertSame('Ocean Science Journal : OSJ', title_capitalization('Ocean Science Journal : Osj', true));
         $this->assertSame('Starine Jugoslavenske akademije znanosti i umjetnosti', title_capitalization('Starine Jugoslavenske Akademije Znanosti I Umjetnosti', true));
         $this->assertSame('voor de geschiedenis der Nederlanden', title_capitalization('Voor De Geschiedenis Der Nederlanden', true));
-        $this->assertSame('Zprávy o zasedání Král. čes. společnosti nauk v Praze', title_capitalization('Zprávy O Zasedání Král. Čes. Společnosti Nauk V Praze', true));
+        $this->assertSame('ZprÃƒÂ¡vy o zasedÃƒÂ¡nÃƒÂ­ KrÃƒÂ¡l. Ã„Âes. spoleÃ„Ânosti nauk v Praze', title_capitalization('ZprÃƒÂ¡vy O ZasedÃƒÂ¡nÃƒÂ­ KrÃƒÂ¡l. Ã„Å’es. SpoleÃ„Ânosti Nauk V Praze', true));
     }
 
     public function testImplicitConstants(): void {
@@ -189,7 +189,7 @@ final class ConstantsTest extends testBaseClass {
         $our_whitelist_sorted = $our_whitelist;
         sort($our_whitelist_sorted);
 
-        $wikipedia_response = WikipediaBot::GetAPage('Module:Citation/CS1/Whitelist');
+        $wikipedia_response = WikipediaBot::get_a_page('Module:Citation/CS1/Whitelist');
         preg_match_all("~\s\[\'([a-zA-Z0-9\#\-\_ ]+?)\'\] = ~", $wikipedia_response, $matches);
         $their_whitelist = $matches[1];
         $patent_whitelist = ['inventor', 'inventor#', 'inventor-surname', 'inventor#-surname', 'inventor-last',
@@ -258,7 +258,7 @@ final class ConstantsTest extends testBaseClass {
                 $text
             ); // Stuff that gets "fixed"
             $text = str_replace([
-                '| doi-access = Z123Z ', '| access-date = Z123Z ', '| accessdate = Z123Z ', '| doi-broken = Z123Z ', '| doi-broken-date = Z123Z ', '| doi-inactive-date = Z123Z ', '| pmc-embargo-date = Z123Z ', '| embargo = Z123Z ', '| arşivengelli = Z123Z ', '| open-access = Z123Z '],
+                '| doi-access = Z123Z ', '| access-date = Z123Z ', '| accessdate = Z123Z ', '| doi-broken = Z123Z ', '| doi-broken-date = Z123Z ', '| doi-inactive-date = Z123Z ', '| pmc-embargo-date = Z123Z ', '| embargo = Z123Z ', '| arÃ…Å¸ivengelli = Z123Z ', '| open-access = Z123Z '],
                 '',
                 $text
             );
@@ -707,7 +707,7 @@ final class ConstantsTest extends testBaseClass {
     public function testForISBNListUpdates(): void {
         // https://en.wikipedia.org/w/index.php?title=Module:Format_ISBN/data&action=history
         new TestPage(); // Fill page name with test name for debugging
-        $wikipedia_response = WikipediaBot::GetAPage('Module:Format_ISBN/data');
+        $wikipedia_response = WikipediaBot::get_a_page('Module:Format_ISBN/data');
         $this->assertSame(1, mb_substr_count($wikipedia_response, 'RangeMessage timestamp:'));
         $this->assertSame(1, mb_substr_count($wikipedia_response, ISBN_TIME_STAMP_USED));
     }

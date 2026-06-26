@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class parameterTest extends testBaseClass {
+final class ParameterTest extends TestBaseClass {
 
     public function testValueWithPipeAndTrailingNewline(): void {
         new TestPage(); // Fill page name with test name for debugging
@@ -95,11 +95,11 @@ final class parameterTest extends testBaseClass {
     }
 
     public function testBlankValueNonBreakingSpaces(): void {   //These are non-breaking spaces
-        $text = " first7 = \n";
+        $text = "Ã‚Â first7Ã‚Â =Ã‚Â \n";
         $parameter = $this->parameter_parse_text_helper($text);
-        $this->assertSame(' ', $parameter->pre);
+        $this->assertSame('Ã‚Â ', $parameter->pre);
         $this->assertSame('first7', $parameter->param);
-        $this->assertSame(' = ', $parameter->eq);
+        $this->assertSame('Ã‚Â =Ã‚Â ', $parameter->eq);
         $this->assertSame('', $parameter->val);
         $this->assertSame("\n", $parameter->post);
     }
@@ -178,7 +178,7 @@ final class parameterTest extends testBaseClass {
     }
 
     public function testMistakeWithSpaceAndAccent(): void {
-        $text = "{{citation|format électronique=Joe}}";
+        $text = "{{citation|format ÃƒÂ©lectronique=Joe}}";
         $template = $this->process_citation($text);
         $this->assertSame('{{citation|format=Joe}}', $template->parsed_text());
     }

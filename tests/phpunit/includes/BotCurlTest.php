@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class BotCurlTest extends testBaseClass {
+final class BotCurlTest extends TestBaseClass {
 
     public function testCurlLimitPageSizeZeroBytes(): void {
         new TestPage(); // Fill page name with test name for debugging

@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class wikipediaBotTest extends testBaseClass {
+final class WikipediaBotTest extends TestBaseClass {
 
     public function testCoverageFixer(): void {
         WikipediaBot::make_ch();
@@ -68,7 +68,7 @@ final class wikipediaBotTest extends testBaseClass {
     }
 
     public function testNonStandardMode(): void {
-        $this->assertFalse(WikipediaBot::NonStandardMode());
+        $this->assertFalse(WikipediaBot::non_standard_mode());
     }
 
     public function testIsValidUser1(): void {

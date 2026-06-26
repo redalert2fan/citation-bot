@@ -31,7 +31,10 @@
         <exclude name="Generic.Files.OneObjectStructurePerFile.MultipleFound"/>
         <exclude name="MediaWiki.ControlStructures.AssignmentInControlStructures.AssignmentInControlStructures"/>
         <exclude name="MediaWiki.Files.ClassMatchesFilename.NotMatch"/>
-        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
+    </rule>
+    <!-- templatePart4Test intentionally uses lowercase 't' for test ordering -->
+    <rule ref="Squiz.Classes.ValidClassName.NotCamelCaps">
+        <exclude-pattern>*/tests/phpunit/includes/templatePart4Test.php</exclude-pattern>
     </rule>
     <file>./src</file>
     <file>./tests</file>
@@ -85,7 +88,6 @@
                 <element key="mb_ereg_match" value="null"/>
                 <element key="mb_ereg_search_pos" value="null"/>
                 <element key="mb_ereg_search_getregs" value="null"/>
-                <element key="mb_ereg_search_getpos" value="null"/>
                 <element key="mb_ereg_search_getpos" value="null"/>
                 <element key="mb_regex_set_options" value="null"/>
             </property>

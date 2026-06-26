@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class WikiThingsTest extends testBaseClass {
+final class WikiThingsTest extends TestBaseClass {
 
     public function testCommentParseAndReturn(): void {
         new TestPage(); // Fill page name with test name for debugging

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../../testBaseClass.php';
 
-final class ieeeTest extends testBaseClass {
+final class IeeeTest extends TestBaseClass {
 
     public function testIEEEdoi(): void {
         $url = "https://ieeexplore.ieee.org/document/4242344";

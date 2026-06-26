@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class TemplatePart1Test extends testBaseClass {
+final class TemplatePart1Test extends TestBaseClass {
 
     public function testLotsOfFloaters2(): void {
         $text_in = '{{cite journal|isssue 3 volumee 5 | tittle Love|journall Dog|series Not mine today|chapte cows|this is random stuff | zauthor Joe }}';
@@ -163,7 +163,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testNoGoonUTF8(): void {
-        $text = "{{cite news |date=びっくり１位 白鴎|title=阪神びっくり１位 白鴎大・大山、鉄人魂の持ち主だ|journal=鉄人魂}}";
+        $text = "{{cite news |date=Ã£ÂÂ³Ã£ÂÂ£Ã£ÂÂÃ£â€šÅ Ã¯Â¼â€˜Ã¤Â½Â Ã§â„¢Â½Ã©Â´Å½|title=Ã©ËœÂªÃ§Â¥Å¾Ã£ÂÂ³Ã£ÂÂ£Ã£ÂÂÃ£â€šÅ Ã¯Â¼â€˜Ã¤Â½Â Ã§â„¢Â½Ã©Â´Å½Ã¥Â¤Â§Ã£Æ’Â»Ã¥Â¤Â§Ã¥Â±Â±Ã£â‚¬ÂÃ©â€°â€žÃ¤ÂºÂºÃ©Â­â€šÃ£ÂÂ®Ã¦Å’ÂÃ£ÂÂ¡Ã¤Â¸Â»Ã£ÂÂ |journal=Ã©â€°â€žÃ¤ÂºÂºÃ©Â­â€š}}";
         $expanded = $this->process_citation($text);
         $this->assertSame($text, $expanded->parsed_text());
     }
@@ -298,7 +298,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testGetDoiFromCrossref(): void {
-        $text = '{{Cite journal | last1 = Glaesemann | first1 = K. R. | last2 = Fried | first2 = L. E. | doi = | title = Improved wood–kirkwood detonation chemical kinetics | journal = Theoretical Chemistry Accounts | volume = 120 | pages = 37–43 | year = 2007 |issue=1–3|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->|bibcode=<!-- -->}}';
+        $text = '{{Cite journal | last1 = Glaesemann | first1 = K. R. | last2 = Fried | first2 = L. E. | doi = | title = Improved woodÃ¢â‚¬â€œkirkwood detonation chemical kinetics | journal = Theoretical Chemistry Accounts | volume = 120 | pages = 37Ã¢â‚¬â€œ43 | year = 2007 |issue=1Ã¢â‚¬â€œ3|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->|bibcode=<!-- -->}}';
         $expanded = $this->process_citation($text);
         if ($expanded->get2('doi') === null) {
             $this->markTestSkipped('CrossRef API did not respond (rate limit or outage)');
@@ -330,7 +330,7 @@ final class TemplatePart1Test extends testBaseClass {
         $this->assertSame('Francisco', $expanded->get2('last2'));
         $this->assertSame('Eisfeld', $expanded->get2('last1'));
         $this->assertSame('Proceedings of the National Academy of Sciences of the United States of America', $expanded->get2('journal'));
-        $this->assertSame('15303–15307', $expanded->get2('pages'));
+        $this->assertSame('15303Ã¢â‚¬â€œ15307', $expanded->get2('pages'));
         // JSTOR gives up these, but we do not add since we get journal title and URL is simply jstor stable
         $this->assertNull($expanded->get2('publisher'));
         $this->assertNull($expanded->get2('issn'));
@@ -345,7 +345,7 @@ final class TemplatePart1Test extends testBaseClass {
         $this->assertSame('24', $expanded->get2('issue'));
         $this->assertSame('Duh', $expanded->get2('last1')); // We have a bad author2, so no fixed them
         $this->assertSame('Proceedings of the National Academy of Sciences of the United States of America', $expanded->get2('journal'));
-        $this->assertSame('15303–15307', $expanded->get2('pages'));
+        $this->assertSame('15303Ã¢â‚¬â€œ15307', $expanded->get2('pages'));
         // JSTOR gives up these, but we do not add since we get journal title and URL is simply jstor stable
         $this->assertNull($expanded->get2('publisher'));
         $this->assertNull($expanded->get2('issn'));
@@ -468,13 +468,13 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testChangeNothing3(): void {
-        $text = '{{cite journal |title=The tumbling rotational state of 1I/‘Oumuamua<!-- do not change odd punctuation--> |journal=Nature title without caps <!-- Deny Citation Bot-->    |pages=383-386 <!-- do not change the dash--> }}';
+        $text = '{{cite journal |title=The tumbling rotational state of 1I/Ã¢â‚¬ËœOumuamua<!-- do not change odd punctuation--> |journal=Nature title without caps <!-- Deny Citation Bot-->    |pages=383-386 <!-- do not change the dash--> }}';
         $expanded = $this->process_page($text);
         $this->assertSame($text, $expanded->parsed_text());
     }
 
     public function testNoLoseUrl(): void {
-        $text = '{{cite book |last=Söderström |first=Ulrika |date=2015 |title=Sandby Borg: Unveiling the Sandby Borg Massacre |url= |location= |publisher=Kalmar lāns museum |isbn=9789198236620 |language=Swedish }}';
+        $text = '{{cite book |last=SÃƒÂ¶derstrÃƒÂ¶m |first=Ulrika |date=2015 |title=Sandby Borg: Unveiling the Sandby Borg Massacre |url= |location= |publisher=Kalmar lÃ„Âns museum |isbn=9789198236620 |language=Swedish }}';
         $expanded = $this->process_page($text);
         $this->assertSame($text, $expanded->parsed_text());
     }
@@ -520,7 +520,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testBadAuthor2(): void {
-        $text = '{{cite journal|title=Guidelines for the management of adults with hospital-acquired, ventilator-associated, and healthcare-associated pneumonia |journal=Am. J. Respir. Crit. Care Med. |volume=171 |issue=4 |pages=388–416 |year=2005 |pmid=15699079 |doi=10.1164/rccm.200405-644ST|pmid=|pmc=|arxiv=}}';
+        $text = '{{cite journal|title=Guidelines for the management of adults with hospital-acquired, ventilator-associated, and healthcare-associated pneumonia |journal=Am. J. Respir. Crit. Care Med. |volume=171 |issue=4 |pages=388Ã¢â‚¬â€œ416 |year=2005 |pmid=15699079 |doi=10.1164/rccm.200405-644ST|pmid=|pmc=|arxiv=}}';
         $expanded = $this->process_citation($text);
         $this->assertSame('American Thoracic Society', $expanded->get2('author1'));
     }
@@ -602,7 +602,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testTemplateRenamingURLConvert(): void {
-        $text = '{{Cite journal|url=http://www.sciencedirect.com/science/article/pii/B9780123864543000129|last=Roberts|first=L.|date=2014|publisher=Academic Press|isbn=978-0-12-386455-0|editor-last=Wexler|editor-first=Philip|location=Oxford|pages=993–995|doi=10.1016/b978-0-12-386454-3.00012-9|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->}}';
+        $text = '{{Cite journal|url=http://www.sciencedirect.com/science/article/pii/B9780123864543000129|last=Roberts|first=L.|date=2014|publisher=Academic Press|isbn=978-0-12-386455-0|editor-last=Wexler|editor-first=Philip|location=Oxford|pages=993Ã¢â‚¬â€œ995|doi=10.1016/b978-0-12-386454-3.00012-9|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->}}';
         $expanded = $this->process_citation($text);
         $this->assertSame('http://www.sciencedirect.com/science/article/pii/B9780123864543000129', $expanded->get2('chapter-url'));
         $this->assertNull($expanded->get2('url'));
@@ -789,13 +789,13 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testRemoveWikilinks4c(): void {
-        $expanded = $this->process_citation("{{cite journal|journal=[[Bulletin du Muséum national d’Histoire naturelle, Paris]]}}");
-        $this->assertSame("[[Bulletin du Muséum national d'Histoire naturelle, Paris]]", $expanded->get2('journal'));
+        $expanded = $this->process_citation("{{cite journal|journal=[[Bulletin du MusÃƒÂ©um national dÃ¢â‚¬â„¢Histoire naturelle, Paris]]}}");
+        $this->assertSame("[[Bulletin du MusÃƒÂ©um national d'Histoire naturelle, Paris]]", $expanded->get2('journal'));
     }
 
     public function testRemoveWikilinks4d(): void {
-        $expanded = $this->process_citation("{{cite journal|journal=[[Bulletin du Muséum national d’Histoire naturelle, Paris|Hose]]}}");
-        $this->assertSame("[[Bulletin du Muséum national d'Histoire naturelle, Paris|Hose]]", $expanded->get2('journal'));
+        $expanded = $this->process_citation("{{cite journal|journal=[[Bulletin du MusÃƒÂ©um national dÃ¢â‚¬â„¢Histoire naturelle, Paris|Hose]]}}");
+        $this->assertSame("[[Bulletin du MusÃƒÂ©um national d'Histoire naturelle, Paris|Hose]]", $expanded->get2('journal'));
     }
 
     public function testRemoveWikilinks5(): void {
@@ -836,7 +836,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testRemoveWikilinks7c(): void {
-        $text = "{{Cite journal|last=[[Nelarine Cornelius|Cornelius]]|first= [[Nelarine Cornelius|Nelarine]]|last2= Todres|first2= Mathew|last3= Janjuha-Jivraj|first3= Shaheena|last4= Woods|first4= Adrian|last5= Wallace|first5= James|date= 2008|title= Corporate Social Responsibility and the Social Enterprise|jstor= 25482219|journal= Journal of Business Ethics|volume= 81|issue= 2|pages= 355–370|doi= 10.1007/s10551-007-9500-7|s2cid= 154580752|url = <!-- dsfasdfds -->|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->}}";
+        $text = "{{Cite journal|last=[[Nelarine Cornelius|Cornelius]]|first= [[Nelarine Cornelius|Nelarine]]|last2= Todres|first2= Mathew|last3= Janjuha-Jivraj|first3= Shaheena|last4= Woods|first4= Adrian|last5= Wallace|first5= James|date= 2008|title= Corporate Social Responsibility and the Social Enterprise|jstor= 25482219|journal= Journal of Business Ethics|volume= 81|issue= 2|pages= 355Ã¢â‚¬â€œ370|doi= 10.1007/s10551-007-9500-7|s2cid= 154580752|url = <!-- dsfasdfds -->|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->}}";
         $expanded = $this->process_citation($text);
         $this->assertNull($expanded->get2('last'));
         $this->assertNull($expanded->get2('first'));
@@ -898,7 +898,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testScriptTitle(): void {
-        $text = "{{cite book |author={{noitalic|{{lang|zh-hans|国务院人口普查办公室、国家统计局人口和社会科技统计司编}}}} |date=2012 |script-title=zh:中国2010年人口普查分县资料 |location=Beijing |publisher={{noitalic|{{lang|zh-hans|中国统计出版社}}}} [China Statistics Press] |page= |isbn=978-7-5037-6659-6 }}";
+        $text = "{{cite book |author={{noitalic|{{lang|zh-hans|Ã¥â€ºÂ½Ã¥Å Â¡Ã©â„¢Â¢Ã¤ÂºÂºÃ¥ÂÂ£Ã¦â„¢Â®Ã¦Å¸Â¥Ã¥Å Å¾Ã¥â€¦Â¬Ã¥Â®Â¤Ã£â‚¬ÂÃ¥â€ºÂ½Ã¥Â®Â¶Ã§Â»Å¸Ã¨Â®Â¡Ã¥Â±â‚¬Ã¤ÂºÂºÃ¥ÂÂ£Ã¥â€™Å’Ã§Â¤Â¾Ã¤Â¼Å¡Ã§Â§â€˜Ã¦Å â‚¬Ã§Â»Å¸Ã¨Â®Â¡Ã¥ÂÂ¸Ã§Â¼â€“}}}} |date=2012 |script-title=zh:Ã¤Â¸Â­Ã¥â€ºÂ½2010Ã¥Â¹Â´Ã¤ÂºÂºÃ¥ÂÂ£Ã¦â„¢Â®Ã¦Å¸Â¥Ã¥Ë†â€ Ã¥Å½Â¿Ã¨Âµâ€žÃ¦â€“â„¢ |location=Beijing |publisher={{noitalic|{{lang|zh-hans|Ã¤Â¸Â­Ã¥â€ºÂ½Ã§Â»Å¸Ã¨Â®Â¡Ã¥â€¡ÂºÃ§â€°Ë†Ã§Â¤Â¾}}}} [China Statistics Press] |page= |isbn=978-7-5037-6659-6 }}";
         $expanded = $this->process_citation($text);
         $this->assertNull($expanded->get2('title')); // Already have script-title that matches what google books gives us
         $this->assertTrue($expanded->add_if_new('title', 'This English Only'));
@@ -961,7 +961,7 @@ final class TemplatePart1Test extends testBaseClass {
     public function testParameterAlias(): void {
         $text = '{{cite journal |author-last1=Knops |author-first1=J.M. |author-last2=Nash III |author-first2=T.H.
         |date=1991 |title=Mineral cycling and epiphytic lichens: Implications at the ecosystem level
-        |journal=Lichenologist |volume=23 |pages=309–321 |doi=10.1017/S0024282991000452 |issue=3|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->}}';
+        |journal=Lichenologist |volume=23 |pages=309Ã¢â‚¬â€œ321 |doi=10.1017/S0024282991000452 |issue=3|pmid=<!-- -->|pmc=<!-- -->|arxiv=<!-- -->}}';
         $expanded = $this->process_citation($text);
         $this->assertNull($expanded->get2('last1'));
         $this->assertNull($expanded->get2('last2'));
@@ -970,7 +970,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testMisspeltParameters1(): void {
-        $text = "{{Cite journal | ahtour=S.-X. HU, M.-Y. ZHU, F.-C. ZHAO, and M. STEINER|tutle=A crown group priapulid from the early Cambrian Guanshan Lagerstätte,|jrounal=Geol. Mag.|year= 2017.}}";
+        $text = "{{Cite journal | ahtour=S.-X. HU, M.-Y. ZHU, F.-C. ZHAO, and M. STEINER|tutle=A crown group priapulid from the early Cambrian Guanshan LagerstÃƒÂ¤tte,|jrounal=Geol. Mag.|year= 2017.}}";
         $expanded = $this->process_citation($text);
         $this->assertNotNull($expanded->get2('author')); ## Check: the parameter might be broken down into last1, first1 etc
         $this->assertNotNull($expanded->get2('title'));
@@ -979,7 +979,7 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testMisspeltParameters2(): void {
-        $text = "{{Cite journal | ahtour=S.-X. HU, M.-Y. ZHU, F.-C. ZHAO, and M. STEINER|tutel=A crown group priapulid from the early Cambrian Guanshan Lagerstätte,|jrounal=Geol. Mag.|year= 2017.}}";
+        $text = "{{Cite journal | ahtour=S.-X. HU, M.-Y. ZHU, F.-C. ZHAO, and M. STEINER|tutel=A crown group priapulid from the early Cambrian Guanshan LagerstÃƒÂ¤tte,|jrounal=Geol. Mag.|year= 2017.}}";
         $expanded = $this->process_citation($text);
         $this->assertNotNull($expanded->get2('author')); ## Check: the parameter might be broken down into last1, first1 etc
         $this->assertNotNull($expanded->get2('tutel'));
@@ -1031,22 +1031,22 @@ final class TemplatePart1Test extends testBaseClass {
     }
 
     public function testId2Param5(): void {
-        $text = '{{cite book|pages=1–2|id={{arxiv|astr.ph|1234.5678}}}}{{cite book|pages=1–3|id={{arxiv|astr.ph|1234.5678}}}}'; // Two of the same sub-template, but in different templates
+        $text = '{{cite book|pages=1Ã¢â‚¬â€œ2|id={{arxiv|astr.ph|1234.5678}}}}{{cite book|pages=1Ã¢â‚¬â€œ3|id={{arxiv|astr.ph|1234.5678}}}}'; // Two of the same sub-template, but in different templates
         $expanded = $this->process_page($text);
-        $this->assertSame('{{cite book|pages=1–2|arxiv=astr.ph/1234.5678 }}{{cite book|pages=1–3|arxiv=astr.ph/1234.5678 }}', $expanded->parsed_text());
+        $this->assertSame('{{cite book|pages=1Ã¢â‚¬â€œ2|arxiv=astr.ph/1234.5678 }}{{cite book|pages=1Ã¢â‚¬â€œ3|arxiv=astr.ph/1234.5678 }}', $expanded->parsed_text());
     }
 
     public function testNestedTemplates1(): void {
         $text = '{{cite book|pages=1-2| {{cnn|{{fox|{{msnbc}}|{{local}}|test}} | hello }} {{tester}} {{ random {{ inside {{tester}} }} | id={{cite book|pages=1-3| {{cnn|{{fox|{{msnbc}}|{{local}}|test}} | hello }} {{tester}} {{ random {{ inside {{tester}} }} }}  }} |  cool stuff | not cool}}}}';
         $expanded = $this->process_citation($text);
-        $text = str_replace("-", "–", $text); // Should not change anything other than upgrade dashes
+        $text = str_replace("-", "Ã¢â‚¬â€œ", $text); // Should not change anything other than upgrade dashes
         $this->assertSame($text, $expanded->parsed_text());
     }
 
     public function testNestedTemplates2(): void {
         $text = '{{cite book|quote=See {{cite book|pages=1-2|quote=See {{cite book|pages=1-4}}}}|pages=1-3}}';
         $expanded = $this->process_citation($text);
-        $text = str_replace("-", "–", $text); // Should not change anything other than upgrade dashes
+        $text = str_replace("-", "Ã¢â‚¬â€œ", $text); // Should not change anything other than upgrade dashes
         $this->assertSame($text, $expanded->parsed_text());
     }
 

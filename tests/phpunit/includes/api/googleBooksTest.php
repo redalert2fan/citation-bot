@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../../testBaseClass.php';
 
-final class googleBooksTest extends testBaseClass {
+final class GoogleBooksTest extends TestBaseClass {
     public function testGoogleBookNormalize0(): void {
         new TestPage(); // Fill page name with test name for debugging
         $removed_redundant = 0;

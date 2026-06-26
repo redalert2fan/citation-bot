@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class templatePart4Test extends testBaseClass { // Lower case "t" to run later in test suite
+final class templatePart4Test extends TestBaseClass { // Lower case "t" to run later in test suite
 
     public function testTidy1(): void {
         $text = '{{cite web|postscript = <!-- A comment only --> }}';
@@ -706,14 +706,14 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $text = "{{cite journal |pages=Pages: 1-2 }}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('pages');
-        $this->assertSame('1–2', $template->get2('pages'));
+        $this->assertSame('1Ã¢â‚¬â€œ2', $template->get2('pages'));
     }
 
     public function testTidy78(): void {
         $text = "{{cite journal |pages=p. 1-2 }}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('pages');
-        $this->assertSame('1–2', $template->get2('pages'));
+        $this->assertSame('1Ã¢â‚¬â€œ2', $template->get2('pages'));
     }
 
     public function testTidy79(): void {
@@ -1476,7 +1476,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
     }
 
     public function testTidyPeriodicalQuotes(): void {
-        $text = "{{cite web|journal=‘X’}}";
+        $text = "{{cite web|journal=Ã¢â‚¬ËœXÃ¢â‚¬â„¢}}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('journal');
         $this->assertSame("'X'", $template->get2('journal'));
@@ -1550,7 +1550,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
     }
 
     public function testTidyWPandLegacy(): void {
-        $text = "{{cite web|publisher=the washington post – via legacy.com}}";
+        $text = "{{cite web|publisher=the washington post Ã¢â‚¬â€œ via legacy.com}}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('publisher');
         $this->assertSame('Legacy.com', $template->get2('via'));
@@ -1645,7 +1645,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
     }
 
     public function testTidyForbes3(): void {
-        $text = "{{cite web|publisher=forbes.com llc™}}";
+        $text = "{{cite web|publisher=forbes.com llcÃ¢â€žÂ¢}}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('publisher');
         $this->assertSame('Forbes', $template->get2('publisher'));
