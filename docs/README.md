@@ -119,7 +119,7 @@ Includes (under `src/includes/`):
 
 ## Deployment
 
-The bot requires PHP >= 8.4 and a Linux operating system (batch processing uses `/dev/shm/` for job tracking, which is Linux-specific).
+The bot requires PHP >= 8.4.
 
 To run the bot from a new environment, you will need to create an `src/env.php` file (if one doesn't already exist) that sets the needed authentication tokens as environment variables.  To do this, you can rename `src/env.php.example` to `src/env.php`, set the variables in the file, and then make sure the file is not world readable or writable:
 
