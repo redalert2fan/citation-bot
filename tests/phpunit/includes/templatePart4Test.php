@@ -706,14 +706,14 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $text = "{{cite journal |pages=Pages: 1-2 }}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('pages');
-        $this->assertSame('1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2', $template->get2('pages'));
+        $this->assertSame('1–2', $template->get2('pages'));
     }
 
     public function testTidy78(): void {
         $text = "{{cite journal |pages=p. 1-2 }}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('pages');
-        $this->assertSame('1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2', $template->get2('pages'));
+        $this->assertSame('1–2', $template->get2('pages'));
     }
 
     public function testTidy79(): void {
@@ -1476,7 +1476,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
     }
 
     public function testTidyPeriodicalQuotes(): void {
-        $text = "{{cite web|journal=ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“XÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢}}";
+        $text = "{{cite web|journal=‘X’}}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('journal');
         $this->assertSame("'X'", $template->get2('journal'));
@@ -1550,7 +1550,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
     }
 
     public function testTidyWPandLegacy(): void {
-        $text = "{{cite web|publisher=the washington post ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ via legacy.com}}";
+        $text = "{{cite web|publisher=the washington post – via legacy.com}}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('publisher');
         $this->assertSame('Legacy.com', $template->get2('via'));
@@ -1645,7 +1645,7 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
     }
 
     public function testTidyForbes3(): void {
-        $text = "{{cite web|publisher=forbes.com llcÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢}}";
+        $text = "{{cite web|publisher=forbes.com llc™}}";
         $template = $this->make_citation($text);
         $template->tidy_parameter('publisher');
         $this->assertSame('Forbes', $template->get2('publisher'));

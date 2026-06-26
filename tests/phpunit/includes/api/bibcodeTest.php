@@ -85,11 +85,11 @@ final class bibcodeTest extends testBaseClass {
                 0 => 'Fredin, Ola',
                 1 => 'Viola, Giulio',
                 2 => 'Zwingmann, Horst',
-                3 => 'SÃƒÆ’Ã‚Â¸rlie, Ronald',
-                4 => 'BrÃƒÆ’Ã‚Â¶nner, Marco',
+                3 => 'Sørlie, Ronald',
+                4 => 'Brönner, Marco',
                 5 => 'Lie, Jan-Erik',
                 6 => 'Grandal, Else Margrethe',
-                7 => 'MÃƒÆ’Ã‚Â¼ller, Axel',
+                7 => 'Müller, Axel',
                 8 => 'Margreth, Annina',
                 9 => 'Vogt, Christoph',
                 10 => 'Knies, Jochen'
@@ -150,7 +150,7 @@ final class bibcodeTest extends testBaseClass {
             'author' =>
             [
                 0 => 'Hessman, F. V.',
-                1 => 'GÃƒÆ’Ã‚Â¤nsicke, B. T.',
+                1 => 'Gänsicke, B. T.',
                 2 => 'Mattei, J. A.',
             ],
             'doctype' => 'article',
@@ -530,7 +530,7 @@ final class bibcodeTest extends testBaseClass {
 
     public function testFindBibcodeNoTitle(): void {
         $this->requires_bibcode(function (): void {
-            $text = "{{Cite journal | last1 = Glaesemann | first1 = K. R. | last2 = Gordon | first2 = M. S. | last3 = Nakano | first3 = H. | journal = Physical Chemistry Chemical Physics | volume = 1 | issue = 6 | pages = 967ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“975| year = 1999 |issn = 1463-9076}}";
+            $text = "{{Cite journal | last1 = Glaesemann | first1 = K. R. | last2 = Gordon | first2 = M. S. | last3 = Nakano | first3 = H. | journal = Physical Chemistry Chemical Physics | volume = 1 | issue = 6 | pages = 967–975| year = 1999 |issn = 1463-9076}}";
             $expanded = $this->make_citation($text);
             expand_by_adsabs($expanded);
             $found_bibcode = $expanded->get2('bibcode');

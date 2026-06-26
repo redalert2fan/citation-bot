@@ -95,11 +95,11 @@ final class parameterTest extends testBaseClass {
     }
 
     public function testBlankValueNonBreakingSpaces(): void {   //These are non-breaking spaces
-        $text = "Ãƒâ€šÃ‚Â first7Ãƒâ€šÃ‚Â =Ãƒâ€šÃ‚Â \n";
+        $text = " first7 = \n";
         $parameter = $this->parameter_parse_text_helper($text);
-        $this->assertSame('Ãƒâ€šÃ‚Â ', $parameter->pre);
+        $this->assertSame(' ', $parameter->pre);
         $this->assertSame('first7', $parameter->param);
-        $this->assertSame('Ãƒâ€šÃ‚Â =Ãƒâ€šÃ‚Â ', $parameter->eq);
+        $this->assertSame(' = ', $parameter->eq);
         $this->assertSame('', $parameter->val);
         $this->assertSame("\n", $parameter->post);
     }
@@ -178,7 +178,7 @@ final class parameterTest extends testBaseClass {
     }
 
     public function testMistakeWithSpaceAndAccent(): void {
-        $text = "{{citation|format ÃƒÆ’Ã‚Â©lectronique=Joe}}";
+        $text = "{{citation|format électronique=Joe}}";
         $template = $this->process_citation($text);
         $this->assertSame('{{citation|format=Joe}}', $template->parsed_text());
     }

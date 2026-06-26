@@ -111,11 +111,11 @@ final class textToolsTest extends testBaseClass {
     }
 
     public function testFrenchCapitalization2(): void {
-        $this->assertSame("PhÃƒÆ’Ã‚Â©nomÃƒÆ’Ã‚Â¨nes d'ÃƒÆ’Ã¢â‚¬Â°vaporation d'Hydrologie", title_capitalization(title_case("PhÃƒÆ’Ã‚Â©nomÃƒÆ’Ã‚Â¨nes d'ÃƒÆ’Ã¢â‚¬Â°vaporation dÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢hydrologie"), true));
+        $this->assertSame("Phénomènes d'Évaporation d'Hydrologie", title_capitalization(title_case("Phénomènes d'Évaporation d’hydrologie"), true));
     }
 
     public function testFrenchCapitalization3(): void {
-        $this->assertSame("D'Hydrologie PhÃƒÆ’Ã‚Â©nomÃƒÆ’Ã‚Â¨nes d'ÃƒÆ’Ã¢â‚¬Â°vaporation d'Hydrologie l'Aerotecnica", title_capitalization("D'Hydrologie PhÃƒÆ’Ã‚Â©nomÃƒÆ’Ã‚Â¨nes d&#x2019;ÃƒÆ’Ã¢â‚¬Â°vaporation d&#8217;Hydrologie l&rsquo;Aerotecnica", true));
+        $this->assertSame("D'Hydrologie Phénomènes d'Évaporation d'Hydrologie l'Aerotecnica", title_capitalization("D'Hydrologie Phénomènes d&#x2019;Évaporation d&#8217;Hydrologie l&rsquo;Aerotecnica", true));
     }
 
     public function testITS(): void {
@@ -127,11 +127,11 @@ final class textToolsTest extends testBaseClass {
 
     public function testTidyDate1(): void {
         new TestPage(); // Fill page name with test name for debugging
-        $this->assertSame('2014', tidy_date('maanantai 14. heinÃƒÆ’Ã‚Â¤kuuta 2014'));
-        $this->assertSame('2012-04-20', tidy_date('2012ÃƒÂ¥Ã‚Â¹Ã‚Â´4ÃƒÂ¦Ã…â€œÃ‹â€ 20ÃƒÂ¦Ã¢â‚¬â€Ã‚Â¥ ÃƒÂ¦Ã‹Å“Ã…Â¸ÃƒÂ¦Ã…â€œÃ…Â¸ÃƒÂ¤Ã‚ÂºÃ¢â‚¬Â'));
+        $this->assertSame('2014', tidy_date('maanantai 14. heinäkuuta 2014'));
+        $this->assertSame('2012-04-20', tidy_date('2012年4月20日 星期五'));
         $this->assertSame('2011-05-10', tidy_date('2011-05-10T06:34:00-0400'));
         $this->assertSame('July 2014', tidy_date('2014-07-01T23:50:00Z, 2014-07-01'));
-        $this->assertSame('', tidy_date('Ãƒâ€ºÃ‚Â±Ãƒâ€ºÃ‚Â³Ãƒâ€ºÃ‚Â¸Ãƒâ€ºÃ‚Â¶/Ãƒâ€ºÃ‚Â±Ãƒâ€ºÃ‚Â°/Ãƒâ€ºÃ‚Â°Ãƒâ€ºÃ‚Â´ - Ãƒâ€ºÃ‚Â±Ãƒâ€ºÃ‚Â±:Ãƒâ€ºÃ‚Â³Ãƒâ€ºÃ‚Â°'));
+        $this->assertSame('', tidy_date('۱۳۸۶/۱۰/۰۴ - ۱۱:۳۰'));
     }
 
     public function testTidyDate2(): void {
@@ -154,8 +154,8 @@ final class textToolsTest extends testBaseClass {
 
     public function testTidyDate4(): void {
         new TestPage(); // Fill page name with test name for debugging
-        $this->assertSame('22 October 1999 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ 22 September 2000', tidy_date('1999-10-22 - 2000-09-22'));
-        $this->assertSame('22 October ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ 22 September 1999', tidy_date('1999-10-22 - 1999-09-22'));
+        $this->assertSame('22 October 1999 – 22 September 2000', tidy_date('1999-10-22 - 2000-09-22'));
+        $this->assertSame('22 October – 22 September 1999', tidy_date('1999-10-22 - 1999-09-22'));
     }
 
     public function testTidyDate5(): void {
@@ -269,8 +269,8 @@ final class textToolsTest extends testBaseClass {
 
     public function test_titles_are_similar_ticks(): void {
         new TestPage(); // Fill page name with test name for debugging
-        $this->assertSame('ejscriptgammaramshg', strip_diacritics('Ãƒâ€°Ã…Â¾Ãƒâ€°Ã…Â¸Ãƒâ€°Ã‚Â¡Ãƒâ€°Ã‚Â£Ãƒâ€°Ã‚Â¤Ãƒâ€°Ã‚Â¥Ãƒâ€°Ã‚Â '));
-        $this->assertTrue(titles_are_similar('Ãƒâ€°Ã…Â¾Ãƒâ€°Ã…Â¸Ãƒâ€°Ã‚Â¡Ãƒâ€°Ã‚Â£Ãƒâ€°Ã‚Â¤Ãƒâ€°Ã‚Â¥Ãƒâ€°Ã‚Â ', 'ejscriptgammaramshg'));
+        $this->assertSame('ejscriptgammaramshg', strip_diacritics('ɞɟɡɣɤɥɠ'));
+        $this->assertTrue(titles_are_similar('ɞɟɡɣɤɥɠ', 'ejscriptgammaramshg'));
     }
 
     public function test_titles_are_similar_series(): void {
@@ -280,7 +280,7 @@ final class textToolsTest extends testBaseClass {
 
     public function test_titles_are_similar_junk(): void {
         new TestPage(); // Fill page name with test name for debugging
-        $this->assertTrue(titles_are_similar('DSFrHdseyJhgdtyhTSFDhge5safdsfasdfa', 'ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½DÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½SÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½FÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½rÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½HÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½dÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½sÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½eÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½yÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½JÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½hÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½gÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½dÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½tÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½yÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½hÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½TÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½SÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½FÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½DÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½hÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½gÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½eÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½5ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½sÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½aÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½fÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½dÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½sÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½fÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½aÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½sÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½dÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½fÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½aÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½'));
+        $this->assertTrue(titles_are_similar('DSFrHdseyJhgdtyhTSFDhge5safdsfasdfa', '��D��S��F��r��H��d��s��e��y��J��h��g��d��t��y��h��T��S��F��D��h��g��e��5��s��a��f��d��s��f��a��s��d��f��a��'));
     }
 
     public function test_titles_are_similar_junk2(): void {
@@ -293,84 +293,84 @@ final class textToolsTest extends testBaseClass {
     }
 
     public function testArrowAreQuotes1(): void {
-        $text = "This Ãƒâ€šÃ‚Â» That";
+        $text = "This » That";
         $this->assertSame($text, straighten_quotes($text, true));
     }
 
     public function testArrowAreQuotes2(): void {
-        $text = "XÃƒâ€šÃ‚Â«YÃƒâ€šÃ‚Â»Z";
+        $text = "X«Y»Z";
         $this->assertSame('X"Y"Z', straighten_quotes($text, true));
     }
 
     public function testArrowAreQuotes3(): void {
-        $text = "This ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âº That";
+        $text = "This › That";
         $this->assertSame($text, straighten_quotes($text, true));
     }
 
     public function testArrowAreQuotes4(): void {
-        $text = "XÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹YÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºZ";
+        $text = "X‹Y›Z";
         $this->assertSame("X'Y'Z", straighten_quotes($text, true));
     }
 
     public function testArrowAreQuotes5(): void {
-        $text = "This Ãƒâ€šÃ‚Â» That";
+        $text = "This » That";
         $this->assertSame($text, straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes6(): void {
-        $text = "XÃƒâ€šÃ‚Â«YÃƒâ€šÃ‚Â»Z";
+        $text = "X«Y»Z";
         $this->assertSame($text, straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes7(): void {
-        $text = "This ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âº That";
+        $text = "This › That";
         $this->assertSame($text, straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes8(): void {
-        $text = "XÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹YÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºZ";
+        $text = "X‹Y›Z";
         $this->assertSame("X'Y'Z", straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes9(): void {
-        $text = "Ãƒâ€šÃ‚Â«XYÃƒâ€šÃ‚Â»Z";
+        $text = "«XY»Z";
         $this->assertSame($text, straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes10(): void {
-        $text = "Ãƒâ€šÃ‚Â«XYÃƒâ€šÃ‚Â»Z";
+        $text = "«XY»Z";
         $this->assertSame('"XY"Z', straighten_quotes($text, true));
     }
 
     public function testArrowAreQuotes11(): void {
-        $text = "Ãƒâ€šÃ‚Â«YÃƒâ€šÃ‚Â»";
+        $text = "«Y»";
         $this->assertSame('"Y"', straighten_quotes($text, true));
     }
 
     public function testArrowAreQuotes12(): void {
-        $text = "ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹YÃƒÂ¢Ã¢â€šÂ¬Ã‚Âº";
+        $text = "‹Y›";
         $this->assertSame("'Y'", straighten_quotes($text, true));
     }
 
     public function testArrowAreQuotes13(): void {
-        $text = "Ãƒâ€šÃ‚Â«YÃƒâ€šÃ‚Â»";
+        $text = "«Y»";
         $this->assertSame('"Y"', straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes14(): void {
-        $text = "ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹YÃƒÂ¢Ã¢â€šÂ¬Ã‚Âº";
+        $text = "‹Y›";
         $this->assertSame("'Y'", straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes15(): void {
         new TestPage(); // Fill page name with test name for debugging
-        $text = 'Ãƒâ€šÃ‚Â«LastronauteÃƒâ€šÃ‚Â» du vox pop de Guy Nantel ÃƒÆ’Ã‚Â©tait candidat aux ÃƒÆ’Ã‚Â©lections fÃƒÆ’Ã‚Â©dÃƒÆ’Ã‚Â©rales... et a perdu';
+        $text = '«Lastronaute» du vox pop de Guy Nantel était candidat aux élections fédérales... et a perdu';
         $this->assertSame($text, straighten_quotes($text, false));
     }
 
     public function testArrowAreQuotes16(): void {
-        $text = 'Ãƒâ€šÃ‚Â«LastronauteÃƒâ€šÃ‚Â» du vox pop de Guy Nantel ÃƒÆ’Ã‚Â©tait candidat aux ÃƒÆ’Ã‚Â©lections fÃƒÆ’Ã‚Â©dÃƒÆ’Ã‚Â©rales... et a perdu';
-        $this->assertSame('"Lastronaute" du vox pop de Guy Nantel ÃƒÆ’Ã‚Â©tait candidat aux ÃƒÆ’Ã‚Â©lections fÃƒÆ’Ã‚Â©dÃƒÆ’Ã‚Â©rales... et a perdu', straighten_quotes($text, true));
+        $text = '«Lastronaute» du vox pop de Guy Nantel était candidat aux élections fédérales... et a perdu';
+        $this->assertSame('"Lastronaute" du vox pop de Guy Nantel était candidat aux élections fédérales... et a perdu', straighten_quotes($text, true));
     }
 
     public function testC1QuoteNormalization(): void {
@@ -382,9 +382,9 @@ final class textToolsTest extends testBaseClass {
 
     public function testC1PreservesValidUTF8(): void {
         // Valid UTF-8 multibyte sequences preserved (en-dashes, CJK, accented chars)
-        $this->assertSame("HartreeÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Fock Method", straighten_quotes("HartreeÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Fock Method", true));
-        $this->assertSame("ÃƒÂ¥Ã‚Â¤Ã‚Â§ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ£Ã‚ÂÃ‚Â«ÃƒÂ£Ã‚ÂÃ…Â ÃƒÂ£Ã‚ÂÃ¢â‚¬ËœÃƒÂ£Ã¢â‚¬Å¡Ã¢â‚¬Â¹ÃƒÂ§Ã‚Â Ã¢â‚¬ÂÃƒÂ§Ã‚Â©Ã‚Â¶", straighten_quotes("ÃƒÂ¥Ã‚Â¤Ã‚Â§ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ£Ã‚ÂÃ‚Â«ÃƒÂ£Ã‚ÂÃ…Â ÃƒÂ£Ã‚ÂÃ¢â‚¬ËœÃƒÂ£Ã¢â‚¬Å¡Ã¢â‚¬Â¹ÃƒÂ§Ã‚Â Ã¢â‚¬ÂÃƒÂ§Ã‚Â©Ã‚Â¶", true));
-        $this->assertSame("ÃƒÆ’Ã¢â‚¬ËœÃƒÆ’Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å“ÃƒÆ’Ã¢â‚¬Â", straighten_quotes("ÃƒÆ’Ã¢â‚¬ËœÃƒÆ’Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å“ÃƒÆ’Ã¢â‚¬Â", true));
+        $this->assertSame("Hartree–Fock Method", straighten_quotes("Hartree–Fock Method", true));
+        $this->assertSame("大学における研究", straighten_quotes("大学における研究", true));
+        $this->assertSame("ÑÒÓÔ", straighten_quotes("ÑÒÓÔ", true));
     }
 
     public function testC1EmptyString(): void {
@@ -394,8 +394,8 @@ final class textToolsTest extends testBaseClass {
 
     public function testC1UnicodeControlChars(): void {
         // Unicode control characters U+0091-U+0094 normalized
-        $this->assertSame("'dynamic-lanes'", normalize_c1_quotes("Ãƒâ€šÃ¢â‚¬Ëœdynamic-lanesÃƒâ€šÃ¢â‚¬â„¢"));
-        $this->assertSame('"test"', normalize_c1_quotes("Ãƒâ€šÃ¢â‚¬Å“testÃƒâ€šÃ¢â‚¬Â"));
+        $this->assertSame("'dynamic-lanes'", normalize_c1_quotes("dynamic-lanes"));
+        $this->assertSame('"test"', normalize_c1_quotes("test"));
     }
 
     /**
@@ -404,23 +404,23 @@ final class textToolsTest extends testBaseClass {
      * @todo - should do more than just give up and wrap in nowiki
      */
     public function testMathInTitle1(): void {
-        $text_math = 'Spectroscopic analysis of the candidate <math><mrow>ÃƒÆ’Ã…Â¸</mrow></math> Cephei star <math><mrow>s</mrow></math> Cas: Atmospheric characterization and line-profile variability';
+        $text_math = 'Spectroscopic analysis of the candidate <math><mrow>ß</mrow></math> Cephei star <math><mrow>s</mrow></math> Cas: Atmospheric characterization and line-profile variability';
         $this->assertSame($text_math, sanitize_string($text_math));
     }
 
     public function testMathInTitle2(): void {
-        $text_math = 'Spectroscopic analysis of the candidate <math><mrow>ÃƒÆ’Ã…Â¸</mrow></math> Cephei star <math><mrow>s</mrow></math> Cas: Atmospheric characterization and line-profile variability';
+        $text_math = 'Spectroscopic analysis of the candidate <math><mrow>ß</mrow></math> Cephei star <math><mrow>s</mrow></math> Cas: Atmospheric characterization and line-profile variability';
         // After MathML conversion, <mrow> tags are stripped, leaving just the content
         // Note: title_capitalization doesn't capitalize normal sentence case text, only ALL CAPS
-        $expected = 'Spectroscopic analysis of the candidate <math>ÃƒÆ’Ã…Â¸</math> Cephei star <math>s</math> Cas: Atmospheric characterization and line-profile variability';
+        $expected = 'Spectroscopic analysis of the candidate <math>ß</math> Cephei star <math>s</math> Cas: Atmospheric characterization and line-profile variability';
         $this->assertSame($expected, wikify_external_text($text_math));
     }
 
     public function testMathInTitle3(): void {
-        $text_mml = 'Spectroscopic analysis of the candidate <mml:math altimg="si37.gif" overflow="scroll" xmlns:xocs="http://www.elsevier.com/xml/xocs/dtd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elsevier.com/xml/ja/dtd" xmlns:ja="http://www.elsevier.com/xml/ja/dtd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:tb="http://www.elsevier.com/xml/common/table/dtd" xmlns:sb="http://www.elsevier.com/xml/common/struct-bib/dtd" xmlns:ce="http://www.elsevier.com/xml/common/dtd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:cals="http://www.elsevier.com/xml/common/cals/dtd"><mml:mrow><mml:mi>ÃƒÆ’Ã…Â¸</mml:mi></mml:mrow></mml:math> Cephei star <mml:math altimg="si37.gif" overflow="scroll" xmlns:xocs="http://www.elsevier.com/xml/xocs/dtd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elsevier.com/xml/ja/dtd" xmlns:ja="http://www.elsevier.com/xml/ja/dtd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:tb="http://www.elsevier.com/xml/common/table/dtd" xmlns:sb="http://www.elsevier.com/xml/common/struct-bib/dtd" xmlns:ce="http://www.elsevier.com/xml/common/dtd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:cals="http://www.elsevier.com/xml/common/cals/dtd"><mml:mrow><mml:mi>s</mml:mi></mml:mrow></mml:math> Cas: Atmospheric characterization and line-profile variability';
+        $text_mml = 'Spectroscopic analysis of the candidate <mml:math altimg="si37.gif" overflow="scroll" xmlns:xocs="http://www.elsevier.com/xml/xocs/dtd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elsevier.com/xml/ja/dtd" xmlns:ja="http://www.elsevier.com/xml/ja/dtd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:tb="http://www.elsevier.com/xml/common/table/dtd" xmlns:sb="http://www.elsevier.com/xml/common/struct-bib/dtd" xmlns:ce="http://www.elsevier.com/xml/common/dtd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:cals="http://www.elsevier.com/xml/common/cals/dtd"><mml:mrow><mml:mi>ß</mml:mi></mml:mrow></mml:math> Cephei star <mml:math altimg="si37.gif" overflow="scroll" xmlns:xocs="http://www.elsevier.com/xml/xocs/dtd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elsevier.com/xml/ja/dtd" xmlns:ja="http://www.elsevier.com/xml/ja/dtd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:tb="http://www.elsevier.com/xml/common/table/dtd" xmlns:sb="http://www.elsevier.com/xml/common/struct-bib/dtd" xmlns:ce="http://www.elsevier.com/xml/common/dtd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:cals="http://www.elsevier.com/xml/common/cals/dtd"><mml:mrow><mml:mi>s</mml:mi></mml:mrow></mml:math> Cas: Atmospheric characterization and line-profile variability';
         // After MathML conversion, content is properly converted to LaTeX
         // Note: title_capitalization doesn't capitalize normal sentence case text, only ALL CAPS
-        $expected = 'Spectroscopic analysis of the candidate <math>ÃƒÆ’Ã…Â¸</math> Cephei star <math>s</math> Cas: Atmospheric characterization and line-profile variability';
+        $expected = 'Spectroscopic analysis of the candidate <math>ß</math> Cephei star <math>s</math> Cas: Atmospheric characterization and line-profile variability';
         $this->assertSame($expected, wikify_external_text($text_mml));
     }
 
@@ -602,33 +602,33 @@ final class textToolsTest extends testBaseClass {
     }
 
     public function testVariousEncodes2(): void {
-        $test = "ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â·ÃƒÂ£Ã†â€™Ã‚Â§ÃƒÂ£Ã†â€™Ã†â€™ÃƒÂ£Ã†â€™Ã¢â‚¬ÂÃƒÂ£Ã†â€™Ã‚Â³ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â°";
+        $test = "ショッピング";
         $decoded = smart_decode($test, 'UTF-8', '');
         $this->assertSame($test, $decoded);
     }
 
     public function testVariousEncodes3(): void {
-        $test = "ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â·ÃƒÂ£Ã†â€™Ã‚Â§ÃƒÂ£Ã†â€™Ã†â€™ÃƒÂ£Ã†â€™Ã¢â‚¬ÂÃƒÂ£Ã†â€™Ã‚Â³ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â°";
+        $test = "ショッピング";
         $decoded = smart_decode($test, "iso-8859-11", '');
-        $this->assertSame('ÃƒÂ Ã‚Â¹Ã†â€™Ãƒâ€šÃ¢â‚¬Å¡ÃƒÂ Ã‚Â¸Ã¢â‚¬â€ÃƒÂ Ã‚Â¹Ã†â€™Ãƒâ€šÃ†â€™ÃƒÂ Ã‚Â¸Ã¢â‚¬Â¡ÃƒÂ Ã‚Â¹Ã†â€™Ãƒâ€šÃ†â€™Ãƒâ€šÃ†â€™ÃƒÂ Ã‚Â¹Ã†â€™Ãƒâ€šÃ†â€™Ãƒâ€šÃ¢â‚¬ÂÃƒÂ Ã‚Â¹Ã†â€™Ãƒâ€šÃ†â€™ÃƒÂ Ã‚Â¸Ã¢â‚¬Å“ÃƒÂ Ã‚Â¹Ã†â€™Ãƒâ€šÃ¢â‚¬Å¡ÃƒÂ Ã‚Â¸Ã‚Â', $decoded); // Clearly random junk
+        $this->assertSame('ใทใงใใใณใฐ', $decoded); // Clearly random junk
     }
 
     public function testVariousEncodes1(): void {
         $input = "\xe3\x82\xb7\xe3\x83\xa7\xe3\x83\x83\xe3\x83\x94\xe3\x83\xb3\xe3\x82\xb0";
-        $sample = 'ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â·ÃƒÂ£Ã†â€™Ã‚Â§ÃƒÂ£Ã†â€™Ã†â€™ÃƒÂ£Ã†â€™Ã¢â‚¬ÂÃƒÂ£Ã†â€™Ã‚Â³ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â°';
+        $sample = 'ショッピング';
         $decoded = convert_to_utf8($input);
         $this->assertSame($sample, $decoded);
     }
 
     public function testVariousEncodes4(): void {
-        $sample = "2xSP!#$%&'()*+,-./3x0123456789:;<=>?4x@ABCDEFGHIJKLMNO5xPQRSTUVWXYZ[\]^_6x`abcdefghijklmno7xpqrstuvwxyz{|}~8x9xAxNBSPÃƒâ€šÃ‚Â¡Ãƒâ€šÃ‚Â¢Ãƒâ€šÃ‚Â£Ãƒâ€šÃ‚Â¤Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â¦Ãƒâ€šÃ‚Â§Ãƒâ€šÃ‚Â¨Ãƒâ€šÃ‚Â©Ãƒâ€šÃ‚ÂªÃƒâ€šÃ‚Â«Ãƒâ€šÃ‚Â¬SHYÃƒâ€šÃ‚Â®Ãƒâ€šÃ‚Â¯BxÃƒâ€šÃ‚Â°Ãƒâ€šÃ‚Â±Ãƒâ€šÃ‚Â²Ãƒâ€šÃ‚Â³Ãƒâ€šÃ‚Â´Ãƒâ€šÃ‚ÂµÃƒâ€šÃ‚Â¶Ãƒâ€šÃ‚Â·Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â¹Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¼Ãƒâ€šÃ‚Â½Ãƒâ€šÃ‚Â¾Ãƒâ€šÃ‚Â¿CxÃƒÆ’Ã¢â€šÂ¬ÃƒÆ’Ã‚ÂÃƒÆ’Ã¢â‚¬Å¡ÃƒÆ’Ã†â€™ÃƒÆ’Ã¢â‚¬Å¾ÃƒÆ’Ã¢â‚¬Â¦ÃƒÆ’Ã¢â‚¬Â ÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã‹â€ ÃƒÆ’Ã¢â‚¬Â°ÃƒÆ’Ã…Â ÃƒÆ’Ã¢â‚¬Â¹ÃƒÆ’Ã…â€™ÃƒÆ’Ã‚ÂÃƒÆ’Ã…Â½ÃƒÆ’Ã‚ÂDxÃƒÆ’Ã‚ÂÃƒÆ’Ã¢â‚¬ËœÃƒÆ’Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å“ÃƒÆ’Ã¢â‚¬ÂÃƒÆ’Ã¢â‚¬Â¢ÃƒÆ’Ã¢â‚¬â€œÃƒÆ’Ã¢â‚¬â€ÃƒÆ’Ã‹Å“ÃƒÆ’Ã¢â€žÂ¢ÃƒÆ’Ã…Â¡ÃƒÆ’Ã¢â‚¬ÂºÃƒÆ’Ã…â€œÃƒÆ’Ã‚ÂÃƒÆ’Ã…Â¾ÃƒÆ’Ã…Â¸ExÃƒÆ’Ã‚Â ÃƒÆ’Ã‚Â¡ÃƒÆ’Ã‚Â¢ÃƒÆ’Ã‚Â£ÃƒÆ’Ã‚Â¤ÃƒÆ’Ã‚Â¥ÃƒÆ’Ã‚Â¦ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¨ÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚ÂªÃƒÆ’Ã‚Â«ÃƒÆ’Ã‚Â¬ÃƒÆ’Ã‚Â­ÃƒÆ’Ã‚Â®ÃƒÆ’Ã‚Â¯FxÃƒÆ’Ã‚Â°ÃƒÆ’Ã‚Â±ÃƒÆ’Ã‚Â²ÃƒÆ’Ã‚Â³ÃƒÆ’Ã‚Â´ÃƒÆ’Ã‚ÂµÃƒÆ’Ã‚Â¶ÃƒÆ’Ã‚Â·ÃƒÆ’Ã‚Â¸ÃƒÆ’Ã‚Â¹ÃƒÆ’Ã‚ÂºÃƒÆ’Ã‚Â»ÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â½ÃƒÆ’Ã‚Â¾ÃƒÆ’Ã‚Â¿";
+        $sample = "2xSP!#$%&'()*+,-./3x0123456789:;<=>?4x@ABCDEFGHIJKLMNO5xPQRSTUVWXYZ[\]^_6x`abcdefghijklmno7xpqrstuvwxyz{|}~8x9xAxNBSP¡¢£¤¥¦§¨©ª«¬SHY®¯Bx°±²³´µ¶·¸¹º»¼½¾¿CxÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏDxÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßExàáâãäåæçèéêëìíîïFxðñòóôõö÷øùúûüýþÿ";
         $urlencoded_iso_8859_1 = '2xSP%21%23%24%25%26%27%28%29%2A%2B%2C-.%2F3x0123456789%3A%3B%3C%3D%3E%3F4x%40ABCDEFGHIJKLMNO5xPQRSTUVWXYZ%5B%5C%5D%5E_6x%60abcdefghijklmno7xpqrstuvwxyz%7B%7C%7D%7E8x9xAxNBSP%A1%A2%A3%A4%A5%A6%A7%A8%A9%AA%AB%ACSHY%AE%AFBx%B0%B1%B2%B3%B4%B5%B6%B7%B8%B9%BA%BB%BC%BD%BE%BFCx%C0%C1%C2%C3%C4%C5%C6%C7%C8%C9%CA%CB%CC%CD%CE%CFDx%D0%D1%D2%D3%D4%D5%D6%D7%D8%D9%DA%DB%DC%DD%DE%DFEx%E0%E1%E2%E3%E4%E5%E6%E7%E8%E9%EA%EB%EC%ED%EE%EFFx%F0%F1%F2%F3%F4%F5%F6%F7%F8%F9%FA%FB%FC%FD%FE%FF';
         $decoded = mb_convert_encoding(urldecode($urlencoded_iso_8859_1), "UTF-8", "iso-8859-1");
         $this->assertSame($sample, $decoded);
     }
 
     public function testVariousEncodes5(): void {
-        $test = "2xSP!#$%&'()*+,-./3x0123456789:;<=>?4x@ABCDEFGHIJKLMNO5xPQRSTUVWXYZ[\]^_6x`abcdefghijklmno7xpqrstuvwxyz{|}~8x9xAxNBSPÃƒâ€šÃ‚Â¡Ãƒâ€šÃ‚Â¢Ãƒâ€šÃ‚Â£ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬20ACÃƒâ€šÃ‚Â¥Ãƒâ€¦Ã‚Â 0160Ãƒâ€šÃ‚Â§Ãƒâ€¦Ã‚Â¡0161Ãƒâ€šÃ‚Â©Ãƒâ€šÃ‚ÂªÃƒâ€šÃ‚Â«Ãƒâ€šÃ‚Â¬SHYÃƒâ€šÃ‚Â®Ãƒâ€šÃ‚Â¯BxÃƒâ€šÃ‚Â°Ãƒâ€šÃ‚Â±Ãƒâ€šÃ‚Â²Ãƒâ€šÃ‚Â³Ãƒâ€¦Ã‚Â½017DÃƒâ€šÃ‚ÂµÃƒâ€šÃ‚Â¶Ãƒâ€šÃ‚Â·Ãƒâ€¦Ã‚Â¾017EÃƒâ€šÃ‚Â¹Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â»Ãƒâ€¦Ã¢â‚¬â„¢0152Ãƒâ€¦Ã¢â‚¬Å“0153Ãƒâ€¦Ã‚Â¸0178Ãƒâ€šÃ‚Â¿CxÃƒÆ’Ã¢â€šÂ¬ÃƒÆ’Ã‚ÂÃƒÆ’Ã¢â‚¬Å¡ÃƒÆ’Ã†â€™ÃƒÆ’Ã¢â‚¬Å¾ÃƒÆ’Ã¢â‚¬Â¦ÃƒÆ’Ã¢â‚¬Â ÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã‹â€ ÃƒÆ’Ã¢â‚¬Â°ÃƒÆ’Ã…Â ÃƒÆ’Ã¢â‚¬Â¹ÃƒÆ’Ã…â€™ÃƒÆ’Ã‚ÂÃƒÆ’Ã…Â½ÃƒÆ’Ã‚ÂDxÃƒÆ’Ã‚ÂÃƒÆ’Ã¢â‚¬ËœÃƒÆ’Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å“ÃƒÆ’Ã¢â‚¬ÂÃƒÆ’Ã¢â‚¬Â¢ÃƒÆ’Ã¢â‚¬â€œÃƒÆ’Ã¢â‚¬â€ÃƒÆ’Ã‹Å“ÃƒÆ’Ã¢â€žÂ¢ÃƒÆ’Ã…Â¡ÃƒÆ’Ã¢â‚¬ÂºÃƒÆ’Ã…â€œÃƒÆ’Ã‚ÂÃƒÆ’Ã…Â¾ÃƒÆ’Ã…Â¸ExÃƒÆ’Ã‚Â ÃƒÆ’Ã‚Â¡ÃƒÆ’Ã‚Â¢ÃƒÆ’Ã‚Â£ÃƒÆ’Ã‚Â¤ÃƒÆ’Ã‚Â¥ÃƒÆ’Ã‚Â¦ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¨ÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚ÂªÃƒÆ’Ã‚Â«ÃƒÆ’Ã‚Â¬ÃƒÆ’Ã‚Â­ÃƒÆ’Ã‚Â®ÃƒÆ’Ã‚Â¯FxÃƒÆ’Ã‚Â°ÃƒÆ’Ã‚Â±ÃƒÆ’Ã‚Â²ÃƒÆ’Ã‚Â³ÃƒÆ’Ã‚Â´ÃƒÆ’Ã‚ÂµÃƒÆ’Ã‚Â¶ÃƒÆ’Ã‚Â·ÃƒÆ’Ã‚Â¸ÃƒÆ’Ã‚Â¹ÃƒÆ’Ã‚ÂºÃƒÆ’Ã‚Â»ÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â½ÃƒÆ’Ã‚Â¾ÃƒÆ’Ã‚Â¿";
+        $test = "2xSP!#$%&'()*+,-./3x0123456789:;<=>?4x@ABCDEFGHIJKLMNO5xPQRSTUVWXYZ[\]^_6x`abcdefghijklmno7xpqrstuvwxyz{|}~8x9xAxNBSP¡¢£€20AC¥Š0160§š0161©ª«¬SHY®¯Bx°±²³Ž017Dµ¶·ž017E¹º»Œ0152œ0153Ÿ0178¿CxÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏDxÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßExàáâãäåæçèéêëìíîïFxðñòóôõö÷øùúûüýþÿ";
         $string_utf8_urlencoded = "2xSP%21%23%24%25%26%27%28%29%2A%2B%2C-.%2F3x0123456789%3A%3B%3C%3D%3E%3F4x%40ABCDEFGHIJKLMNO5xPQRSTUVWXYZ%5B%5C%5D%5E_6x%60abcdefghijklmno7xpqrstuvwxyz%7B%7C%7D%7E8x9xAxNBSP%C2%A1%C2%A2%C2%A3%E2%82%AC20AC%C2%A5%C5%A00160%C2%A7%C5%A10161%C2%A9%C2%AA%C2%AB%C2%ACSHY%C2%AE%C2%AFBx%C2%B0%C2%B1%C2%B2%C2%B3%C5%BD017D%C2%B5%C2%B6%C2%B7%C5%BE017E%C2%B9%C2%BA%C2%BB%C5%920152%C5%930153%C5%B80178%C2%BFCx%C3%80%C3%81%C3%82%C3%83%C3%84%C3%85%C3%86%C3%87%C3%88%C3%89%C3%8A%C3%8B%C3%8C%C3%8D%C3%8E%C3%8FDx%C3%90%C3%91%C3%92%C3%93%C3%94%C3%95%C3%96%C3%97%C3%98%C3%99%C3%9A%C3%9B%C3%9C%C3%9D%C3%9E%C3%9FEx%C3%A0%C3%A1%C3%A2%C3%A3%C3%A4%C3%A5%C3%A6%C3%A7%C3%A8%C3%A9%C3%AA%C3%AB%C3%AC%C3%AD%C3%AE%C3%AFFx%C3%B0%C3%B1%C3%B2%C3%B3%C3%B4%C3%B5%C3%B6%C3%B7%C3%B8%C3%B9%C3%BA%C3%BB%C3%BC%C3%BD%C3%BE%C3%BF";
         $string_utf8 = urldecode($string_utf8_urlencoded);
         $string_windows1252_urlencoded = "2xSP%21%23%24%25%26%27%28%29%2A%2B%2C-.%2F3x0123456789%3A%3B%3C%3D%3E%3F4x%40ABCDEFGHIJKLMNO5xPQRSTUVWXYZ%5B%5C%5D%5E_6x%60abcdefghijklmno7xpqrstuvwxyz%7B%7C%7D%7E8x9xAxNBSP%A1%A2%A3%8020AC%A5%8A0160%A7%9A0161%A9%AA%AB%ACSHY%AE%AFBx%B0%B1%B2%B3%8E017D%B5%B6%B7%9E017E%B9%BA%BB%8C0152%9C0153%9F0178%BFCx%C0%C1%C2%C3%C4%C5%C6%C7%C8%C9%CA%CB%CC%CD%CE%CFDx%D0%D1%D2%D3%D4%D5%D6%D7%D8%D9%DA%DB%DC%DD%DE%DFEx%E0%E1%E2%E3%E4%E5%E6%E7%E8%E9%EA%EB%EC%ED%EE%EFFx%F0%F1%F2%F3%F4%F5%F6%F7%F8%F9%FA%FB%FC%FD%FE%FF";
@@ -642,17 +642,17 @@ final class textToolsTest extends testBaseClass {
     }
 
     public function testVariousEncodes6(): void {
-        $test = "ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¢ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¤ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¦ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¨ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Âª ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â« ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â­ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¯ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â± ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â³ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¬ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â® ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â° ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â² ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â´ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Âµ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â· ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¹ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â» ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â½ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¶ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¸ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Âº ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¼ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¾ ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¿ ÃƒÂ£Ã†â€™Ã‚Â ÃƒÂ£Ã†â€™Ã¢â‚¬Å¾ ÃƒÂ£Ã†â€™Ã¢â‚¬Â  ÃƒÂ£Ã†â€™Ã‹â€  ÃƒÂ£Ã†â€™Ã¢â€šÂ¬ ÃƒÂ£Ã†â€™Ã¢â‚¬Å¡ ÃƒÂ£Ã†â€™Ã¢â‚¬Â¦ ÃƒÂ£Ã†â€™Ã¢â‚¬Â¡ ÃƒÂ£Ã†â€™Ã¢â‚¬Â° ÃƒÂ£Ã†â€™Ã…Â  ÃƒÂ£Ã†â€™Ã¢â‚¬Â¹ ÃƒÂ£Ã†â€™Ã…â€™ ÃƒÂ£Ã†â€™Ã‚Â ÃƒÂ£Ã†â€™Ã…Â½ ÃƒÂ£Ã†â€™Ã‚Â ÃƒÂ£Ã†â€™Ã¢â‚¬â„¢ ÃƒÂ£Ã†â€™Ã¢â‚¬Â¢ ÃƒÂ£Ã†â€™Ã‹Å“ ÃƒÂ£Ã†â€™Ã¢â‚¬Âº ÃƒÂ£Ã†â€™Ã‚Â ÃƒÂ£Ã†â€™Ã¢â‚¬Å“ ÃƒÂ£Ã†â€™Ã¢â‚¬â€œ ÃƒÂ£Ã†â€™Ã¢â€žÂ¢ ÃƒÂ£Ã†â€™Ã…â€œ ÃƒÂ£Ã†â€™Ã¢â‚¬Ëœ ÃƒÂ£Ã†â€™Ã¢â‚¬Â ÃƒÂ£Ã†â€™Ã¢â‚¬â€ ÃƒÂ£Ã†â€™Ã…Â¡ ÃƒÂ£Ã†â€™Ã‚Â ÃƒÂ£Ã†â€™Ã…Â¾ ÃƒÂ£Ã†â€™Ã…Â¸ ÃƒÂ£Ã†â€™Ã‚Â  ÃƒÂ£Ã†â€™Ã‚Â¡ ÃƒÂ£Ã†â€™Ã‚Â¢ ÃƒÂ£Ã†â€™Ã‚Â¤ ÃƒÂ£Ã†â€™Ã‚Â¦ ÃƒÂ£Ã†â€™Ã‚Â¨ ÃƒÂ£Ã†â€™Ã‚Â© ÃƒÂ£Ã†â€™Ã‚Âª ÃƒÂ£Ã†â€™Ã‚Â« ÃƒÂ£Ã†â€™Ã‚Â¬ ÃƒÂ£Ã†â€™Ã‚Â­ ÃƒÂ£Ã†â€™Ã‚Â¯ ÃƒÂ£Ã†â€™Ã‚Â° ÃƒÂ£Ã†â€™Ã‚Â± ÃƒÂ£Ã†â€™Ã‚Â²";
+        $test = "ア イ ウ エ オ カ キ ク ケ コ ガ ギ グ ゲ ゴ サ シ ス セ ソ ザ ジ ズ ゼ ゾ タ チ ツ テ ト ダ ヂ ヅ デ ド ナ ニ ヌ ネ ノ ハ ヒ フ ヘ ホ バ ビ ブ ベ ボ パ ピ プ ペ ポ マ ミ ム メ モ ヤ ユ ヨ ラ リ ル レ ロ ワ ヰ ヱ ヲ";
         $this->assertSame($test, convert_to_utf8(mb_convert_encoding($test, "ISO-2022-JP", "UTF-8")));
     }
 
     public function testVariousEncodes7(): void {
-        $test = "ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ§Ã‚Â®Ã¢â€šÂ¬ÃƒÂ§Ã‚Â§Ã‚Â°ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¦Ã‹Å“Ã‚Â¯ÃƒÂ§Ã¢â‚¬ÂÃ‚Â±ÃƒÂ¤Ã‚Â¸Ã…â€œÃƒÂ¦Ã‚Â±Ã¢â‚¬Â°ÃƒÂ§Ã‚Â»Ã‚ÂÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ¥Ã‚Â®Ã‚Â¶ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ¥Ã‚Â®Ã‚Â¶ÃƒÂ¨Ã‚Â®Ã‚Â¸ÃƒÂ¦Ã¢â‚¬Â¦Ã…Â½ÃƒÂ§Ã‚Â¼Ã¢â‚¬â€œÃƒÂ¨Ã¢â‚¬ËœÃ¢â‚¬â€ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â¯Ã‚Â­ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã‚Â·Ã‚Â¥ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â·ÃƒÂ¤Ã‚Â¹Ã‚Â¦ÃƒÂ¨Ã¢â‚¬ËœÃ¢â‚¬â€ÃƒÂ¤Ã‚Â½Ã…â€œÃƒÂ¦Ã‹Å“Ã‚Â¯ÃƒÂ¤Ã‚Â¸Ã‚Â­ÃƒÂ¥Ã¢â‚¬ÂºÃ‚Â½ÃƒÂ¦Ã…â€œÃ¢â€šÂ¬ÃƒÂ¦Ã¢â‚¬â€Ã‚Â©ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ§Ã‚Â³Ã‚Â»ÃƒÂ§Ã‚Â»Ã…Â¸ÃƒÂ¥Ã‹â€ Ã¢â‚¬Â ÃƒÂ¦Ã…Â¾Ã‚ÂÃƒÂ¦Ã‚Â±Ã¢â‚¬Â°ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã‚Â½Ã‚Â¢ÃƒÂ¥Ã¢â‚¬â„¢Ã…â€™ÃƒÂ¨Ã¢â€šÂ¬Ã†â€™ÃƒÂ§Ã‚Â©Ã‚Â¶ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¦Ã‚ÂºÃ‚ÂÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â¯Ã‚Â­ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â¾Ã…Â¾ÃƒÂ¤Ã‚Â¹Ã‚Â¦ÃƒÂ¤Ã‚Â¹Ã…Â¸ÃƒÂ¦Ã‹Å“Ã‚Â¯ÃƒÂ¤Ã‚Â¸Ã¢â‚¬â€œÃƒÂ§Ã¢â‚¬Â¢Ã…â€™ÃƒÂ¤Ã‚Â¸Ã…Â ÃƒÂ¦Ã…â€œÃ¢â€šÂ¬ÃƒÂ¦Ã¢â‚¬â€Ã‚Â©ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â¸ÃƒÂ¤Ã‚Â¹Ã¢â‚¬Â¹ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã¢â‚¬Â Ã¢â‚¬Â¦ÃƒÂ¥Ã‚Â®Ã‚Â¹ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â±ÃƒÂ¥Ã‚ÂÃ‚ÂÃƒÂ¤Ã‚ÂºÃ¢â‚¬ÂÃƒÂ¥Ã‚ÂÃ‚Â·ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â¶ÃƒÂ¤Ã‚Â¸Ã‚Â­ÃƒÂ¥Ã¢â‚¬Â°Ã‚ÂÃƒÂ¥Ã‚ÂÃ‚ÂÃƒÂ¥Ã¢â‚¬ÂºÃ¢â‚¬ÂºÃƒÂ¥Ã‚ÂÃ‚Â·ÃƒÂ¤Ã‚Â¸Ã‚ÂºÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã‚Â¤Ã‚Â´ÃƒÂ¤Ã‚Â»Ã‚Â¥ÃƒÂ¥Ã‚Â°Ã‚ÂÃƒÂ§Ã‚Â¯Ã¢â‚¬Â ÃƒÂ¤Ã‚Â¹Ã‚Â¦ÃƒÂ¥Ã¢â‚¬Â Ã¢â€žÂ¢ÃƒÂ¦Ã‚Â­Ã‚Â¤ÃƒÂ¤Ã‚Â¹Ã‚Â¦ÃƒÂ§Ã‚Â¼Ã¢â‚¬â€œÃƒÂ¨Ã¢â‚¬ËœÃ¢â‚¬â€ÃƒÂ¦Ã¢â‚¬â€Ã‚Â¶ÃƒÂ©Ã‚Â¦Ã¢â‚¬â€œÃƒÂ¦Ã‚Â¬Ã‚Â¡ÃƒÂ¥Ã‚Â¯Ã‚Â¹ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â­ÃƒÂ¤Ã‚Â¹Ã‚Â¦ÃƒÂ¥Ã‚ÂÃ…Â¡ÃƒÂ¥Ã¢â‚¬Â¡Ã‚ÂºÃƒÂ¤Ã‚ÂºÃ¢â‚¬Â ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â·ÃƒÂ¤Ã‚Â½Ã¢â‚¬Å“ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ©Ã¢â‚¬Â¡Ã…Â ÃƒÂ©Ã¢â€šÂ¬Ã‚ÂÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ©Ã¢â‚¬Â¡Ã…Â ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¤Ã‚Â½Ã¢â‚¬Å“ÃƒÂ¦Ã‚ÂÃ‚Â¥ÃƒÂ¦Ã‚ÂºÃ‚ÂÃƒÂ§Ã‚Â¬Ã‚Â¬ÃƒÂ¥Ã‚ÂÃ‚ÂÃƒÂ¤Ã‚ÂºÃ¢â‚¬ÂÃƒÂ¥Ã‚ÂÃ‚Â·ÃƒÂ¤Ã‚Â¸Ã‚ÂºÃƒÂ¥Ã‚ÂÃ¢â€žÂ¢ÃƒÂ§Ã¢â‚¬ÂºÃ‚Â®ÃƒÂ¨Ã‚Â®Ã‚Â°ÃƒÂ¥Ã‚Â½Ã¢â‚¬Â¢ÃƒÂ¦Ã‚Â±Ã¢â‚¬Â°ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¤Ã‚ÂºÃ‚Â§ÃƒÂ§Ã¢â‚¬ÂÃ…Â¸ÃƒÂ¥Ã‚ÂÃ¢â‚¬ËœÃƒÂ¥Ã‚Â±Ã¢â‚¬Â¢ÃƒÂ¥Ã…Â Ã…Â¸ÃƒÂ§Ã¢â‚¬ÂÃ‚Â¨ÃƒÂ§Ã‚Â»Ã¢â‚¬Å“ÃƒÂ¦Ã…Â¾Ã¢â‚¬Å¾ÃƒÂ§Ã‚Â­Ã¢â‚¬Â°ÃƒÂ¦Ã¢â‚¬â€œÃ‚Â¹ÃƒÂ©Ã‚ÂÃ‚Â¢ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ©Ã¢â‚¬â€Ã‚Â®ÃƒÂ©Ã‚Â¢Ã‹Å“ÃƒÂ¤Ã‚Â»Ã‚Â¥ÃƒÂ¥Ã‚ÂÃ…Â ÃƒÂ¤Ã‚Â½Ã…â€œÃƒÂ¨Ã¢â€šÂ¬Ã¢â‚¬Â¦ÃƒÂ¥Ã‹â€ Ã¢â‚¬ÂºÃƒÂ¤Ã‚Â½Ã…â€œÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ§Ã¢â‚¬ÂºÃ‚Â®ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¦Ã‹Å“Ã‚Â¯ÃƒÂ¦Ã…â€œÃ¢â€šÂ¬ÃƒÂ¦Ã¢â‚¬â€Ã‚Â©ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¦Ã…â€™Ã¢â‚¬Â°ÃƒÂ©Ã†â€™Ã‚Â¨ÃƒÂ©Ã‚Â¦Ã¢â‚¬â€œÃƒÂ§Ã‚Â¼Ã¢â‚¬â€œÃƒÂ¦Ã…Â½Ã¢â‚¬â„¢ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¦Ã‚Â±Ã¢â‚¬Â°ÃƒÂ¨Ã‚Â¯Ã‚Â­ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â¸ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â¨ÃƒÂ¤Ã‚Â¹Ã‚Â¦ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â±ÃƒÂ¥Ã‹â€ Ã¢â‚¬Â ÃƒÂ¤Ã‚Â¸Ã‚ÂªÃƒÂ©Ã†â€™Ã‚Â¨ÃƒÂ©Ã‚Â¦Ã¢â‚¬â€œÃƒÂ¦Ã¢â‚¬ÂÃ‚Â¶ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€9353ÃƒÂ¥Ã‚ÂÃ‚Â¦ÃƒÂ¦Ã…â€œÃ¢â‚¬Â°ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ©Ã¢â‚¬Â¡Ã‚ÂÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã‚ÂÃ‚Â³ÃƒÂ¥Ã‚Â¼Ã¢â‚¬Å¡ÃƒÂ¤Ã‚Â½Ã¢â‚¬Å“ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¤Ã‚Â¸Ã‚ÂªÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â±10516ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã…Â½Ã…Â¸ÃƒÂ¤Ã‚Â¹Ã‚Â¦ÃƒÂ¤Ã‚Â½Ã…â€œÃƒÂ¤Ã‚ÂºÃ…Â½ÃƒÂ¦Ã‚Â±Ã¢â‚¬Â°ÃƒÂ¥Ã¢â‚¬â„¢Ã…â€™ÃƒÂ¥Ã‚Â¸Ã‚ÂÃƒÂ¦Ã‚Â°Ã‚Â¸ÃƒÂ¥Ã¢â‚¬Â¦Ã†â€™ÃƒÂ¥Ã‚ÂÃ‚ÂÃƒÂ¤Ã‚ÂºÃ…â€™ÃƒÂ¥Ã‚Â¹Ã‚Â´100ÃƒÂ¥Ã‹â€ Ã‚Â°ÃƒÂ¥Ã‚Â®Ã¢â‚¬Â°ÃƒÂ¥Ã‚Â¸Ã‚ÂÃƒÂ¥Ã‚Â»Ã‚ÂºÃƒÂ¥Ã¢â‚¬Â¦Ã¢â‚¬Â°ÃƒÂ¥Ã¢â‚¬Â¦Ã†â€™ÃƒÂ¥Ã‚Â¹Ã‚Â´ÃƒÂ¯Ã‚Â¼Ã‹â€ 121ÃƒÂ¥Ã‚Â¹Ã‚Â´ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â°ÃƒÂ¥Ã‚Â®Ã¢â‚¬Â¹ÃƒÂ¥Ã‚Â¤Ã‚ÂªÃƒÂ¥Ã‚Â®Ã¢â‚¬â€ÃƒÂ©Ã¢â‚¬ÂºÃ‚ÂÃƒÂ§Ã¢â‚¬Â Ã¢â€žÂ¢ÃƒÂ¤Ã‚Â¸Ã¢â‚¬Â°ÃƒÂ¥Ã‚Â¹Ã‚Â´ÃƒÂ¥Ã‚Â¹Ã‚Â´ÃƒÂ¥Ã‚Â®Ã¢â‚¬Â¹ÃƒÂ¥Ã‚Â¤Ã‚ÂªÃƒÂ¥Ã‚Â®Ã¢â‚¬â€ÃƒÂ¥Ã¢â‚¬ËœÃ‚Â½ÃƒÂ¥Ã‚Â¾Ã‚ÂÃƒÂ©Ã¢â‚¬Å“Ã¢â‚¬Â°ÃƒÂ¥Ã‚ÂÃ‚Â¥ÃƒÂ¤Ã‚Â¸Ã‚Â­ÃƒÂ¦Ã‚Â­Ã‚Â£ÃƒÂ¨Ã¢â‚¬ËœÃ¢â‚¬ÂºÃƒÂ¦Ã‚Â¹Ã‚ÂÃƒÂ§Ã…Â½Ã¢â‚¬Â¹ÃƒÂ¦Ã†â€™Ã…Â¸ÃƒÂ¦Ã‚ÂÃ‚Â­ÃƒÂ§Ã‚Â­Ã¢â‚¬Â°ÃƒÂ¥Ã‚ÂÃ…â€™ÃƒÂ¦Ã‚Â Ã‚Â¡ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã‹â€ Ã¢â‚¬Â ÃƒÂ¦Ã‹â€ Ã‚ÂÃƒÂ¤Ã‚Â¸Ã…Â ÃƒÂ¤Ã‚Â¸Ã¢â‚¬Â¹ÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â±ÃƒÂ¤Ã‚Â¸Ã¢â‚¬Â°ÃƒÂ¥Ã‚ÂÃ‚ÂÃƒÂ¥Ã‚ÂÃ‚Â·ÃƒÂ¥Ã‚Â¥Ã¢â‚¬Â°ÃƒÂ¦Ã¢â‚¬Â¢Ã¢â‚¬Â¢ÃƒÂ©Ã¢â‚¬ÂºÃ¢â‚¬Â¢ÃƒÂ§Ã¢â‚¬Â°Ã‹â€ ÃƒÂ¦Ã‚ÂµÃ‚ÂÃƒÂ¥Ã‚Â¸Ã†â€™ÃƒÂ¥Ã‚ÂÃ…Â½ÃƒÂ¤Ã‚Â»Ã‚Â£ÃƒÂ§Ã‚Â Ã¢â‚¬ÂÃƒÂ§Ã‚Â©Ã‚Â¶ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã‚Â¤Ã…Â¡ÃƒÂ¤Ã‚Â»Ã‚Â¥ÃƒÂ¦Ã‚Â­Ã‚Â¤ÃƒÂ§Ã¢â‚¬Â°Ã‹â€ ÃƒÂ¤Ã‚Â¸Ã‚ÂºÃƒÂ¨Ã¢â‚¬Å“Ã‚ÂÃƒÂ¦Ã…â€œÃ‚Â¬ÃƒÂ¥Ã‚Â¦Ã¢â‚¬Å¡ÃƒÂ¦Ã‚Â¸Ã¢â‚¬Â¦ÃƒÂ¤Ã‚Â»Ã‚Â£ÃƒÂ¦Ã‚Â®Ã‚ÂµÃƒÂ§Ã…Â½Ã¢â‚¬Â°ÃƒÂ¨Ã‚Â£Ã‚ÂÃƒÂ¦Ã‚Â³Ã‚Â¨ÃƒÂ©Ã¢â‚¬Â¡Ã…Â ÃƒÂ¦Ã…â€œÃ‚Â¬ÃƒÂ¥Ã‚ÂÃ‚Â³ÃƒÂ§Ã¢â‚¬ÂÃ‚Â¨ÃƒÂ¦Ã‚Â­Ã‚Â¤ÃƒÂ§Ã¢â‚¬Â°Ã‹â€ ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¤Ã‚Â¸Ã‚ÂºÃƒÂ¥Ã‚ÂºÃ¢â‚¬Â¢ÃƒÂ§Ã‚Â¨Ã‚Â¿ÃƒÂ¨Ã¢â€šÂ¬Ã…â€™ÃƒÂ¥Ã…Â Ã‚Â ÃƒÂ¤Ã‚Â»Ã‚Â¥ÃƒÂ¦Ã‚Â³Ã‚Â¨ÃƒÂ©Ã¢â‚¬Â¡Ã…Â [1]ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¦Ã‹Å“Ã‚Â¯ÃƒÂ§Ã‚Â§Ã¢â‚¬ËœÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ¥Ã¢â‚¬â„¢Ã…â€™ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ§Ã…â€™Ã‚Â®ÃƒÂ¨Ã‚Â¯Ã‚Â­ÃƒÂ¨Ã‚Â¨Ã¢â€šÂ¬ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¥Ã‚Â¥Ã‚Â ÃƒÂ¥Ã…Â¸Ã‚ÂºÃƒÂ¤Ã‚Â¹Ã¢â‚¬Â¹ÃƒÂ¤Ã‚Â½Ã…â€œÃƒÂ¥Ã…â€œÃ‚Â¨ÃƒÂ¤Ã‚Â¸Ã‚Â­ÃƒÂ¥Ã¢â‚¬ÂºÃ‚Â½ÃƒÂ¨Ã‚Â¯Ã‚Â­ÃƒÂ¨Ã‚Â¨Ã¢â€šÂ¬ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ¥Ã‚ÂÃ‚Â²ÃƒÂ¤Ã‚Â¸Ã…Â ÃƒÂ¦Ã…â€œÃ¢â‚¬Â°ÃƒÂ©Ã¢â‚¬Â¡Ã‚ÂÃƒÂ¨Ã‚Â¦Ã‚ÂÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¥Ã…â€œÃ‚Â°ÃƒÂ¤Ã‚Â½Ã‚ÂÃƒÂ¥Ã…Â½Ã¢â‚¬Â ÃƒÂ¤Ã‚Â»Ã‚Â£ÃƒÂ¥Ã‚Â¯Ã‚Â¹ÃƒÂ¤Ã‚ÂºÃ…Â½ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ©Ã†â€™Ã‚Â½ÃƒÂ¦Ã…â€œÃ¢â‚¬Â°ÃƒÂ¨Ã‚Â®Ã‚Â¸ÃƒÂ¥Ã‚Â¤Ã…Â¡ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ¨Ã¢â€šÂ¬Ã¢â‚¬Â¦ÃƒÂ§Ã‚Â Ã¢â‚¬ÂÃƒÂ§Ã‚Â©Ã‚Â¶ÃƒÂ¦Ã‚Â¸Ã¢â‚¬Â¦ÃƒÂ¦Ã…â€œÃ‚ÂÃƒÂ¦Ã¢â‚¬â€Ã‚Â¶ÃƒÂ§Ã‚Â Ã¢â‚¬ÂÃƒÂ§Ã‚Â©Ã‚Â¶ÃƒÂ¦Ã…â€œÃ¢â€šÂ¬ÃƒÂ¤Ã‚Â¸Ã‚ÂºÃƒÂ¥Ã¢â‚¬Â¦Ã‚Â´ÃƒÂ§Ã¢â‚¬ÂºÃ¢â‚¬ÂºÃƒÂ¦Ã‚Â®Ã‚ÂµÃƒÂ§Ã…Â½Ã¢â‚¬Â°ÃƒÂ¨Ã‚Â£Ã‚ÂÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¦Ã‚Â³Ã‚Â¨ÃƒÂ¦Ã…â€œÃ‚Â±ÃƒÂ©Ã‚ÂªÃ‚ÂÃƒÂ¥Ã‚Â£Ã‚Â°ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ©Ã¢â€šÂ¬Ã…Â¡ÃƒÂ¨Ã‚Â®Ã‚Â­ÃƒÂ¥Ã‚Â®Ã…Â¡ÃƒÂ¥Ã‚Â£Ã‚Â°ÃƒÂ¦Ã‚Â¡Ã¢â‚¬Å¡ÃƒÂ©Ã‚Â¦Ã‚Â¥ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¨Ã‚Â§Ã‚Â£ÃƒÂ¥Ã‚Â­Ã¢â‚¬â€ÃƒÂ¤Ã‚Â¹Ã¢â‚¬Â°ÃƒÂ¨Ã‚Â¯Ã‚ÂÃƒÂ§Ã…Â½Ã¢â‚¬Â¹ÃƒÂ§Ã‚Â­Ã‚Â ÃƒÂ§Ã…Â¡Ã¢â‚¬Å¾ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ©Ã¢â‚¬Â¡Ã…Â ÃƒÂ¤Ã‚Â¾Ã¢â‚¬Â¹ÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã‚ÂÃ‚Â¥ÃƒÂ¨Ã‚Â¯Ã‚Â»ÃƒÂ¥Ã‚Â°Ã‚Â¤ÃƒÂ¥Ã‚Â¤Ã¢â‚¬Â¡ÃƒÂ¦Ã…Â½Ã‚Â¨ÃƒÂ¥Ã‚Â´Ã¢â‚¬Â¡ÃƒÂ¥Ã¢â‚¬ÂºÃ¢â‚¬ÂºÃƒÂ¤Ã‚ÂºÃ‚ÂºÃƒÂ¤Ã‚Â¹Ã…Â¸ÃƒÂ¨Ã…Â½Ã‚Â·ÃƒÂ¥Ã‚Â°Ã…Â ÃƒÂ§Ã‚Â§Ã‚Â°ÃƒÂ¤Ã‚Â¸Ã‚ÂºÃƒÂ¨Ã‚Â¯Ã‚Â´ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡ÃƒÂ¥Ã¢â‚¬ÂºÃ¢â‚¬ÂºÃƒÂ¥Ã‚Â¤Ã‚Â§ÃƒÂ¥Ã‚Â®Ã‚Â¶";
+        $test = "说文解字简称说文是由东汉经学家文字学家许慎编著的语文工具书著作是中国最早的系统分析汉字字形和考究字源的语文辞书也是世界上最早的字典之说文解字内容共十五卷其中前十四卷为文字解说字头以小篆书写此书编著时首次对“六书做出了具体的解释逐字解释字体来源第十五卷为叙目记录汉字的产生发展功用结构等方面的问题以及作者创作的目的说文解字是最早的按部首编排的汉语字典全书共分个部首收字9353另有“重文即异体字个共10516字说文解字原书作于汉和帝永元十二年100到安帝建光元年（121年）宋太宗雍熙三年年宋太宗命徐铉句中正葛湍王惟恭等同校说文解字分成上下共三十卷奉敕雕版流布后代研究说文多以此版为蓝本如清代段玉裁注释本即用此版说文为底稿而加以注释[1]说文解字是科学文字学和文献语言学的奠基之作在中国语言学史上有重要的地位历代对于说文解字都有许多学者研究清朝时研究最为兴盛段玉裁的说文解字注朱骏声的说文通训定声桂馥的说文解字义证王筠的说文释例说文句读尤备推崇四人也获尊称为说文四大家";
         $this->assertSame($test, convert_to_utf8(mb_convert_encoding($test, "EUC-CN", "UTF-8")));
     }
 
     public function testVariousEncodes8(): void {
-        $test = "ÃƒÂ«Ã¢â‚¬Â¹Ã‚Â¹ÃƒÂ¬Ã¢â‚¬Â¹Ã‚Â  ÃƒÂ¬Ã‚ÂÃ‚Â´ÃƒÂ«Ã‚Â¦Ã¢â‚¬Å¾ÃƒÂ¬Ã‚ÂÃ‚Â´ ÃƒÂ«Ã‚Â¬Ã‚Â´ÃƒÂ¬Ã¢â‚¬â€Ã¢â‚¬Â¡ÃƒÂ¬Ã…Â¾Ã¢â‚¬Â¦ÃƒÂ«Ã¢â‚¬Â¹Ã‹â€ ÃƒÂªÃ‚Â¹Ã…â€™ ÃƒÂ¬Ã‚ÂÃ‚Â´ÃƒÂ«Ã‚Â¦Ã¢â‚¬Å¾ÃƒÂ¬Ã‚ÂÃ‚Â´ ÃƒÂ­Ã¢â‚¬Å¡Ã‚Â¤ÃƒÂ¬Ã¢â‚¬â€œÃ¢â€šÂ¬ÃƒÂ¬Ã‚ÂÃ‚Â¸ ÃƒÂ¬Ã¢â‚¬â€œÃ‚Â´ÃƒÂ«Ã‚Â¦Ã‚Â° ÃƒÂ¬Ã¢â‚¬Â Ã…â€™ÃƒÂ«Ã¢â‚¬Â¦Ã¢â‚¬Å¾ÃƒÂ¬Ã‚ÂÃ¢â‚¬Å¾ ÃƒÂ«Ã‚Â§Ã…â€™ÃƒÂ«Ã¢â‚¬Å¡Ã‹Å“ÃƒÂ«Ã‚Â³Ã‚Â´ÃƒÂ¬Ã¢â‚¬Å¾Ã‚Â¸ÃƒÂ¬Ã…Â¡Ã¢â‚¬Â. ÃƒÂªÃ‚Â·Ã‚Â¸ÃƒÂ«Ã…Â¸Ã‚Â¬ÃƒÂ«Ã¢â‚¬Å¡Ã‹Å“ ÃƒÂªÃ‚Â·Ã‚Â¸ÃƒÂ«Ã…Â Ã¢â‚¬Â ÃƒÂ«Ã¢â‚¬Â¹Ã‚Â¤ÃƒÂ«Ã‚Â¥Ã‚Â¸ ÃƒÂ«Ã‚Â§Ã…Â½ÃƒÂ¬Ã‚ÂÃ¢â€šÂ¬ ÃƒÂ¬Ã‚ÂÃ‚Â´ÃƒÂ«Ã‚Â¦Ã¢â‚¬Å¾ÃƒÂ«Ã‚ÂÃ¢â‚¬Å¾ ÃƒÂªÃ‚Â°Ã¢â€šÂ¬ÃƒÂ¬Ã‚Â§Ã¢â€šÂ¬ÃƒÂªÃ‚Â³Ã‚Â  ÃƒÂ¬Ã…Â¾Ã‹â€ ÃƒÂ¬Ã…Â Ã‚ÂµÃƒÂ«Ã¢â‚¬Â¹Ã‹â€ ÃƒÂ«Ã¢â‚¬Â¹Ã‚Â¤. ÃƒÂ«Ã¢â‚¬Â¹Ã‚Â¹ÃƒÂ¬Ã¢â‚¬Â¹Ã‚Â ÃƒÂ¬Ã‚ÂÃ¢â€šÂ¬ ÃƒÂ¬Ã¢â‚¬â€œÃ‚Â¼ÃƒÂ«Ã‚Â§Ã‹â€ ÃƒÂ«Ã¢â‚¬Å¡Ã‹Å“ ÃƒÂ«Ã‚Â§Ã…Â½ÃƒÂ¬Ã‚ÂÃ¢â€šÂ¬ ÃƒÂ¬Ã‚ÂÃ‚Â´ÃƒÂ«Ã‚Â¦Ã¢â‚¬Å¾ÃƒÂ¬Ã‚ÂÃ¢â‚¬Å¾ ÃƒÂªÃ‚Â°Ã¢â€šÂ¬ÃƒÂ¬Ã‚Â§Ã¢â€šÂ¬ÃƒÂªÃ‚Â³Ã‚Â  ÃƒÂ¬Ã…Â¾Ã‹â€ ÃƒÂ¬Ã…Â Ã‚ÂµÃƒÂ«Ã¢â‚¬Â¹Ã‹â€ ÃƒÂªÃ‚Â¹Ã…â€™?";
+        $test = "당신 이름이 무엇입니까 이름이 키얀인 어린 소년을 만나보세요. 그러나 그는 다른 많은 이름도 가지고 있습니다. 당신은 얼마나 많은 이름을 가지고 있습니까?";
         $this->assertSame($test, convert_to_utf8(mb_convert_encoding($test, "EUC-KR", "UTF-8")));
     }
 
@@ -687,7 +687,7 @@ final class textToolsTest extends testBaseClass {
     }
 
     public function testCleanDates2(): void {
-        $this->assertSame('AprilÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“May 1995', clean_dates('April-May 1995'));
+        $this->assertSame('April–May 1995', clean_dates('April-May 1995'));
     }
 
     public function testCleanDates3(): void {
@@ -707,8 +707,8 @@ final class textToolsTest extends testBaseClass {
     }
 
     public function testOur_mb_substr_replace(): void {
-        $in = "ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â·ÃƒÂ£Ã†â€™Ã‚Â§ÃƒÂ£Ã†â€™Ã†â€™ÃƒÂ£Ã†â€™Ã¢â‚¬ÂÃƒÂ£Ã†â€™Ã‚Â³ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â°";
-        $out = "ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â·ÃƒÂ£Ã†â€™Ã‚Â§ÃƒÂ£Ã†â€™Ã†â€™XÃƒÂ£Ã†â€™Ã‚Â³ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â°";
+        $in = "ショッピング";
+        $out = "ショッXング";
         $this->assertSame($out, mb_substr_replace($in, 'X', 3, 1));
     }
 
@@ -787,19 +787,19 @@ final class textToolsTest extends testBaseClass {
     public function testCleanDatesXtra2(): void {
         $text = '{{cite journal|date=1800-2000}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('1800ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2000', $prepared->get2('date'));
+        $this->assertSame('1800–2000', $prepared->get2('date'));
     }
 
     public function testCleanDatesXtra3(): void {
         $text = '{{cite journal|date=January-FEBRUARY 2001}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('JanuaryÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“February 2001', $prepared->get2('date'));
+        $this->assertSame('January–February 2001', $prepared->get2('date'));
     }
 
     public function testCleanDatesXtra4(): void {
         $text = '{{cite journal|date=January 1999-February 2000}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('January 1999 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ February 2000', $prepared->get2('date'));
+        $this->assertSame('January 1999 – February 2000', $prepared->get2('date'));
     }
 
     public function testCleanDatesXtra5(): void {
@@ -883,13 +883,13 @@ final class textToolsTest extends testBaseClass {
     public function testCleanDatesXtra15a(): void {
         $text = '{{cite journal|date=2001 & 2002}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('2001ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2002', $prepared->get2('date'));
+        $this->assertSame('2001–2002', $prepared->get2('date'));
     }
 
     public function testCleanDatesXtra15b(): void {
         $text = '{{cite journal|date=2001 and 2002}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('2001ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2002', $prepared->get2('date'));
+        $this->assertSame('2001–2002', $prepared->get2('date'));
     }
 
     public function testCleanDatesXtra15c(): void {
@@ -907,7 +907,7 @@ final class textToolsTest extends testBaseClass {
     public function testCleanDatesXtra16(): void {
         $text = '{{cite journal|date=Summer, 1994-3333}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('Summer 1994ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“3333', $prepared->get2('date'));
+        $this->assertSame('Summer 1994–3333', $prepared->get2('date'));
     }
 
     public function testConvertingISBN10intoISBN13_1(): void {

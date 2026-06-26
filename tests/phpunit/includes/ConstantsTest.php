@@ -70,11 +70,11 @@ final class ConstantsTest extends testBaseClass {
         $this->assertSame('TheMarker', title_capitalization('Themarker', true));
         $this->assertSame('Algebra i Analiz', title_capitalization('Algebra I Analiz', true));
         $this->assertSame('ChemSystemsChem', title_capitalization('Chemsystemschem', true));
-        $this->assertSame('hessenARCHÃƒÆ’Ã¢â‚¬Å¾OLOGIE', title_capitalization('HessenARCHÃƒÆ’Ã¢â‚¬Å¾OLOGIE', true));
+        $this->assertSame('hessenARCHÄOLOGIE', title_capitalization('HessenARCHÄOLOGIE', true));
         $this->assertSame('Ocean Science Journal : OSJ', title_capitalization('Ocean Science Journal : Osj', true));
         $this->assertSame('Starine Jugoslavenske akademije znanosti i umjetnosti', title_capitalization('Starine Jugoslavenske Akademije Znanosti I Umjetnosti', true));
         $this->assertSame('voor de geschiedenis der Nederlanden', title_capitalization('Voor De Geschiedenis Der Nederlanden', true));
-        $this->assertSame('ZprÃƒÆ’Ã‚Â¡vy o zasedÃƒÆ’Ã‚Â¡nÃƒÆ’Ã‚Â­ KrÃƒÆ’Ã‚Â¡l. Ãƒâ€žÃ‚Âes. spoleÃƒâ€žÃ‚Ânosti nauk v Praze', title_capitalization('ZprÃƒÆ’Ã‚Â¡vy O ZasedÃƒÆ’Ã‚Â¡nÃƒÆ’Ã‚Â­ KrÃƒÆ’Ã‚Â¡l. Ãƒâ€žÃ…â€™es. SpoleÃƒâ€žÃ‚Ânosti Nauk V Praze', true));
+        $this->assertSame('Zprávy o zasedání Král. čes. společnosti nauk v Praze', title_capitalization('Zprávy O Zasedání Král. Čes. Společnosti Nauk V Praze', true));
     }
 
     public function testImplicitConstants(): void {
@@ -258,7 +258,7 @@ final class ConstantsTest extends testBaseClass {
                 $text
             ); // Stuff that gets "fixed"
             $text = str_replace([
-                '| doi-access = Z123Z ', '| access-date = Z123Z ', '| accessdate = Z123Z ', '| doi-broken = Z123Z ', '| doi-broken-date = Z123Z ', '| doi-inactive-date = Z123Z ', '| pmc-embargo-date = Z123Z ', '| embargo = Z123Z ', '| arÃƒâ€¦Ã…Â¸ivengelli = Z123Z ', '| open-access = Z123Z '],
+                '| doi-access = Z123Z ', '| access-date = Z123Z ', '| accessdate = Z123Z ', '| doi-broken = Z123Z ', '| doi-broken-date = Z123Z ', '| doi-inactive-date = Z123Z ', '| pmc-embargo-date = Z123Z ', '| embargo = Z123Z ', '| arşivengelli = Z123Z ', '| open-access = Z123Z '],
                 '',
                 $text
             );

@@ -394,7 +394,7 @@ final class nameToolsTest extends testBaseClass {
     }
 
     public function testUnderTwoAuthorsSpacesExceedCommas(): void {
-        // "John Smith" has 1 space and 0 commas ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ spaces > commas ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ multiple authors
+        // "John Smith" has 1 space and 0 commas → spaces > commas → multiple authors
         $this->assertFalse(under_two_authors('John Smith'));
     }
 

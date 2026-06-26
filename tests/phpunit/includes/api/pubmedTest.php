@@ -48,7 +48,7 @@ final class pubmedTest extends testBaseClass {
     }
 
     public function testPMCExpansion3(): void {
-        // Non-existent PMC: NCBI returns 404, early-return fires ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ PDF URL kept, rename skipped.
+        // Non-existent PMC: NCBI returns 404, early-return fires → PDF URL kept, rename skipped.
         // If NCBI returns 200 instead (e.g. a soft-404 page), the URL is dropped and the test is skipped.
         $this->sleep_pubmed();
         $text = "{{Cite web | url = https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9999999999/pdf/nonexistent.pdf}}";
@@ -97,7 +97,7 @@ final class pubmedTest extends testBaseClass {
     public function testZootaxaDOIPageRejection(): void {
         // Test that bot rejects DOI suffix as page number for Zootaxa articles
         // This is the exact case from the bug report
-        $text = '{{Cite journal|journal=Zootaxa|volume=4963|issue=1|pages=1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“10|doi=10.11646/zootaxa.4963.1.1}}';
+        $text = '{{Cite journal|journal=Zootaxa|volume=4963|issue=1|pages=1–10|doi=10.11646/zootaxa.4963.1.1}}';
         $template = $this->make_citation($text);
 
         // Try to add the bad page data (DOI suffix) that PMID would return
@@ -105,12 +105,12 @@ final class pubmedTest extends testBaseClass {
 
         // Should reject the DOI suffix and keep the correct pages
         $this->assertFalse($result);
-        $this->assertSame('1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“10', $template->get2('pages'));
+        $this->assertSame('1–10', $template->get2('pages'));
     }
 
     public function testPhytotaxaDOIPageRejection(): void {
         // Test that bot also rejects DOI suffix as page number for Phytotaxa articles
-        $text = '{{Cite journal|journal=Phytotaxa|volume=260|issue=2|pages=123ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“130|doi=10.11646/phytotaxa.260.2.3}}';
+        $text = '{{Cite journal|journal=Phytotaxa|volume=260|issue=2|pages=123–130|doi=10.11646/phytotaxa.260.2.3}}';
         $template = $this->make_citation($text);
 
         // Try to add the bad page data (DOI suffix) that PMID might return
@@ -118,7 +118,7 @@ final class pubmedTest extends testBaseClass {
 
         // Should reject the DOI suffix and keep the correct pages
         $this->assertFalse($result);
-        $this->assertSame('123ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“130', $template->get2('pages'));
+        $this->assertSame('123–130', $template->get2('pages'));
     }
 
     public function testAuthorOrdinalSuffixStoredInFirstName(): void {

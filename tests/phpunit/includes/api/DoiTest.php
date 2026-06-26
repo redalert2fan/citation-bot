@@ -81,13 +81,13 @@ final class DoiTest extends testBaseClass {
     public function testExpansion_doi_not_from_crossref_JaLC_Journal(): void {
         $expanded = $this->make_citation('{{Cite journal}}');
         expand_doi_with_dx($expanded, '10.11467/isss2003.7.1_11');
-        $this->assertSame('{{Cite journal| last1=ÃƒÂ§Ã‚Â«Ã‚Â¹ÃƒÂ¦Ã…â€œÃ‚Â¬ | first1=ÃƒÂ¨Ã‚Â³Ã‚Â¢ÃƒÂ¥Ã‚Â¤Ã‚ÂªÃƒÂ©Ã†â€™Ã…Â½ | last2=ÃƒÂ¥Ã‚Â·Ã‚ÂÃƒÂ¦Ã‚ÂÃ‚Â± | first2=ÃƒÂ¦Ã‚Â­Ã‚Â£ÃƒÂ§Ã‚Â¾Ã…Â½ | last3=ÃƒÂ¤Ã‚Â¹Ã¢â‚¬Â¦ÃƒÂ¤Ã‚Â¿Ã‚Â | first3=ÃƒÂ¤Ã‚Â¿Ã‚Â¡ÃƒÂ¨Ã‚Â¡Ã…â€™ | last4=ÃƒÂ¥Ã‚Â·Ã‚Â¦ÃƒÂ¨Ã‚Â¿Ã¢â‚¬Ëœ | first4=ÃƒÂ¥Ã‚Â¤Ã…Â¡ÃƒÂ¥Ã¢â‚¬â€œÃ…â€œÃƒÂ§Ã¢â‚¬ÂÃ‚Â· | title=ÃƒÂ¥Ã‚Â¤Ã‚Â§ÃƒÂ¥Ã‚Â­Ã‚Â¦ÃƒÂ£Ã‚ÂÃ‚Â«ÃƒÂ£Ã‚ÂÃ…Â ÃƒÂ£Ã‚ÂÃ¢â‚¬ËœÃƒÂ£Ã¢â‚¬Å¡Ã¢â‚¬Â¹WebÃƒÂ£Ã†â€™Ã‚Â¡ÃƒÂ£Ã†â€™Ã‚Â¼ÃƒÂ£Ã†â€™Ã‚Â«ÃƒÂ£Ã‚ÂÃ‚Â¨ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¿ÃƒÂ£Ã†â€™Ã‚Â¼ÃƒÂ£Ã†â€™Ã…Â¸ÃƒÂ£Ã†â€™Ã…Â ÃƒÂ£Ã†â€™Ã‚Â«ÃƒÂ£Ã¢â‚¬Å¡Ã‚ÂµÃƒÂ£Ã†â€™Ã‚Â¼ÃƒÂ£Ã†â€™Ã¢â‚¬Å“ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¹ÃƒÂ£Ã‚ÂÃ‚Â®ÃƒÂ§Ã‚Â Ã¢â‚¬ÂÃƒÂ§Ã‚Â©Ã‚Â¶ | journal=Society for Standardization Studies | date=2009 | volume=7 }}', $expanded->parsed_text());
+        $this->assertSame('{{Cite journal| last1=竹本 | first1=賢太郎 | last2=川東 | first2=正美 | last3=久保 | first3=信行 | last4=左近 | first4=多喜男 | title=大学におけるWebメールとターミナルサービスの研究 | journal=Society for Standardization Studies | date=2009 | volume=7 }}', $expanded->parsed_text());
     }
 
     public function testExpansion_doi_not_from_crossref_JaLC_Journal2(): void {
         $expanded = $this->make_citation('{{Cite journal}}');
         expand_doi_with_dx($expanded, '10.7875/leading.author.2.e008');
-        $this->assertSame('{{Cite journal| last1=ÃƒÂ¥Ã‚Â·Ã‚ÂÃƒÂ¥Ã‚Â´Ã…Â½ | first1=ÃƒÂ¥Ã…Â Ã‚Âª. | title=ÃƒÂ¦Ã‚Â¤Ã‚ÂÃƒÂ§Ã¢â‚¬Â°Ã‚Â©ÃƒÂ£Ã‚ÂÃ‚Â«ÃƒÂ£Ã‚ÂÃ…Â ÃƒÂ£Ã‚ÂÃ¢â‚¬ËœÃƒÂ£Ã¢â‚¬Å¡Ã¢â‚¬Â¹ÃƒÂ¥Ã¢â‚¬Â¦Ã‚ÂÃƒÂ§Ã¢â‚¬â€œÃ‚Â«ÃƒÂ¨Ã‚ÂªÃ‹Å“ÃƒÂ¥Ã‚Â°Ã…Â½ÃƒÂ£Ã‚ÂÃ‚Â¨ÃƒÂ§Ã¢â‚¬â€Ã¢â‚¬Â¦ÃƒÂ¥Ã…Â½Ã…Â¸ÃƒÂ¥Ã‚Â¾Ã‚Â®ÃƒÂ§Ã¢â‚¬ÂÃ…Â¸ÃƒÂ§Ã¢â‚¬Â°Ã‚Â©ÃƒÂ£Ã‚ÂÃ‚Â®ÃƒÂ¦Ã¢â‚¬Å¾Ã…Â¸ÃƒÂ¦Ã…Â¸Ã¢â‚¬Å“ÃƒÂ¦Ã‹â€ Ã‚Â¦ÃƒÂ§Ã¢â‚¬Â¢Ã‚Â¥ | journal=ÃƒÂ©Ã‚Â Ã‹Å“ÃƒÂ¥Ã…Â¸Ã…Â¸ÃƒÂ¨Ã…Â¾Ã‚ÂÃƒÂ¥Ã‚ÂÃ‹â€ ÃƒÂ£Ã†â€™Ã‚Â¬ÃƒÂ£Ã†â€™Ã¢â‚¬Å“ÃƒÂ£Ã†â€™Ã‚Â¥ÃƒÂ£Ã†â€™Ã‚Â¼ | date=2013 | volume=2 }}', $expanded->parsed_text());
+        $this->assertSame('{{Cite journal| last1=川崎 | first1=努. | title=植物における免疫誘導と病原微生物の感染戦略 | journal=領域融合レビュー | date=2013 | volume=2 }}', $expanded->parsed_text());
     }
 
     public function testExpansion_doi_not_from_crossref_mEDRA_Journal(): void {
@@ -115,7 +115,7 @@ final class DoiTest extends testBaseClass {
         if ($expanded->parsed_text() === '{{Cite journal}}') {
             $this->assertSame('{{Cite journal}}', $expanded->parsed_text());
         } else {
-            $this->assertSame('{{Cite journal| author1=Jun Aoyama | author2=Sam Wouthuyzen | author3=Michael J. Miller | author4=Hagi Y. Sugeha | author5=Mari Kuroki | author6=Shun Watanabe | author7=Augy Syahailatua | author8=Fadly Y. Tantu | author9=Seishi Hagihara | author10=Triyanto | author11=Tsuguo Otake | author12=Katsumi Tsukamoto | title=Reproductive Ecology and Biodiversity of Freshwater Eels around Sulawesi Island Indonesia | journal=Zoological Studies | date=2018 | volume=ÃƒÂ§Ã¢â‚¬Å¾Ã‚Â¡ | issue=57 }}', $expanded->parsed_text());
+            $this->assertSame('{{Cite journal| author1=Jun Aoyama | author2=Sam Wouthuyzen | author3=Michael J. Miller | author4=Hagi Y. Sugeha | author5=Mari Kuroki | author6=Shun Watanabe | author7=Augy Syahailatua | author8=Fadly Y. Tantu | author9=Seishi Hagihara | author10=Triyanto | author11=Tsuguo Otake | author12=Katsumi Tsukamoto | title=Reproductive Ecology and Biodiversity of Freshwater Eels around Sulawesi Island Indonesia | journal=Zoological Studies | date=2018 | volume=無 | issue=57 }}', $expanded->parsed_text());
         }
     }
 
@@ -145,7 +145,7 @@ final class DoiTest extends testBaseClass {
          $expanded = $this->make_citation('{{Cite journal}}');
          expand_doi_with_dx($expanded, '10.2788/14231');
         if ($expanded->has('author1')) {
-            $this->assertSame('{{Cite journal| author1=European Commission. Joint Research Centre. Institute for Environment and Sustainability | last2=Vogt | first2=JÃƒÆ’Ã‚Â¼rgen | last3=Foisneau | first3=StÃƒÆ’Ã‚Â©phanie | title=European river and catchment database, version 2.0 (CCM2) : Analysis tools | date=2007 | publisher=Publications Office }}', $expanded->parsed_text());
+            $this->assertSame('{{Cite journal| author1=European Commission. Joint Research Centre. Institute for Environment and Sustainability | last2=Vogt | first2=Jürgen | last3=Foisneau | first3=Stéphanie | title=European river and catchment database, version 2.0 (CCM2) : Analysis tools | date=2007 | publisher=Publications Office }}', $expanded->parsed_text());
         } else {
             $this->markTestSkipped('doi.org API did not respond (rate limit or outage)');
         }
@@ -220,7 +220,7 @@ final class DoiTest extends testBaseClass {
     }
 
     public function testCrossRefAlternativeAPI3(): void {
-        $text = "{{cite book |last=GalbÃƒÆ’Ã‚Â¡cs |first=Peter |title=The Theory of New Classical Macroeconomics. A Positive Critique |location=Heidelberg/New York/Dordrecht/London |publisher=Springer |year=2015 |isbn= 978-3-319-17578-2|doi=10.1007/978-3-319-17578-2 |series=Contributions to Economics |pmid=<!-- -->|pmc=<!-- -->}}";
+        $text = "{{cite book |last=Galbács |first=Peter |title=The Theory of New Classical Macroeconomics. A Positive Critique |location=Heidelberg/New York/Dordrecht/London |publisher=Springer |year=2015 |isbn= 978-3-319-17578-2|doi=10.1007/978-3-319-17578-2 |series=Contributions to Economics |pmid=<!-- -->|pmc=<!-- -->}}";
         $prepared = $this->process_citation($text);
         $this->assertSame($text, $prepared->parsed_text());
     }
@@ -324,7 +324,7 @@ final class DoiTest extends testBaseClass {
     }
 
     public function testNoHaveBadChapter(): void {
-        $text = "{{Citation |last=Chuku |first=Gloria |title=Kenneth Dike: The Father of Modern African Historiography |date=2013 |work=The Igbo Intellectual Tradition: Creative Conflict in African and African Diasporic Thought |pages=137ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“164 |editor-last=Chuku |editor-first=Gloria |url=https://link.springer.com/chapter/10.1057/9781137311290_6 |access-date=2024-11-18 |place=New York |publisher=Palgrave Macmillan US |language=en |doi=10.1057/9781137311290_6 |isbn=978-1-137-31129-0|url-access=subscription }}";
+        $text = "{{Citation |last=Chuku |first=Gloria |title=Kenneth Dike: The Father of Modern African Historiography |date=2013 |work=The Igbo Intellectual Tradition: Creative Conflict in African and African Diasporic Thought |pages=137–164 |editor-last=Chuku |editor-first=Gloria |url=https://link.springer.com/chapter/10.1057/9781137311290_6 |access-date=2024-11-18 |place=New York |publisher=Palgrave Macmillan US |language=en |doi=10.1057/9781137311290_6 |isbn=978-1-137-31129-0|url-access=subscription }}";
         $template = $this->process_citation($text);
         $this->assertSame($text, $template->parsed_text());
     }
@@ -334,10 +334,10 @@ final class DoiTest extends testBaseClass {
  | last1=Shugart | first1=Alan | last2=Tong | first2=Yang-hu
  | year=1966
  | title=IBM 2321 data cell drive
- | journal=Proceedings of the April 26ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“28, 1966, Spring Joint Computer Conference
+ | journal=Proceedings of the April 26–28, 1966, Spring Joint Computer Conference
  | publisher=Association for Computing Machinery (ACM)
  | place=New York City, New York
- | pages=335ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“345
+ | pages=335–345
  | doi=10.1145/1464182.1464223
  | isbn=978-1-4503-7892-5
  | url=http://portal.acm.org/citation.cfm?id=1464223

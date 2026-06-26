@@ -33,7 +33,7 @@ final class zoteroTest extends testBaseClass {
     }
 
     public function testDropUrlCode(): void {       // url is same as one doi points to
-        $text = '{{cite journal |pmc=XYZ|url=https://pubs.rsc.org/en/Content/ArticleLanding/1999/CP/a808518h|doi=10.1039/A808518H|title=A study of FeCO+ with correlated wavefunctions|journal=Physical Chemistry Chemical Physics|volume=1|issue=6|pages=967ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“975|year=1999|last1=Glaesemann|first1=Kurt R.|last2=Gordon|first2=Mark S.|last3=Nakano|first3=Haruyuki|bibcode=1999PCCP....1..967G}}';
+        $text = '{{cite journal |pmc=XYZ|url=https://pubs.rsc.org/en/Content/ArticleLanding/1999/CP/a808518h|doi=10.1039/A808518H|title=A study of FeCO+ with correlated wavefunctions|journal=Physical Chemistry Chemical Physics|volume=1|issue=6|pages=967–975|year=1999|last1=Glaesemann|first1=Kurt R.|last2=Gordon|first2=Mark S.|last3=Nakano|first3=Haruyuki|bibcode=1999PCCP....1..967G}}';
         $expanded = $this->process_citation($text);
         $this->assertNotNull($expanded->get2('url'));
     }
@@ -168,7 +168,7 @@ final class zoteroTest extends testBaseClass {
     }
 
     public function testDropSomeURLEquivs9(): void {
-        $text = "{{cite journal|url=https://pubs.acs.org/doi/10.1021/acs.analchem.8b04567|doi=10.1021/acs.analchem.8b04567|doi-access=free|pmid=30741529|pmc=6526953|title=ISiCLE: A Quantum Chemistry Pipeline for Establishing in Silico Collision Cross Section Libraries|journal=Analytical Chemistry|volume=91|issue=7|pages=4346ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“4356|year=2019|last1=Colby|first1=Sean M.|last2=Thomas|first2=Dennis G.|last3=NuÃƒÆ’Ã‚Â±ez|first3=Jamie R.|last4=Baxter|first4=Douglas J.|last5=Glaesemann|first5=Kurt R.|last6=Brown|first6=Joseph M.|last7=Pirrung|first7=Meg A.|last8=Govind|first8=Niranjan|last9=Teeguarden|first9=Justin G.|last10=Metz|first10=Thomas O.|last11=Renslow|first11=Ryan S.}}";
+        $text = "{{cite journal|url=https://pubs.acs.org/doi/10.1021/acs.analchem.8b04567|doi=10.1021/acs.analchem.8b04567|doi-access=free|pmid=30741529|pmc=6526953|title=ISiCLE: A Quantum Chemistry Pipeline for Establishing in Silico Collision Cross Section Libraries|journal=Analytical Chemistry|volume=91|issue=7|pages=4346–4356|year=2019|last1=Colby|first1=Sean M.|last2=Thomas|first2=Dennis G.|last3=Nuñez|first3=Jamie R.|last4=Baxter|first4=Douglas J.|last5=Glaesemann|first5=Kurt R.|last6=Brown|first6=Joseph M.|last7=Pirrung|first7=Meg A.|last8=Govind|first8=Niranjan|last9=Teeguarden|first9=Justin G.|last10=Metz|first10=Thomas O.|last11=Renslow|first11=Ryan S.}}";
         $template = $this->make_citation($text);
         $tmp_array = [$template];
         drop_urls_that_match_dois($tmp_array);
@@ -536,7 +536,7 @@ final class zoteroTest extends testBaseClass {
         $access_date = 0;
         $url = '';
         $zotero_data = [];
-        $zotero_data[0] = (object) ['title' => "ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½JunkÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½", 'itemType' => 'webpage'];
+        $zotero_data[0] = (object) ['title' => "������Junk�����������", 'itemType' => 'webpage'];
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
         $this->assertNull($template->get2('title'));
@@ -707,7 +707,7 @@ final class zoteroTest extends testBaseClass {
     }
 
     public function testZoteroResponse39(): void {
-        $text = '{{cite journal|url=https://www.sciencedirect.com/science/article/pii/S0024379512004405|title=Geometry of the Welch bounds|journal=Linear Algebra and Its Applications|volume=437|issue=10|pages=2455ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2470|year=2012|last1=Datta|first1=S.|last2=Howard|first2=S.|last3=Cochran|first3=D.}}';
+        $text = '{{cite journal|url=https://www.sciencedirect.com/science/article/pii/S0024379512004405|title=Geometry of the Welch bounds|journal=Linear Algebra and Its Applications|volume=437|issue=10|pages=2455–2470|year=2012|last1=Datta|first1=S.|last2=Howard|first2=S.|last3=Cochran|first3=D.}}';
         $template = $this->make_citation($text);
         $access_date = 0;
         $url = 'https://www.sciencedirect.com/science/article/pii/S0024379512004405';
@@ -779,7 +779,7 @@ final class zoteroTest extends testBaseClass {
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
         $this->assertSame('sfdb.org', $template->get2('website'));
-        $this->assertSame('34ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“55', $template->get2('pages'));
+        $this->assertSame('34–55', $template->get2('pages'));
     }
 
     public function testZoteroResponse45(): void {
@@ -858,7 +858,7 @@ final class zoteroTest extends testBaseClass {
         $zotero_data[0] = (object) ['title' => 'X', 'chapter' => 'Y', 'year', 'pages' => '34-55'];
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
-        $this->assertSame('34ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“55', $template->get2('pages'));
+        $this->assertSame('34–55', $template->get2('pages'));
     }
 
     public function testZoteroResponse50(): void {
@@ -870,7 +870,7 @@ final class zoteroTest extends testBaseClass {
         $zotero_data[0] = (object) ['title' => 'X', 'chapter' => 'Y', 'year', 'pages' => '34-55'];
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
-        $this->assertSame('34ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“55', $template->get2('pages'));
+        $this->assertSame('34–55', $template->get2('pages'));
     }
 
     public function testZoteroResponse51(): void {
@@ -882,7 +882,7 @@ final class zoteroTest extends testBaseClass {
         $zotero_data[0] = (object) ['title' => 'This is the title of the chapter', 'year', 'pages' => '34-55'];
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
-        $this->assertSame('34ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“55', $template->get2('pages'));
+        $this->assertSame('34–55', $template->get2('pages'));
     }
 
     public function testZoteroResponse52(): void {
@@ -906,7 +906,7 @@ final class zoteroTest extends testBaseClass {
         $access_date = 0;
         $url = 'https://e.vnexpress.net/news/travel/places/vietjet-to-launch-new-route-4765004.html';
         $zotero_data = [];
-        $zotero_data[0] = (object) ['title' => 'Vietjet to launch new route', 'itemType' => 'webpage', 'publicationTitle' => 'VnExpress International ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ Latest news, business, travel and analysis from Vietnam'];
+        $zotero_data[0] = (object) ['title' => 'Vietjet to launch new route', 'itemType' => 'webpage', 'publicationTitle' => 'VnExpress International – Latest news, business, travel and analysis from Vietnam'];
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
         $this->assertSame('VnExpress International', $template->get2('work'));
@@ -931,10 +931,10 @@ final class zoteroTest extends testBaseClass {
         $access_date = 0;
         $url = 'https://www.dispatch.co.kr/2324926';
         $zotero_data = [];
-        $zotero_data[0] = (object) ['title' => 'Enhypen pre-orders', 'itemType' => 'webpage', 'publicationTitle' => 'ÃƒÂ«Ã¢â‚¬ÂÃ¢â‚¬ÂÃƒÂ¬Ã…Â Ã‚Â¤ÃƒÂ­Ã…â€™Ã‚Â¨ÃƒÂ¬Ã‚Â¹Ã‹Å“ | ÃƒÂ«Ã¢â‚¬Â°Ã‚Â´ÃƒÂ¬Ã…Â Ã‚Â¤ÃƒÂ«Ã…Â Ã¢â‚¬Â ÃƒÂ­Ã…â€™Ã‚Â©ÃƒÂ­Ã…Â Ã‚Â¸ÃƒÂ«Ã¢â‚¬Â¹Ã‚Â¤!'];
+        $zotero_data[0] = (object) ['title' => 'Enhypen pre-orders', 'itemType' => 'webpage', 'publicationTitle' => '디스패치 | 뉴스는 팩트다!'];
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
-        $this->assertSame('ÃƒÂ«Ã¢â‚¬ÂÃ¢â‚¬ÂÃƒÂ¬Ã…Â Ã‚Â¤ÃƒÂ­Ã…â€™Ã‚Â¨ÃƒÂ¬Ã‚Â¹Ã‹Å“', $template->get2('work'));
+        $this->assertSame('디스패치', $template->get2('work'));
     }
 
     public function testSportsworldiPublicationTitle(): void {
@@ -944,14 +944,14 @@ final class zoteroTest extends testBaseClass {
         $access_date = 0;
         $url = 'http://www.sportsworldi.com/newsView/20190219537085';
         $zotero_data = [];
-        $zotero_data[0] = (object) ['title' => 'ÃƒÂªÃ‚Â°Ã¢â€šÂ¬ÃƒÂ¬Ã‚ÂÃ¢â‚¬Å¾ÃƒÂ«Ã‚Â¡Ã…â€œ ÃƒÂªÃ‚Â°Ã¢â€šÂ¬ÃƒÂ«Ã…Â Ã¢â‚¬Â ÃƒÂªÃ‚Â¸Ã‚Â°ÃƒÂ¬Ã‚Â°Ã‚Â¨, 25ÃƒÂ¬Ã‚ÂÃ‚Â¼ ÃƒÂ¬Ã‚Â»Ã‚Â´ÃƒÂ«Ã‚Â°Ã‚Â±ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÂ«Ã¢â‚¬ËœÃ‚Â ÃƒÂ«Ã‚Â²Ã‹â€ ÃƒÂ¬Ã‚Â§Ã‚Â¸ ÃƒÂ¬Ã¢â‚¬Â¹Ã‚Â±ÃƒÂªÃ‚Â¸Ã¢â€šÂ¬ \'ÃƒÂ«Ã¢â‚¬Â¹Ã‚Â¤ÃƒÂ¬Ã¢â‚¬Â¹Ã…â€œ ÃƒÂ¬Ã‚ÂÃ‚Â´ÃƒÂ«Ã‚Â³Ã¢â‚¬Å¾\' ÃƒÂ«Ã‚Â°Ã…â€œÃƒÂ­Ã¢â‚¬ËœÃ…â€œ', 'itemType' => 'newspaperArticle', 'publicationTitle' => 'ÃƒÂªÃ‚Â°Ã¢â€šÂ¬ÃƒÂ¬Ã‚ÂÃ¢â‚¬Å¾ÃƒÂ«Ã‚Â¡Ã…â€œ ÃƒÂªÃ‚Â°Ã¢â€šÂ¬ÃƒÂ«Ã…Â Ã¢â‚¬Â ÃƒÂªÃ‚Â¸Ã‚Â°ÃƒÂ¬Ã‚Â°Ã‚Â¨, 25ÃƒÂ¬Ã‚ÂÃ‚Â¼ ÃƒÂ¬Ã‚Â»Ã‚Â´ÃƒÂ«Ã‚Â°Ã‚Â±ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÂ«Ã¢â‚¬ËœÃ‚Â ÃƒÂ«Ã‚Â²Ã‹â€ ÃƒÂ¬Ã‚Â§Ã‚Â¸ ÃƒÂ¬Ã¢â‚¬Â¹Ã‚Â±ÃƒÂªÃ‚Â¸Ã¢â€šÂ¬ "ÃƒÂ«Ã¢â‚¬Â¹Ã‚Â¤ÃƒÂ¬Ã¢â‚¬Â¹Ã…â€œ ÃƒÂ¬Ã‚ÂÃ‚Â´ÃƒÂ«Ã‚Â³Ã¢â‚¬Å¾" ÃƒÂ«Ã‚Â°Ã…â€œÃƒÂ­Ã¢â‚¬ËœÃ…â€œ ÃƒÂ¬Ã…Â Ã‚Â¤ÃƒÂ­Ã‚ÂÃ‚Â¬ÃƒÂ¬Ã‚Â¸Ã‚Â ÃƒÂ¬Ã¢â‚¬ÂºÃ¢â‚¬ÂÃƒÂ«Ã¢â‚¬Å“Ã…â€œ'];
+        $zotero_data[0] = (object) ['title' => '가을로 가는 기차, 25일 컴백…두 번째 싱글 \'다시 이별\' 발표', 'itemType' => 'newspaperArticle', 'publicationTitle' => '가을로 가는 기차, 25일 컴백…두 번째 싱글 "다시 이별" 발표 스포츠월드'];
         $zotero_response = json_encode($zotero_data);
         Zotero::process_zotero_response($zotero_response, $template, $url, $access_date);
-        $this->assertSame('ÃƒÂ¬Ã…Â Ã‚Â¤ÃƒÂ­Ã‚ÂÃ‚Â¬ÃƒÂ¬Ã‚Â¸Ã‚Â ÃƒÂ¬Ã¢â‚¬ÂºÃ¢â‚¬ÂÃƒÂ«Ã¢â‚¬Å“Ã…â€œ', $template->get2('work'));
+        $this->assertSame('스포츠월드', $template->get2('work'));
     }
 
     public function testRemoveURLthatRedirects(): void { // This URL is a redirect -- tests code that does that
-        $text = '{{cite journal|doi-access=free|doi=10.1021/acs.analchem.8b04567|url=https://shortdoi.org/gf7sqt|pmid=30741529|pmc=6526953|title=ISiCLE: A Quantum Chemistry Pipeline for Establishing in Silico Collision Cross Section Libraries|journal=Analytical Chemistry|volume=91|issue=7|pages=4346ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“4356|year=2019|last1=Colby|first1=Sean M.|last2=Thomas|first2=Dennis G.|last3=NuÃƒÆ’Ã‚Â±ez|first3=Jamie R.|last4=Baxter|first4=Douglas J.|last5=Glaesemann|first5=Kurt R.|last6=Brown|first6=Joseph M.|last7=Pirrung|first7=Meg A.|last8=Govind|first8=Niranjan|last9=Teeguarden|first9=Justin G.|last10=Metz|first10=Thomas O.|last11=Renslow|first11=Ryan S.}}';
+        $text = '{{cite journal|doi-access=free|doi=10.1021/acs.analchem.8b04567|url=https://shortdoi.org/gf7sqt|pmid=30741529|pmc=6526953|title=ISiCLE: A Quantum Chemistry Pipeline for Establishing in Silico Collision Cross Section Libraries|journal=Analytical Chemistry|volume=91|issue=7|pages=4346–4356|year=2019|last1=Colby|first1=Sean M.|last2=Thomas|first2=Dennis G.|last3=Nuñez|first3=Jamie R.|last4=Baxter|first4=Douglas J.|last5=Glaesemann|first5=Kurt R.|last6=Brown|first6=Joseph M.|last7=Pirrung|first7=Meg A.|last8=Govind|first8=Niranjan|last9=Teeguarden|first9=Justin G.|last10=Metz|first10=Thomas O.|last11=Renslow|first11=Ryan S.}}';
         $template = $this->make_citation($text);
         $tmp_array = [$template];
         drop_urls_that_match_dois($tmp_array);
@@ -1106,7 +1106,7 @@ final class zoteroTest extends testBaseClass {
         $this->requires_zotero(function (): void {
             $text = '{{cite journal|chapter-url=http://www.newsen.com/news_view.php?uid=201606131737570410}}';
             $expanded = $this->expand_via_zotero($text);
-            if ($expanded->get2('title') === 'ÃƒÂ­Ã‚ÂÃ‚ÂÃƒÂ«Ã‚Â¸Ã…â€™ ÃƒÂ¬Ã‚Â¸Ã‚Â¡ "ÃƒÂ­Ã‚ÂÃ‚Â¬ÃƒÂ«Ã‚Â¯Ã‚Â¸ÃƒÂ«Ã¢â‚¬Â¹Ã¢â‚¬Âº ÃƒÂ¬Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¬Ã¢â‚¬Â¹Ã‚Â¤ÃƒÂ¬Ã†â€™Ã‚Â ÃƒÂ­Ã¢â‚¬Â¢Ã‚Â´ÃƒÂ¬Ã‚Â²Ã‚Â´, ÃƒÂ­Ã…â€™Ã¢â€šÂ¬ ÃƒÂ¬Ã‚Â¡Ã‚Â´ÃƒÂ¬Ã¢â‚¬Â Ã‚Â ÃƒÂ¬Ã¢â‚¬â€œÃ‚Â´ÃƒÂ«Ã‚Â Ã‚Â¤ÃƒÂ¬Ã¢â‚¬ÂºÃ…â€™"') {
+            if ($expanded->get2('title') === '큐브 측 "포미닛 사실상 해체, 팀 존속 어려워"') {
                 $this->assertTrue(true);
             } else {
                 $this->assertNull($expanded->get2('title'));
