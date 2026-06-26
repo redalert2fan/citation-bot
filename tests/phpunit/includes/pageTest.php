@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class PageTest extends TestBaseClass {
+final class pageTest extends testBaseClass {
 
     public function testPageChangeSummary1(): void {
         $page = $this->process_page('{{cite journal|chapter=chapter name|title=book name}}{stuff}{{{Stuffy|dsafsdf}}}'); // Change to book from journal
@@ -248,7 +248,7 @@ final class PageTest extends TestBaseClass {
                 $this->assertFalse($page->write($api));
             }
             $page->get_text_from($writeTestPage);
-            $this->assertTrue(mb_strpos($page->parsed_text(), 'Nature') > 5); // This can fail, if the page gets edited and is no longer {{Cite journal | doi = 10.1038/nature09068 | title=Bot Testing | date=2010 | pmid=20505727 | last1=Smith | first1=M. R. | last2=Caron | first2=J. B. | journal=Nature | volume=465 | issue=7297 | pages=469Ã¢â‚¬â€œ472 | hdl=1807/32368 | s2cid=4421029 }}
+            $this->assertTrue(mb_strpos($page->parsed_text(), 'Nature') > 5); // This can fail, if the page gets edited and is no longer {{Cite journal | doi = 10.1038/nature09068 | title=Bot Testing | date=2010 | pmid=20505727 | last1=Smith | first1=M. R. | last2=Caron | first2=J. B. | journal=Nature | volume=465 | issue=7297 | pages=469ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“472 | hdl=1807/32368 | s2cid=4421029 }}
         });
     }
 
@@ -284,7 +284,7 @@ final class PageTest extends TestBaseClass {
         if (mb_strpos($parsed, 'last1=Mahajan') === false) {
             $this->markTestSkipped('PubMed/CrossRef API did not respond (rate limit or outage)');
         }
-        $this->assertSame("URL reference test 1 <ref name='bob'>{{cite journal | last1=Giesa | first1=Tristan | last2=Spivak | first2=David I. | last3=Buehler | first3=Markus J. | title=Reoccurring Patterns in Hierarchical Protein Materials and Music: The Power of Analogies | journal=Bionanoscience | date=2011 | volume=1 | issue=4 | pages=153Ã¢â‚¬â€œ161 | doi=10.1007/s12668-011-0022-5 | url=http://doi.org/10.1007/s12668-011-0022-5 }}< / ref>\n Second reference: \n<ref >{{cite journal | last1=Mahajan | first1=P. T. | last2=Pimple | first2=P. | last3=Palsetia | first3=D. | last4=Dave | first4=N. | last5=De Sousa | first5=A. | title=Indian religious concepts on sexuality and marriage | journal=Indian Journal of Psychiatry | date=2013 | volume=55 | issue=Suppl 2 | pages=S256-62 | doi=10.4103/0019-5545.105547 | doi-access=free | pmid=23858264 | pmc=3705692 }}</ref> URL reference test 1", $parsed);
+        $this->assertSame("URL reference test 1 <ref name='bob'>{{cite journal | last1=Giesa | first1=Tristan | last2=Spivak | first2=David I. | last3=Buehler | first3=Markus J. | title=Reoccurring Patterns in Hierarchical Protein Materials and Music: The Power of Analogies | journal=Bionanoscience | date=2011 | volume=1 | issue=4 | pages=153ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“161 | doi=10.1007/s12668-011-0022-5 | url=http://doi.org/10.1007/s12668-011-0022-5 }}< / ref>\n Second reference: \n<ref >{{cite journal | last1=Mahajan | first1=P. T. | last2=Pimple | first2=P. | last3=Palsetia | first3=D. | last4=Dave | first4=N. | last5=De Sousa | first5=A. | title=Indian religious concepts on sexuality and marriage | journal=Indian Journal of Psychiatry | date=2013 | volume=55 | issue=Suppl 2 | pages=S256-62 | doi=10.4103/0019-5545.105547 | doi-access=free | pmid=23858264 | pmc=3705692 }}</ref> URL reference test 1", $parsed);
     }
 
     public function testUrlReferencesAA(): void {
@@ -306,13 +306,13 @@ final class PageTest extends TestBaseClass {
     public function testUrlReferencesWithText0(): void {
         $text = "<ref>{{doi|10.2307/962034}}</ref>";
         $page = $this->process_page($text);
-        $this->assertSame('<ref>{{cite journal | last1=Jarman | first1=Douglas | title=Alban Berg, Wilhelm Fliess and the Secret Programme of the Violin Concerto | journal=The Musical Times | date=1983 | volume=124 | issue=1682 | pages=218Ã¢â‚¬â€œ223 | doi=10.2307/962034 | jstor=962034 }}</ref>', $page->parsed_text());
+        $this->assertSame('<ref>{{cite journal | last1=Jarman | first1=Douglas | title=Alban Berg, Wilhelm Fliess and the Secret Programme of the Violin Concerto | journal=The Musical Times | date=1983 | volume=124 | issue=1682 | pages=218ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“223 | doi=10.2307/962034 | jstor=962034 }}</ref>', $page->parsed_text());
     }
 
     public function testUrlReferencesWithText1(): void {
-        $text = "<ref>Jarman, D. (1983). [https://www.jstor.org/discover/10.2307/962034?uid=3738032&amp;uid=373072751&amp;uid=2&amp;uid=|||||||||3&amp;uid=60&amp;sid=21102523353593 Alban Berg, Wilhelm Fliess and the Secret Programme of the Violin Concerto]. ''The Musical Times'' Vol. 124, No. 1682 (Apr. 1983), pp. 218Ã¢â‚¬â€œ223</ref>";
+        $text = "<ref>Jarman, D. (1983). [https://www.jstor.org/discover/10.2307/962034?uid=3738032&amp;uid=373072751&amp;uid=2&amp;uid=|||||||||3&amp;uid=60&amp;sid=21102523353593 Alban Berg, Wilhelm Fliess and the Secret Programme of the Violin Concerto]. ''The Musical Times'' Vol. 124, No. 1682 (Apr. 1983), pp. 218ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“223</ref>";
         $page = $this->process_page($text);
-        $this->assertSame('<ref>{{cite journal | last1=Jarman | first1=Douglas | title=Alban Berg, Wilhelm Fliess and the Secret Programme of the Violin Concerto | journal=The Musical Times | date=1983 | volume=124 | issue=1682 | pages=218Ã¢â‚¬â€œ223 | doi=10.2307/962034 | jstor=962034 | url=https://www.jstor.org/stable/962034 }}</ref>', $page->parsed_text());
+        $this->assertSame('<ref>{{cite journal | last1=Jarman | first1=Douglas | title=Alban Berg, Wilhelm Fliess and the Secret Programme of the Violin Concerto | journal=The Musical Times | date=1983 | volume=124 | issue=1682 | pages=218ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“223 | doi=10.2307/962034 | jstor=962034 | url=https://www.jstor.org/stable/962034 }}</ref>', $page->parsed_text());
     }
 
     public function testUrlReferencesWithText2(): void {
@@ -322,44 +322,44 @@ final class PageTest extends TestBaseClass {
     }
 
     public function testUrlReferencesWithText3(): void {
-        $text = "<ref>Raymond O. Silverstein, &quot;A note on the term 'Bantu' as first used by W. H. I. Bleek&quot;, ''African Studies'' 27 (1968), 211Ã¢â‚¬â€œ212, [https://www.doi.org/10.1080/00020186808707298 doi:10.1080/00020186808707298].</ref>";
+        $text = "<ref>Raymond O. Silverstein, &quot;A note on the term 'Bantu' as first used by W. H. I. Bleek&quot;, ''African Studies'' 27 (1968), 211ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“212, [https://www.doi.org/10.1080/00020186808707298 doi:10.1080/00020186808707298].</ref>";
         $page = $this->process_page($text);
-        $this->assertSame('<ref>{{cite journal | last1=Silverstein | first1=Raymond O. | title=A note on the term "Bantu" as first used by W. H. I. Bleek | journal=African Studies | date=1968 | volume=27 | issue=4 | pages=211Ã¢â‚¬â€œ212 | doi=10.1080/00020186808707298 | url=https://www.doi.org/10.1080/00020186808707298 }}</ref>', $page->parsed_text());
+        $this->assertSame('<ref>{{cite journal | last1=Silverstein | first1=Raymond O. | title=A note on the term "Bantu" as first used by W. H. I. Bleek | journal=African Studies | date=1968 | volume=27 | issue=4 | pages=211ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“212 | doi=10.1080/00020186808707298 | url=https://www.doi.org/10.1080/00020186808707298 }}</ref>', $page->parsed_text());
     }
 
     public function testUrlReferencesWithText4(): void { // Has [[ ]] in it
-        $text = "<ref>[[Chandra Prakash Kala|Kala, C.P.]] and Ratajc, P. 2012.[https://rd.springer.com/article/10.1007/s10531-012-0246-x &quot;High altitude biodiversity of the Alps and the Himalayas: ethnobotany, plant distribution and conservation perspective&quot;.] ''Biodiversity and Conservation'', 21 (4): 1115Ã¢â‚¬â€œ1126.</ref>";
+        $text = "<ref>[[Chandra Prakash Kala|Kala, C.P.]] and Ratajc, P. 2012.[https://rd.springer.com/article/10.1007/s10531-012-0246-x &quot;High altitude biodiversity of the Alps and the Himalayas: ethnobotany, plant distribution and conservation perspective&quot;.] ''Biodiversity and Conservation'', 21 (4): 1115ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1126.</ref>";
         $page = $this->process_page($text);
         $this->assertSame($text, $page->parsed_text());
     }
 
     public function testUrlReferencesWithText5(): void {
-        $text = "<ref>Stoeckelhuber, Mechthild, Alexander Sliwa, and Ulrich Welsch. &quot;[http://onlinelibrary.wiley.com/doi/10.1002/1097-0185(20000701)259:3%3C312::AID-AR80%3E3.0.CO;2-X/full HistoÃ¢â‚¬Âphysiology of the scentÃ¢â‚¬Âmarking glands of the penile pad, anal pouch, and the forefoot in the aardwolf (Proteles cristatus)].&quot; The anatomical record 259.3 (2000): 312-326.</ref>";
+        $text = "<ref>Stoeckelhuber, Mechthild, Alexander Sliwa, and Ulrich Welsch. &quot;[http://onlinelibrary.wiley.com/doi/10.1002/1097-0185(20000701)259:3%3C312::AID-AR80%3E3.0.CO;2-X/full HistoÃƒÂ¢Ã¢â€šÂ¬Ã‚Âphysiology of the scentÃƒÂ¢Ã¢â€šÂ¬Ã‚Âmarking glands of the penile pad, anal pouch, and the forefoot in the aardwolf (Proteles cristatus)].&quot; The anatomical record 259.3 (2000): 312-326.</ref>";
         $page = $this->process_page($text);
         $parsed = str_replace('| s2cid=9250632 ', '', $page->parsed_text());
         if (mb_strpos($parsed, 'last1=Stoeckelhuber') === false ||
             mb_strpos($parsed, 'pmid=10861364') === false) {
             $this->markTestSkipped('CrossRef/PubMed API did not respond (rate limit or outage)');
         }
-        $this->assertSame('<ref>{{cite journal | last1=Stoeckelhuber | first1=Mechthild | last2=Sliwa | first2=Alexander | last3=Welsch | first3=Ulrich | title=Histo-physiology of the scent-marking glands of the penile pad, anal pouch, and the forefoot in the aardwolf (Proteles cristatus) | journal=The Anatomical Record | date=2000 | volume=259 | issue=3 | pages=312Ã¢â‚¬â€œ326 | doi=10.1002/1097-0185(20000701)259:3<312::AID-AR80>3.0.CO;2-X | pmid=10861364 | url=http://onlinelibrary.wiley.com/doi/10.1002/1097-0185(20000701)259:3%3C312::AID-AR80%3E3.0.CO;2-X/full }}</ref>', $parsed);
+        $this->assertSame('<ref>{{cite journal | last1=Stoeckelhuber | first1=Mechthild | last2=Sliwa | first2=Alexander | last3=Welsch | first3=Ulrich | title=Histo-physiology of the scent-marking glands of the penile pad, anal pouch, and the forefoot in the aardwolf (Proteles cristatus) | journal=The Anatomical Record | date=2000 | volume=259 | issue=3 | pages=312ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“326 | doi=10.1002/1097-0185(20000701)259:3<312::AID-AR80>3.0.CO;2-X | pmid=10861364 | url=http://onlinelibrary.wiley.com/doi/10.1002/1097-0185(20000701)259:3%3C312::AID-AR80%3E3.0.CO;2-X/full }}</ref>', $parsed);
     }
 
     public function testUrlReferencesWithText6(): void {
         $text = "<ref>Emma Ambrose, Cas Mudde (2015). ''[http://www.tandfonline.com/doi/abs/10.1080/13537113.2015.1032033 Canadian Multiculturalism and the Absence of the Far Right]'' Nationalism and Ethnic Politics Vol. 21 Iss. 2.</ref>";
         $page = $this->process_page($text);
-        $this->assertSame('<ref>{{cite journal | last1=Ambrose | first1=Emma | last2=Mudde | first2=Cas | title=Canadian Multiculturalism and the Absence of the Far Right | journal=Nationalism and Ethnic Politics | date=2015 | volume=21 | issue=2 | pages=213Ã¢â‚¬â€œ236 | doi=10.1080/13537113.2015.1032033 | url=http://www.tandfonline.com/doi/abs/10.1080/13537113.2015.1032033 }}</ref>', str_replace('| s2cid=145773856 ', '', $page->parsed_text()));
+        $this->assertSame('<ref>{{cite journal | last1=Ambrose | first1=Emma | last2=Mudde | first2=Cas | title=Canadian Multiculturalism and the Absence of the Far Right | journal=Nationalism and Ethnic Politics | date=2015 | volume=21 | issue=2 | pages=213ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“236 | doi=10.1080/13537113.2015.1032033 | url=http://www.tandfonline.com/doi/abs/10.1080/13537113.2015.1032033 }}</ref>', str_replace('| s2cid=145773856 ', '', $page->parsed_text()));
     }
 
     public function testUrlReferencesWithText7(): void {
-        $text = "<ref>Gregory, T. Ryan. (2008). [https://link.springer.com/article/10.1007/s12052-007-0001-z ''Evolution as Fact, Theory, and Path'']. ''Evolution: Education and Outreach'' 1 (1): 46Ã¢â‚¬â€œ52.</ref>";
+        $text = "<ref>Gregory, T. Ryan. (2008). [https://link.springer.com/article/10.1007/s12052-007-0001-z ''Evolution as Fact, Theory, and Path'']. ''Evolution: Education and Outreach'' 1 (1): 46ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“52.</ref>";
         $page = $this->process_page($text);
-        $this->assertSame('<ref>{{cite journal | last1=Gregory | first1=T. Ryan | title=Evolution as Fact, Theory, and Path | journal=Evolution: Education and Outreach | date=2008 | volume=1 | pages=46Ã¢â‚¬â€œ52 | doi=10.1007/s12052-007-0001-z | url=https://link.springer.com/article/10.1007/s12052-007-0001-z }}</ref>', str_replace('| s2cid=19788314 ', '', $page->parsed_text()));
+        $this->assertSame('<ref>{{cite journal | last1=Gregory | first1=T. Ryan | title=Evolution as Fact, Theory, and Path | journal=Evolution: Education and Outreach | date=2008 | volume=1 | pages=46ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“52 | doi=10.1007/s12052-007-0001-z | url=https://link.springer.com/article/10.1007/s12052-007-0001-z }}</ref>', str_replace('| s2cid=19788314 ', '', $page->parsed_text()));
     }
 
     public function testUrlReferencesWithText8(): void {
         $text = "<ref>James L. Elshoff, Michael Marcotty, [http://doi.acm.org/10.1145/358589.358596 Improving computer program readability to aid modification], Communications of the ACM, v.25 n.8, p.512-521, Aug 1982.</ref>";
         $page = $this->process_page($text);
-        $this->assertSame('<ref>{{cite journal | last1=Elshoff | first1=James L. | last2=Marcotty | first2=Michael | title=Improving computer program readability to aid modification | journal=Communications of the ACM | date=1982 | volume=25 | issue=8 | pages=512Ã¢â‚¬â€œ521 | doi=10.1145/358589.358596 | url=http://doi.acm.org/10.1145/358589.358596 }}</ref>', str_replace('| s2cid=30026641 ', '', $page->parsed_text()));
+        $this->assertSame('<ref>{{cite journal | last1=Elshoff | first1=James L. | last2=Marcotty | first2=Michael | title=Improving computer program readability to aid modification | journal=Communications of the ACM | date=1982 | volume=25 | issue=8 | pages=512ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“521 | doi=10.1145/358589.358596 | url=http://doi.acm.org/10.1145/358589.358596 }}</ref>', str_replace('| s2cid=30026641 ', '', $page->parsed_text()));
     }
 
     public function testUrlReferencesWithText9(): void { // Two "urls"
@@ -396,7 +396,7 @@ final class PageTest extends TestBaseClass {
     public function testUrlReferencesWithText14(): void {
         $text = "<ref>{{cite web}}</ref><ref>{{cite web}}</ref><ref>James L. Elshoff, Michael Marcotty, [http://doi.acm.org/10.1145/358589.358596 Improving computer program readability to aid modification], Communications of the ACM, v.25 n.8, p.512-521, Aug 1982.</ref>";
         $page = $this->process_page($text);
-        $this->assertSame('<ref>{{cite web}}</ref><ref>{{cite web}}</ref><ref>{{cite journal | last1=Elshoff | first1=James L. | last2=Marcotty | first2=Michael | title=Improving computer program readability to aid modification | journal=Communications of the ACM | date=1982 | volume=25 | issue=8 | pages=512Ã¢â‚¬â€œ521 | doi=10.1145/358589.358596 | url=http://doi.acm.org/10.1145/358589.358596 }}</ref>', str_replace('| s2cid=30026641 ', '', $page->parsed_text()));
+        $this->assertSame('<ref>{{cite web}}</ref><ref>{{cite web}}</ref><ref>{{cite journal | last1=Elshoff | first1=James L. | last2=Marcotty | first2=Michael | title=Improving computer program readability to aid modification | journal=Communications of the ACM | date=1982 | volume=25 | issue=8 | pages=512ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“521 | doi=10.1145/358589.358596 | url=http://doi.acm.org/10.1145/358589.358596 }}</ref>', str_replace('| s2cid=30026641 ', '', $page->parsed_text()));
     }
 
     public function testUrlReferencesWithText15(): void {
@@ -470,25 +470,25 @@ final class PageTest extends TestBaseClass {
     }
 
     public function testODNB1(): void {
-        $text = '{{Cite ODNB|title=Pierrepoint, Albert, (1905Ã¢â‚¬â€œ1992)|ref=harv}} {{ODNBsub}}';
+        $text = '{{Cite ODNB|title=Pierrepoint, Albert, (1905ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1992)|ref=harv}} {{ODNBsub}}';
         $page = $this->process_page($text);
-        $this->assertSame('{{Cite ODNB|title=Pierrepoint, Albert, (1905Ã¢â‚¬â€œ1992)}} ', $page->parsed_text());
+        $this->assertSame('{{Cite ODNB|title=Pierrepoint, Albert, (1905ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1992)}} ', $page->parsed_text());
     }
 
     public function testODNB2(): void {
-        $text = '{{Cite ODNB|title=Pierrepoint, Albert,_(1905Ã¢â‚¬â€œ1992)}} {{ODNBsub}}';
+        $text = '{{Cite ODNB|title=Pierrepoint, Albert,_(1905ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1992)}} {{ODNBsub}}';
         $page = $this->process_page($text);
-        $this->assertSame('{{Cite ODNB|title=Pierrepoint, Albert,_(1905Ã¢â‚¬â€œ1992)}} ', $page->parsed_text());
+        $this->assertSame('{{Cite ODNB|title=Pierrepoint, Albert,_(1905ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1992)}} ', $page->parsed_text());
     }
 
     public function testODNB3(): void {
-        $text = '{{Cite ODNB|title=Pierrepoint,_Albert,_(1905Ã¢â‚¬â€œ1992)}} {{ODNBsub}}';
+        $text = '{{Cite ODNB|title=Pierrepoint,_Albert,_(1905ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1992)}} {{ODNBsub}}';
         $page = $this->process_page($text);
         $this->assertSame($text, $page->parsed_text()); // two underscores
     }
 
     public function testODNB4(): void {
-        $text = '{{Cite ODNB|title=Pierrepoint, Albert, (1905Ã¢â‚¬â€œ1992)}}{{Yup}}{{ODNBsub}}';
+        $text = '{{Cite ODNB|title=Pierrepoint, Albert, (1905ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1992)}}{{Yup}}{{ODNBsub}}';
         $page = $this->process_page($text);
         $this->assertSame($text, $page->parsed_text()); // template in the way
     }
@@ -586,7 +586,7 @@ final class PageTest extends TestBaseClass {
     public function testPMIDwithComment(): void { /* Make sure we do not get PMID out of alignment */
         $this->sleep_pubmed();
         $text_inn = '{{cite journal|pmid=24432}}{{cite journal|pmid=<!-- -->}}{{cite journal|pmid=34232}}';
-        $text_out = '{{cite journal|last1=Fung |first1=K. P. |last2=Ng |first2=M. H. |title=Purification of human diploid fibroblast interferon by immobilized neuraminidase |journal=Archives of Virology |date=1978 |volume=56 |issue=1Ã¢â‚¬â€œ2 |pages=1Ã¢â‚¬â€œ6 |doi=10.1007/BF01317278 |pmid=24432}}{{cite journal|pmid=<!-- -->}}{{cite journal|title=Oral epidemiology |journal=South African Medical Journal = Suid-Afrikaanse Tydskrif vir Geneeskunde |date=1978 |volume=54 |issue=21 |pages=843Ã¢â‚¬â€œ844 |pmid=34232}}';
+        $text_out = '{{cite journal|last1=Fung |first1=K. P. |last2=Ng |first2=M. H. |title=Purification of human diploid fibroblast interferon by immobilized neuraminidase |journal=Archives of Virology |date=1978 |volume=56 |issue=1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2 |pages=1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“6 |doi=10.1007/BF01317278 |pmid=24432}}{{cite journal|pmid=<!-- -->}}{{cite journal|title=Oral epidemiology |journal=South African Medical Journal = Suid-Afrikaanse Tydskrif vir Geneeskunde |date=1978 |volume=54 |issue=21 |pages=843ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“844 |pmid=34232}}';
         $page = $this->process_page($text_inn);
         $result = $page->parsed_text();
         if (!str_contains($result, 'Fung') || !str_contains($result, 'Oral epidemiology')) {

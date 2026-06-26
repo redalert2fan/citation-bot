@@ -37,7 +37,7 @@ final class TestPage extends Page {
     }
 }
 
-abstract class TestBaseClass extends PHPUnit\Framework\TestCase {
+abstract class testBaseClass extends PHPUnit\Framework\TestCase {
 
     private bool $testing_skip_bibcode;
     private bool $testing_skip_wiki;

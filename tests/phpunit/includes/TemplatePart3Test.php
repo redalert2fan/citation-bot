@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class TemplatePart3Test extends TestBaseClass {
+final class TemplatePart3Test extends testBaseClass {
     public function testND(): void {  // n.d. is special case that the template recognizes.  Must protect final period.
         $text = '{{Cite journal|date =n.d.}}';
         $expanded = $this->process_citation($text);
@@ -35,7 +35,7 @@ ER -  }}';
         $this->assertSame('Shannon, Claude E.', $prepared->first_author());
         $this->assertSame('Shannon', $prepared->get2('last1'));
         $this->assertSame('Claude E.', $prepared->get2('first1'));
-        $this->assertSame('379Ã¢â‚¬â€œ423', $prepared->get2('pages'));
+        $this->assertSame('379ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“423', $prepared->get2('pages'));
         $this->assertSame('27', $prepared->get2('volume'));
         // This is the exact same reference, but with an invalid title, that flags this data to be rejected
         // We check everything is null, to verify that bad title stops everything from being added, not just title
@@ -126,7 +126,7 @@ EP - 999 }}';
         $this->assertSame('1982', $this->getDateAndYear($prepared));
         $this->assertSame('Hearers and Speech Acts', $prepared->get2('title'));
         $this->assertSame('58', $prepared->get2('volume'));
-        $this->assertSame('332Ã¢â‚¬â€œ373', $prepared->get2('pages'));
+        $this->assertSame('332ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“373', $prepared->get2('pages'));
     }
 
     public function testEndNote3(): void {
@@ -326,7 +326,7 @@ EP - 999 }}';
     public function testNewWikiText(): void { // checks for new information that looks like wiki text and needs escaped
         $text = '{{Cite journal|doi=10.1021/jm00193a001|pmid=<!-- -->|pmc=<!-- -->}}';   // This has greek letters, [, ], (, and ).
         $expanded = $this->process_citation($text);
-        $this->assertSame('Synthetic studies on ÃŽÂ²-lactam antibiotics. Part 10. Synthesis of 7ÃŽÂ²-&#91;2-carboxy-2-(4-hydroxyphenyl)acetamido&#93;-7.alpha.-methoxy-3-&#91;&#91;(1-methyl-1H-tetrazol-5-yl)thio&#93;methyl&#93;-1-oxa-1-dethia-3-cephem-4-carboxylic acid disodium salt (6059-S) and its related 1-oxacephems', $expanded->get2('title'));
+        $this->assertSame('Synthetic studies on ÃƒÅ½Ã‚Â²-lactam antibiotics. Part 10. Synthesis of 7ÃƒÅ½Ã‚Â²-&#91;2-carboxy-2-(4-hydroxyphenyl)acetamido&#93;-7.alpha.-methoxy-3-&#91;&#91;(1-methyl-1H-tetrazol-5-yl)thio&#93;methyl&#93;-1-oxa-1-dethia-3-cephem-4-carboxylic acid disodium salt (6059-S) and its related 1-oxacephems', $expanded->get2('title'));
     }
 
     public function testZooKeys_1(): void {
@@ -345,7 +345,7 @@ EP - 999 }}';
     }
 
     public function testZooKeys_3(): void {
-        $text = "{{cite journal|last1=Bharti|first1=H.|last2=GuÃƒÂ©nard|first2=B.|last3=Bharti|first3=M.|last4=Economo|first4=E.P.|title=An updated checklist of the ants of India with their specific distributions in Indian states (Hymenoptera, Formicidae)|journal=ZooKeys|date=2016|volume=551|pages=1Ã¢â‚¬â€œ83|doi=10.3897/zookeys.551.6767|pmid=26877665|pmc=4741291}}";
+        $text = "{{cite journal|last1=Bharti|first1=H.|last2=GuÃƒÆ’Ã‚Â©nard|first2=B.|last3=Bharti|first3=M.|last4=Economo|first4=E.P.|title=An updated checklist of the ants of India with their specific distributions in Indian states (Hymenoptera, Formicidae)|journal=ZooKeys|date=2016|volume=551|pages=1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“83|doi=10.3897/zookeys.551.6767|pmid=26877665|pmc=4741291}}";
         $expanded = $this->process_citation($text);
         $this->assertSame('551', $expanded->get2('issue'));
         $this->assertNull($expanded->get2('volume'));
@@ -402,7 +402,7 @@ EP - 999 }}';
         $text = '{{cite journal|doi=10.1111/pala.12168|pmid=<!-- -->|pmc=<!-- -->}}';
         $expanded = $this->process_citation($text);
         $title = $expanded->get('title');
-        $title = str_replace('Ã¢â‚¬Â', '-', $title); // Dashes vary
+        $title = str_replace('ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â', '-', $title); // Dashes vary
         $title = str_replace("'", "", $title);  // Sometimes there, sometime not
         $this->assertSame("The macro- and microfossil record of the Cambrian priapulid Ottoia", $title);
     }
@@ -569,7 +569,7 @@ EP - 999 }}';
     public function testPagesDash1(): void {
         $text = '{{cite journal|pages=1-2|title=do change}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('1Ã¢â‚¬â€œ2', $prepared->get2('pages'));
+        $this->assertSame('1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2', $prepared->get2('pages'));
     }
 
     public function testPagesDash2(): void {
@@ -579,21 +579,21 @@ EP - 999 }}';
     }
 
     public function testPagesDash3(): void {
-        $text = '{{cite journal|pages=[http://bogus.bogus/1Ã¢â‚¬â€œ2/ 1Ã¢â‚¬â€œ2]|title=do not change }}';
+        $text = '{{cite journal|pages=[http://bogus.bogus/1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2/ 1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2]|title=do not change }}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('[http://bogus.bogus/1Ã¢â‚¬â€œ2/ 1Ã¢â‚¬â€œ2]', $prepared->get2('pages'));
+        $this->assertSame('[http://bogus.bogus/1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2/ 1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“2]', $prepared->get2('pages'));
     }
 
     public function testPagesDash4(): void {
         $text = '{{Cite journal|pages=15|doi=10.1016/j.biocontrol.2014.06.004|pmid=<!-- -->|pmc=<!-- -->}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('15Ã¢â‚¬â€œ22', $expanded->get2('pages')); // Converted should use long dashes
+        $this->assertSame('15ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“22', $expanded->get2('pages')); // Converted should use long dashes
     }
 
     public function testPagesDash5(): void {
-        $text = '{{Cite journal|doi=10.1007/s11746-998-0245-y|at=pp.425Ã¢â‚¬â€œ439, see Table&nbsp;2 p.&nbsp;426 for tempering temperatures|pmid=<!-- -->|pmc=<!-- -->}}';
+        $text = '{{Cite journal|doi=10.1007/s11746-998-0245-y|at=pp.425ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“439, see Table&nbsp;2 p.&nbsp;426 for tempering temperatures|pmid=<!-- -->|pmc=<!-- -->}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('pp.425Ã¢â‚¬â€œ439, see Table&nbsp;2 p.&nbsp;426 for tempering temperatures', $expanded->get2('at')); // Leave complex at=
+        $this->assertSame('pp.425ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“439, see Table&nbsp;2 p.&nbsp;426 for tempering temperatures', $expanded->get2('at')); // Leave complex at=
     }
 
     public function testPagesDash6(): void {
@@ -621,9 +621,9 @@ EP - 999 }}';
     }
 
     public function testBogusPageRanges(): void { // Fake year for code that updates page ranges that start with 1
-        $text = '{{Cite journal| year = ' . date("Y") . '| doi = 10.1017/jpa.2018.43|title = New well-preserved scleritomes of Chancelloriida from early Cambrian Guanshan Biota, eastern Yunnan, China|journal = Journal of Paleontology|volume = 92|issue = 6|pages = 1Ã¢â‚¬â€œ17|last1 = Zhao|first1 = Jun|last2 = Li|first2 = Guo-Biao|last3 = Selden|first3 = Paul A|pmid=<!-- -->|pmc=<!-- -->}}';
+        $text = '{{Cite journal| year = ' . date("Y") . '| doi = 10.1017/jpa.2018.43|title = New well-preserved scleritomes of Chancelloriida from early Cambrian Guanshan Biota, eastern Yunnan, China|journal = Journal of Paleontology|volume = 92|issue = 6|pages = 1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“17|last1 = Zhao|first1 = Jun|last2 = Li|first2 = Guo-Biao|last3 = Selden|first3 = Paul A|pmid=<!-- -->|pmc=<!-- -->}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('955Ã¢â‚¬â€œ971', $expanded->get2('pages')); // Converted should use long dashes
+        $this->assertSame('955ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“971', $expanded->get2('pages')); // Converted should use long dashes
     }
 
     public function testBogusPageRanges2(): void {
@@ -718,8 +718,8 @@ EP - 999 }}';
         }
         // For some reason we sometimes get the first one - probably just ARXIV
         $title1 = 'A Candidate $z\sim10$ Galaxy Strongly Lensed into a Spatially Resolved Arc';
-        $title2 = "RELICS: A Candidate ''z'' Ã¢Ë†Â¼ 10 Galaxy Strongly Lensed into a Spatially Resolved Arc";
-        $title3 = "RELICS: A Candidate z Ã¢Ë†Â¼ 10 Galaxy Strongly Lensed into a Spatially Resolved Arc";
+        $title2 = "RELICS: A Candidate ''z'' ÃƒÂ¢Ã‹â€ Ã‚Â¼ 10 Galaxy Strongly Lensed into a Spatially Resolved Arc";
+        $title3 = "RELICS: A Candidate z ÃƒÂ¢Ã‹â€ Ã‚Â¼ 10 Galaxy Strongly Lensed into a Spatially Resolved Arc";
         if (in_array($title, [$title1, $title2, $title3], true)) {
             $this->assertFaker();
         } else {
@@ -743,7 +743,7 @@ EP - 999 }}';
     public function testPageRange(): void {
         $text = '{{Citation|doi=10.3406/befeo.1954.5607|pmid=<!-- -->|pmc=<!-- -->}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('405Ã¢â‚¬â€œ554', $expanded->get2('pages'));
+        $this->assertSame('405ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“554', $expanded->get2('pages'));
     }
 
     public function testStripPDF(): void {
@@ -886,7 +886,7 @@ EP - 999 }}';
     public function testVolumeIssueDemixing2(): void {
         $text = '{{cite journal|volume = 12(44-33)}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('44Ã¢â‚¬â€œ33', $prepared->get2('issue'));
+        $this->assertSame('44ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“33', $prepared->get2('issue'));
         $this->assertSame('12', $prepared->get2('volume'));
     }
 
@@ -900,7 +900,7 @@ EP - 999 }}';
     public function testVolumeIssueDemixing4(): void {
         $text = '{{cite journal|volume = 12, no. 44-33}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('44Ã¢â‚¬â€œ33', $prepared->get2('issue'));
+        $this->assertSame('44ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“33', $prepared->get2('issue'));
         $this->assertSame('12', $prepared->get2('volume'));
     }
 
@@ -1014,12 +1014,12 @@ EP - 999 }}';
     public function testCleanUpPages(): void {
         $text = '{{cite journal|pages=p.p. 20-23}}';
         $prepared = $this->prepare_citation($text);
-        $this->assertSame('20Ã¢â‚¬â€œ23', $prepared->get2('pages')); // Drop p.p. and upgraded dashes
+        $this->assertSame('20ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“23', $prepared->get2('pages')); // Drop p.p. and upgraded dashes
     }
 
     public function testSpaces(): void {
         // None of the "spaces" in $text are normal spaces.   They are U+2000 to U+200A
-        $text = "{{cite book|title=XÃ¢â‚¬â€šXÃ¢â‚¬Æ’XÃ¢â‚¬â€šXÃ¢â‚¬Æ’XÃ¢â‚¬â€žXÃ¢â‚¬â€¦XÃ¢â‚¬â€ XÃ¢â‚¬â€¡XÃ¢â‚¬â€°XÃ¢â‚¬â€°XÃ¢â‚¬Å X}}";
+        $text = "{{cite book|title=XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å¡XÃƒÂ¢Ã¢â€šÂ¬Ã†â€™XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å¡XÃƒÂ¢Ã¢â€šÂ¬Ã†â€™XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å¾XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â¦XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â¡XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â°XÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â°XÃƒÂ¢Ã¢â€šÂ¬Ã…Â X}}";
         $text_out = '{{cite book|title=X X X X X X X X X X X X}}';
         $expanded = $this->process_citation($text);
         $this->assertSame($text_out, $expanded->parsed_text());
@@ -1111,14 +1111,14 @@ EP - 999 }}';
         $text = '{{Cite journal|pages=1234-9}}';
         $prepared = $this->prepare_citation($text);
         $prepared->add_if_new('pages', '1230-1240');
-        $this->assertSame('1234Ã¢â‚¬â€œ9', $prepared->get2('pages'));
+        $this->assertSame('1234ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“9', $prepared->get2('pages'));
     }
 
     public function testAddPages2(): void {
         $text = '{{Cite journal|pages=1234-44}}';
         $prepared = $this->prepare_citation($text);
         $prepared->add_if_new('pages', '1230-1270');
-        $this->assertSame('1234Ã¢â‚¬â€œ44', $prepared->get2('pages'));
+        $this->assertSame('1234ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“44', $prepared->get2('pages'));
     }
 
     public function testAddPages3(): void {
@@ -1411,10 +1411,10 @@ EP - 999 }}';
     }
 
     public function testTidyPageRangeLookLikePage2(): void {
-        $text_in = "{{cite web| page=333Ã¢â‚¬â€œ444}}";
+        $text_in = "{{cite web| page=333ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“444}}";
         $template = $this->make_citation($text_in);
         $template->tidy_parameter('page');
-        $this->assertSame('333Ã¢â‚¬â€œ444', $template->get2('pages'));
+        $this->assertSame('333ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“444', $template->get2('pages'));
         $this->assertSame('', $template->get('page'));
     }
 
@@ -1427,10 +1427,10 @@ EP - 999 }}';
     }
 
     public function testTidyPageRangeLookLikePage4(): void {
-        $text_in = "{{cite web| page=1Ã¢â‚¬â€œ444}}";
+        $text_in = "{{cite web| page=1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“444}}";
         $template = $this->make_citation($text_in);
         $template->tidy_parameter('page');
-        $this->assertSame('1Ã¢â‚¬â€œ444', $template->get2('page'));
+        $this->assertSame('1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“444', $template->get2('page'));
         $this->assertNull($template->get2('pages'));
     }
 
@@ -1515,7 +1515,7 @@ EP - 999 }}';
         $this->assertNull($template->get2('author'));
         $this->assertNull($template->get2('first1'));
         $this->assertNull($template->get2('first'));
-        $this->assertSame("Ã¥Â¤Â§Ã©ËœÂªÃ¥Â¸â€šÃ§Â«â€¹Ã¨Â¡â€ºÃ§â€Å¸Ã¨Â©Â¦Ã©Â¨â€œÃ¦â€°â‚¬", $template->get2('author1'));
+        $this->assertSame("ÃƒÂ¥Ã‚Â¤Ã‚Â§ÃƒÂ©Ã‹Å“Ã‚ÂªÃƒÂ¥Ã‚Â¸Ã¢â‚¬Å¡ÃƒÂ§Ã‚Â«Ã¢â‚¬Â¹ÃƒÂ¨Ã‚Â¡Ã¢â‚¬ÂºÃƒÂ§Ã¢â‚¬ÂÃ…Â¸ÃƒÂ¨Ã‚Â©Ã‚Â¦ÃƒÂ©Ã‚Â¨Ã¢â‚¬Å“ÃƒÂ¦Ã¢â‚¬Â°Ã¢â€šÂ¬", $template->get2('author1'));
     }
 
     public function testArxivHasDOIwithoutData(): void { // This doi is dead, so it takes different path in code
@@ -1540,7 +1540,7 @@ EP - 999 }}';
     }
 
     public function testChapterCausesBookInFinal(): void {
-        $text = '{{cite journal |last1=DÃƒÂ©lot |first1=EmmanuÃƒÂ¨le C |last2=Vilain |first2=Eric J |title=Nonsyndromic 46,XX Testicular Disorders of Sex Development |chapter=Nonsyndromic 46,XX Testicular Disorders/Differences of Sex Development |journal=GeneReviews |date=2003 |url=https://www.ncbi.nlm.nih.gov/books/NBK1416/ |access-date=6 December 2018 |archive-date=23 June 2020 |archive-url=https://web.archive.org/web/20200623171901/https://www.ncbi.nlm.nih.gov/books/NBK1416/ |url-status=live }}';
+        $text = '{{cite journal |last1=DÃƒÆ’Ã‚Â©lot |first1=EmmanuÃƒÆ’Ã‚Â¨le C |last2=Vilain |first2=Eric J |title=Nonsyndromic 46,XX Testicular Disorders of Sex Development |chapter=Nonsyndromic 46,XX Testicular Disorders/Differences of Sex Development |journal=GeneReviews |date=2003 |url=https://www.ncbi.nlm.nih.gov/books/NBK1416/ |access-date=6 December 2018 |archive-date=23 June 2020 |archive-url=https://web.archive.org/web/20200623171901/https://www.ncbi.nlm.nih.gov/books/NBK1416/ |url-status=live }}';
         $template = $this->make_citation($text);
         $template->final_tidy();
         $this->assertSame('cite book', $template->wikiname());
@@ -1569,7 +1569,7 @@ EP - 999 }}';
     public function testNullDOInoCrash(): void { // This DOI does not work, but CrossRef does have a record
         $text = '{{cite journal | doi=10.5604/01.3001.0012.8474 |doi-broken-date=<!-- --> |pmid=<!-- -->|pmc=<!-- -->}}';
         $template = $this->process_citation($text);
-        $this->assertSame('{{cite journal |last1=Kofel |first1=Dominika |title=To Dye or Not to Dye: Bioarchaeological Studies of Hala Sultan Tekke Site, Cyprus |journal=Ã…Å¡wiatowit |date=2019 |volume=56 |pages=89Ã¢â‚¬â€œ98 | doi=10.5604/01.3001.0012.8474 |doi-broken-date=<!-- --> |pmid=<!-- -->|pmc=<!-- -->}}', $template->parsed_text());
+        $this->assertSame('{{cite journal |last1=Kofel |first1=Dominika |title=To Dye or Not to Dye: Bioarchaeological Studies of Hala Sultan Tekke Site, Cyprus |journal=Ãƒâ€¦Ã…Â¡wiatowit |date=2019 |volume=56 |pages=89ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“98 | doi=10.5604/01.3001.0012.8474 |doi-broken-date=<!-- --> |pmid=<!-- -->|pmc=<!-- -->}}', $template->parsed_text());
     }
 
     public function testTidySomeStuff(): void {
@@ -1667,7 +1667,7 @@ EP - 999 }}';
     public function testInvoke2(): void {
         $text = "{{#invoke:Cite|web| jstor=1701972 |s2cid= <!-- --> }}";
         $expanded = $this->process_citation($text);
-        $this->assertSame('{{#invoke:Cite|journal| jstor=1701972 |s2cid= <!-- --> |title= Early Insect Diversification: Evidence from a Lower Devonian Bristletail from QuÃƒÂ©bec |last1= Labandeira |first1= Conrad C. |last2= Beall |first2= Bret S. |last3= Hueber |first3= Francis M. |journal= Science |date= 1988 |volume= 242 |issue= 4880 |pages= 913Ã¢â‚¬â€œ916 |doi= 10.1126/science.242.4880.913 }}', $expanded->parsed_text());
+        $this->assertSame('{{#invoke:Cite|journal| jstor=1701972 |s2cid= <!-- --> |title= Early Insect Diversification: Evidence from a Lower Devonian Bristletail from QuÃƒÆ’Ã‚Â©bec |last1= Labandeira |first1= Conrad C. |last2= Beall |first2= Bret S. |last3= Hueber |first3= Francis M. |journal= Science |date= 1988 |volume= 242 |issue= 4880 |pages= 913ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“916 |doi= 10.1126/science.242.4880.913 }}', $expanded->parsed_text());
         $this->assertSame('cite journal', $expanded->wikiname());
     }
 
@@ -1711,7 +1711,7 @@ EP - 999 }}';
     public function testVADuplicate(): void {
         $text = "{{cs1 config|name-list-style=vanc}}<ref>https://pmc.ncbi.nlm.nih.gov/articles/PMC11503076/</ref>{{cs1 config|name-list-style=vanc}}";
         $page = $this->process_page($text);
-        $this->assertSame("{{cs1 config|name-list-style=vanc}}<ref>{{cite journal | title=From fibrositis to fibromyalgia to nociplastic pain: How rheumatology helped get us here and where do we go from here? | journal=Annals of the Rheumatic Diseases | date=2024 | volume=83 | issue=11 | pages=1421Ã¢â‚¬â€œ1427 | doi=10.1136/ard-2023-225327 | pmid=39107083 | pmc=11503076 | vauthors = Clauw DJ }}</ref>{{cs1 config|name-list-style=vanc}}", $page->parsed_text());
+        $this->assertSame("{{cs1 config|name-list-style=vanc}}<ref>{{cite journal | title=From fibrositis to fibromyalgia to nociplastic pain: How rheumatology helped get us here and where do we go from here? | journal=Annals of the Rheumatic Diseases | date=2024 | volume=83 | issue=11 | pages=1421ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“1427 | doi=10.1136/ard-2023-225327 | pmid=39107083 | pmc=11503076 | vauthors = Clauw DJ }}</ref>{{cs1 config|name-list-style=vanc}}", $page->parsed_text());
     }
 
     public function testBioRxivConversion(): void {
@@ -1745,13 +1745,13 @@ EP - 999 }}';
         $this->assertSame('Nature', $prepared->get2('journal'));
         $this->assertSame('10.1101/123456', $prepared->get2('doi'));
         $this->assertSame('500', $prepared->get2('volume'));
-        $this->assertSame('123Ã¢â‚¬â€œ456', $prepared->get2('pages'));
+        $this->assertSame('123ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“456', $prepared->get2('pages'));
         $this->assertNull($prepared->get2('biorxiv'));
     }
 
     public function testBioRxivRealWorldExample(): void {
         // Test case from GitHub issue - parameters should be removed even if present in input
-        $text = '{{cite journal |vauthors=Lyu J, Kapolka N, Gumpper R, Alon A, Wang L, Jain MK, Barros-ÃƒÂlvarez X, Sakamoto K, Kim Y, DiBerto J, Kim K, Tummino TA, Huang S, Irwin JJ, Tarkhanova OO, Moroz Y, Skiniotis G, Kruse AC, Shoichet BK, Roth BL |title=AlphaFold2 structures template ligand discovery |journal=BioRxiv: The Preprint Server for Biology |date=December 2023 |pmid=38187536 |pmc=10769324 |doi=10.1101/2023.12.20.572662}}';
+        $text = '{{cite journal |vauthors=Lyu J, Kapolka N, Gumpper R, Alon A, Wang L, Jain MK, Barros-ÃƒÆ’Ã‚Âlvarez X, Sakamoto K, Kim Y, DiBerto J, Kim K, Tummino TA, Huang S, Irwin JJ, Tarkhanova OO, Moroz Y, Skiniotis G, Kruse AC, Shoichet BK, Roth BL |title=AlphaFold2 structures template ligand discovery |journal=BioRxiv: The Preprint Server for Biology |date=December 2023 |pmid=38187536 |pmc=10769324 |doi=10.1101/2023.12.20.572662}}';
         $prepared = $this->prepare_citation($text);
         $this->assertSame('cite biorxiv', $prepared->wikiname());
         $this->assertSame('10.1101/2023.12.20.572662', $prepared->get2('biorxiv'));
@@ -1782,7 +1782,7 @@ EP - 999 }}';
         // Check that allowed parameters are retained
         $this->assertSame('Test Paper', $prepared->get2('title'));
         $this->assertSame('2023', $prepared->get2('year'));
-        $this->assertSame('100Ã¢â‚¬â€œ200', $prepared->get2('pages'), 'pages is allowed and should be retained');
+        $this->assertSame('100ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“200', $prepared->get2('pages'), 'pages is allowed and should be retained');
     }
 
     public function testMedRxivConversion(): void {
@@ -1816,7 +1816,7 @@ EP - 999 }}';
         $this->assertSame('Nature Medicine', $prepared->get2('journal'));
         $this->assertSame('10.1101/123456', $prepared->get2('doi'));
         $this->assertSame('500', $prepared->get2('volume'));
-        $this->assertSame('123Ã¢â‚¬â€œ456', $prepared->get2('pages'));
+        $this->assertSame('123ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“456', $prepared->get2('pages'));
         $this->assertNull($prepared->get2('medrxiv'));
     }
 
@@ -1853,7 +1853,7 @@ EP - 999 }}';
         // Check that allowed parameters are retained
         $this->assertSame('Test Paper', $prepared->get2('title'));
         $this->assertSame('2023', $prepared->get2('year'));
-        $this->assertSame('100Ã¢â‚¬â€œ200', $prepared->get2('pages'), 'pages is allowed and should be retained');
+        $this->assertSame('100ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“200', $prepared->get2('pages'), 'pages is allowed and should be retained');
     }
 
     public function testMedRxivCapitalization(): void {

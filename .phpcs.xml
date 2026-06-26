@@ -31,10 +31,7 @@
         <exclude name="Generic.Files.OneObjectStructurePerFile.MultipleFound"/>
         <exclude name="MediaWiki.ControlStructures.AssignmentInControlStructures.AssignmentInControlStructures"/>
         <exclude name="MediaWiki.Files.ClassMatchesFilename.NotMatch"/>
-    </rule>
-    <!-- templatePart4Test intentionally uses lowercase 't' for test ordering -->
-    <rule ref="Squiz.Classes.ValidClassName.NotCamelCaps">
-        <exclude-pattern>*/tests/phpunit/includes/templatePart4Test.php</exclude-pattern>
+        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
     </rule>
     <file>./src</file>
     <file>./tests</file>

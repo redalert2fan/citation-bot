@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../../testBaseClass.php';
 
-final class IssnTest extends TestBaseClass {
+final class issnTest extends testBaseClass {
     public function testUse_ISSN_1(): void {
         $prepared = $this->process_citation('{{cite news|issn=0140-0460 }}');
         $this->assertSame('[[The Times]]', $prepared->get2('newspaper'));

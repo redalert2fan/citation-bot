@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class MiscToolsTest extends TestBaseClass {
+final class MiscToolsTest extends testBaseClass {
     public function testcheck_memory_usage(): void {
         new TestPage(); // Fill page name with test name for debugging
         check_memory_usage('testcheck_memory_usage');

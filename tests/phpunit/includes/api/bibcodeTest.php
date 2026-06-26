@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../../testBaseClass.php';
 /**
  * Some of these are unit tests that poke specific functions that do not require actually connecting to adsabs
  */
-final class BibcodeTest extends TestBaseClass {
+final class bibcodeTest extends testBaseClass {
     public function testAdsabsApi(): void {
         $this->requires_bibcode(function (): void {
             $bibcodes = [
@@ -85,11 +85,11 @@ final class BibcodeTest extends TestBaseClass {
                 0 => 'Fredin, Ola',
                 1 => 'Viola, Giulio',
                 2 => 'Zwingmann, Horst',
-                3 => 'SÃƒÂ¸rlie, Ronald',
-                4 => 'BrÃƒÂ¶nner, Marco',
+                3 => 'SÃƒÆ’Ã‚Â¸rlie, Ronald',
+                4 => 'BrÃƒÆ’Ã‚Â¶nner, Marco',
                 5 => 'Lie, Jan-Erik',
                 6 => 'Grandal, Else Margrethe',
-                7 => 'MÃƒÂ¼ller, Axel',
+                7 => 'MÃƒÆ’Ã‚Â¼ller, Axel',
                 8 => 'Margreth, Annina',
                 9 => 'Vogt, Christoph',
                 10 => 'Knies, Jochen'
@@ -150,7 +150,7 @@ final class BibcodeTest extends TestBaseClass {
             'author' =>
             [
                 0 => 'Hessman, F. V.',
-                1 => 'GÃƒÂ¤nsicke, B. T.',
+                1 => 'GÃƒÆ’Ã‚Â¤nsicke, B. T.',
                 2 => 'Mattei, J. A.',
             ],
             'doctype' => 'article',
@@ -530,7 +530,7 @@ final class BibcodeTest extends TestBaseClass {
 
     public function testFindBibcodeNoTitle(): void {
         $this->requires_bibcode(function (): void {
-            $text = "{{Cite journal | last1 = Glaesemann | first1 = K. R. | last2 = Gordon | first2 = M. S. | last3 = Nakano | first3 = H. | journal = Physical Chemistry Chemical Physics | volume = 1 | issue = 6 | pages = 967Ã¢â‚¬â€œ975| year = 1999 |issn = 1463-9076}}";
+            $text = "{{Cite journal | last1 = Glaesemann | first1 = K. R. | last2 = Gordon | first2 = M. S. | last3 = Nakano | first3 = H. | journal = Physical Chemistry Chemical Physics | volume = 1 | issue = 6 | pages = 967ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“975| year = 1999 |issn = 1463-9076}}";
             $expanded = $this->make_citation($text);
             expand_by_adsabs($expanded);
             $found_bibcode = $expanded->get2('bibcode');

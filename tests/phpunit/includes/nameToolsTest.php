@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class NameToolsTest extends TestBaseClass {
+final class nameToolsTest extends testBaseClass {
 
     public function testFormatMultipleAuthors1(): void {
         new TestPage(); // Fill page name with test name for debugging
@@ -394,7 +394,7 @@ final class NameToolsTest extends TestBaseClass {
     }
 
     public function testUnderTwoAuthorsSpacesExceedCommas(): void {
-        // "John Smith" has 1 space and 0 commas Ã¢â€ â€™ spaces > commas Ã¢â€ â€™ multiple authors
+        // "John Smith" has 1 space and 0 commas ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ spaces > commas ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ multiple authors
         $this->assertFalse(under_two_authors('John Smith'));
     }
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../../testBaseClass.php';
 
-final class JstorTest extends TestBaseClass {
+final class JstorTest extends testBaseClass {
     public function testJstor1(): void {
         $text = "{{cite journal|url=https://jstor.org/stable/832414?seq=1234}}";
         $template = $this->make_citation($text);
@@ -64,7 +64,7 @@ final class JstorTest extends TestBaseClass {
     public function testJstorExpansion4(): void {
         $text = '{{cite web | via = UTF8 characters from JSTOR | url = https://www.jstor.org/stable/27695659}}';
         $expanded = $this->process_citation($text);
-        $this->assertSame('MÃƒÂ³rdha', $expanded->get2('last1'));
+        $this->assertSame('MÃƒÆ’Ã‚Â³rdha', $expanded->get2('last1'));
     }
 
     public function testJstorExpansion5(): void {
@@ -83,7 +83,7 @@ final class JstorTest extends TestBaseClass {
         $this->assertSame('Francisco', $expanded->get2('last2'));
         $this->assertSame('Eisfeld', $expanded->get2('last1'));
         $this->assertSame('Proceedings of the National Academy of Sciences of the United States of America', $expanded->get2('journal'));
-        $this->assertSame('15303Ã¢â‚¬â€œ15307', $expanded->get2('pages'));
+        $this->assertSame('15303ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“15307', $expanded->get2('pages'));
         // JSTOR gives up these, but we do not add since we get journal title and URL is simply jstor stable
         $this->assertNull($expanded->get2('publisher'));
         $this->assertNull($expanded->get2('issn'));

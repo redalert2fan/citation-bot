@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class TemplatePart2Test extends TestBaseClass {
+final class TemplatePart2Test extends testBaseClass {
 
     public function testTidyWork1a(): void {
         $text = "{{citation|work=|website=X}}";
@@ -78,9 +78,9 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testRemovePg_2(): void {
-        $text = "{{cite journal|pages=pg. 343Ã¢â‚¬â€œ349}}";
+        $text = "{{cite journal|pages=pg. 343ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“349}}";
         $template = $this->process_citation($text);
-        $this->assertSame('343Ã¢â‚¬â€œ349', $template->get2('pages'));
+        $this->assertSame('343ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“349', $template->get2('pages'));
     }
 
     public function testTidyReuters1(): void {
@@ -791,7 +791,7 @@ final class TemplatePart2Test extends TestBaseClass {
         $text = '{{Cite journal | title=On q-Functions and a certain Difference Operator|doi=10.1017/S0080456800002751|pmid=<!-- -->|pmc=<!-- -->}}';
         $template = $this->process_citation($text);
         $this->assertSame('Transactions of the Royal Society of Edinburgh', $template->get2('journal'));
-        $text = '{{Cite journal | title=XXI.Ã¢â‚¬â€On q-Functions and a certain Difference Operator|doi=10.1017/S0080456800002751|pmid=<!-- -->|pmc=<!-- -->}}';
+        $text = '{{Cite journal | title=XXI.ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬ÂOn q-Functions and a certain Difference Operator|doi=10.1017/S0080456800002751|pmid=<!-- -->|pmc=<!-- -->}}';
         $template = $this->process_citation($text);
         $this->assertNull($template->get2('journal'));
     }
@@ -883,7 +883,7 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testFindDOIBadAuthorAndFinalPage(): void { // Testing this code:        If fail, try again with fewer constraints...
-        $text = '{{cite journal|last=THIS_IS_BOGUS_TEST_DATA|pages=4346Ã¢â‚¬â€œ43563413241234|title=ISiCLE: A Quantum Chemistry Pipeline for Establishing in Silico Collision Cross Section Libraries|journal=Analytical Chemistry|volume=91|issue=7|year=2019|pmid=<!-- -->|pmc=<!-- -->}}';
+        $text = '{{cite journal|last=THIS_IS_BOGUS_TEST_DATA|pages=4346ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“43563413241234|title=ISiCLE: A Quantum Chemistry Pipeline for Establishing in Silico Collision Cross Section Libraries|journal=Analytical Chemistry|volume=91|issue=7|year=2019|pmid=<!-- -->|pmc=<!-- -->}}';
         $template = $this->make_citation($text);
         get_doi_from_crossref($template);
         $this->assertSame('10.1021/acs.analchem.8b04567', $template->get2('doi'));
@@ -975,11 +975,11 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testWork2Enc_2(): void {
-        $text = '{{cite web|work=X from encyclopÃƒÂ¦dia}}';
+        $text = '{{cite web|work=X from encyclopÃƒÆ’Ã‚Â¦dia}}';
         $template = $this->make_citation($text);
         $template->tidy_parameter('work');
         $this->assertNull($template->get2('work'));
-        $this->assertSame('X from encyclopÃƒÂ¦dia', $template->get2('encyclopedia'));
+        $this->assertSame('X from encyclopÃƒÆ’Ã‚Â¦dia', $template->get2('encyclopedia'));
     }
 
     public function testWork2Enc_3(): void {
@@ -989,11 +989,11 @@ final class TemplatePart2Test extends TestBaseClass {
         $this->assertNull($template->get2('encyclopedia'));
         $this->assertSame('X', $template->get2('work'));
 
-        $text = '{{cite journal|work=X from encyclopÃƒÂ¦dia}}';
+        $text = '{{cite journal|work=X from encyclopÃƒÆ’Ã‚Â¦dia}}';
         $template = $this->make_citation($text);
         $template->tidy_parameter('work');
         $this->assertNull($template->get2('encyclopedia'));
-        $this->assertSame('X from encyclopÃƒÂ¦dia', $template->get2('work'));
+        $this->assertSame('X from encyclopÃƒÆ’Ã‚Â¦dia', $template->get2('work'));
     }
 
     public function testNonPubs(): void {
@@ -1503,7 +1503,7 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testTidyURLStatus_1(): void {
-        $text = "{{cite web|url=http://x.com/|deadurl=sÃƒÂ¬}}";
+        $text = "{{cite web|url=http://x.com/|deadurl=sÃƒÆ’Ã‚Â¬}}";
         $expanded = $this->make_citation($text);
         $expanded->tidy_parameter('deadurl');
         $this->AssertSame('dead', $expanded->get2('url-status'));
@@ -1669,7 +1669,7 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testBadURLStatusSettings1(): void {
-        $text = "{{cite web|url-status=sÃƒÂ¬|url=X}}";
+        $text = "{{cite web|url-status=sÃƒÆ’Ã‚Â¬|url=X}}";
         $expanded = $this->process_citation($text);
         $this->AssertSame('dead', $expanded->get2('url-status'));
     }
@@ -1681,7 +1681,7 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testBadURLStatusSettings3(): void {
-        $text = "{{cite web|url-status=sÃƒÂ¬|url=X|archive-url=Y}}";
+        $text = "{{cite web|url-status=sÃƒÆ’Ã‚Â¬|url=X|archive-url=Y}}";
         $expanded = $this->process_citation($text);
         $this->AssertSame('dead', $expanded->get2('url-status'));
     }
@@ -2127,10 +2127,10 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testBadChapterStays(): void {
-        $text = "{{cite journal|url=http://oxfordindex.oup.com/view/10.1093/ww/9780199540884.013.U162881|title=Chope, His Honour Robert Charles : Who Was Who - oi|chapter=Chope, His Honour Robert Charles, (26 June 1913Ã¢â‚¬â€œ17 Oct. 1988), a Circuit Judge (Formerly Judge of County Courts), 1965Ã¢â‚¬â€œ85 |date=December 2007 |doi=10.1093/ww/9780199540884.013.u162881|pmid=<!-- -->|pmc=<!-- -->}}";
+        $text = "{{cite journal|url=http://oxfordindex.oup.com/view/10.1093/ww/9780199540884.013.U162881|title=Chope, His Honour Robert Charles : Who Was Who - oi|chapter=Chope, His Honour Robert Charles, (26 June 1913ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“17 Oct. 1988), a Circuit Judge (Formerly Judge of County Courts), 1965ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“85 |date=December 2007 |doi=10.1093/ww/9780199540884.013.u162881|pmid=<!-- -->|pmc=<!-- -->}}";
         $expanded = $this->process_citation($text);
         $this->assertSame('cite journal', $expanded->wikiname());
-        $this->assertSame('Chope, His Honour Robert Charles, (26 June 1913Ã¢â‚¬â€œ17 Oct. 1988), a Circuit Judge (Formerly Judge of County Courts), 1965Ã¢â‚¬â€œ85', $expanded->get2('chapter'));
+        $this->assertSame('Chope, His Honour Robert Charles, (26 June 1913ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“17 Oct. 1988), a Circuit Judge (Formerly Judge of County Courts), 1965ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“85', $expanded->get2('chapter'));
     }
 
     public function testRemoveLinkUnderscores(): void {
@@ -2360,10 +2360,10 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testTidyPagesPpPrefix(): void {
-        $text = '{{cite journal|pages=pp. 251Ã¢â‚¬â€œ254}}';
+        $text = '{{cite journal|pages=pp. 251ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“254}}';
         $template = $this->make_citation($text);
         $template->tidy();
-        $this->assertSame('251Ã¢â‚¬â€œ254', $template->get('pages'));
+        $this->assertSame('251ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“254', $template->get('pages'));
     }
 
     public function testTidyPagesPPrefix(): void {
@@ -2437,18 +2437,18 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testTidyPagesVolSuffix(): void {
-        $text = '{{cite journal |volume=1 |pages=120Ã¢â‚¬â€œ129 vol.1}}';
+        $text = '{{cite journal |volume=1 |pages=120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129 vol.1}}';
         $template = $this->make_citation($text);
         $template->tidy();
-        $this->assertSame('120Ã¢â‚¬â€œ129', $template->get2('pages'));
+        $this->assertSame('120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129', $template->get2('pages'));
         $this->assertSame('1', $template->get2('volume'));
     }
 
     public function testTidyPagesVolSuffixCapitalized(): void {
-        $text = '{{cite journal |volume=1 |pages=120Ã¢â‚¬â€œ129 Vol. 1}}';
+        $text = '{{cite journal |volume=1 |pages=120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129 Vol. 1}}';
         $template = $this->make_citation($text);
         $template->tidy();
-        $this->assertSame('120Ã¢â‚¬â€œ129', $template->get2('pages'));
+        $this->assertSame('120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129', $template->get2('pages'));
     }
 
     public function testTidyPagesVolumeSuffix(): void {
@@ -2459,24 +2459,24 @@ final class TemplatePart2Test extends TestBaseClass {
     }
 
     public function testTidyPagesVolSuffixWithComma(): void {
-        $text = '{{cite journal |volume=1 |pages=120Ã¢â‚¬â€œ129, vol. 1}}';
+        $text = '{{cite journal |volume=1 |pages=120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129, vol. 1}}';
         $template = $this->make_citation($text);
         $template->tidy();
-        $this->assertSame('120Ã¢â‚¬â€œ129', $template->get2('pages'));
+        $this->assertSame('120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129', $template->get2('pages'));
     }
 
     public function testTidyPagesVolSuffixNoPeriod(): void {
-        $text = '{{cite journal |volume=1 |pages=120Ã¢â‚¬â€œ129 Vol 1}}';
+        $text = '{{cite journal |volume=1 |pages=120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129 Vol 1}}';
         $template = $this->make_citation($text);
         $template->tidy();
-        $this->assertSame('120Ã¢â‚¬â€œ129', $template->get2('pages'));
+        $this->assertSame('120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129', $template->get2('pages'));
     }
 
     public function testTidyPagesVolSuffixUppercase(): void {
-        $text = '{{cite journal |volume=1 |pages=120Ã¢â‚¬â€œ129 VOL.1}}';
+        $text = '{{cite journal |volume=1 |pages=120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129 VOL.1}}';
         $template = $this->make_citation($text);
         $template->tidy();
-        $this->assertSame('120Ã¢â‚¬â€œ129', $template->get2('pages'));
+        $this->assertSame('120ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“129', $template->get2('pages'));
     }
 
     public function testTidyJournalPMC(): void {

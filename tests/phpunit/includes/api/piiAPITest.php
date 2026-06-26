@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../../testBaseClass.php';
 
-final class PiiAPITest extends TestBaseClass {
+final class piiAPITest extends testBaseClass {
 
     public function testPII(): void {
         new TestPage(); // Fill page name with test name for debugging

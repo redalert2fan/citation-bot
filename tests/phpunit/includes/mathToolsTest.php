@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../testBaseClass.php';
 
-final class MathToolsTest extends TestBaseClass {
+final class mathToolsTest extends testBaseClass {
 
     public function testMathMLIsotopeNotation(): void {
         // Test isotope notation with mmultiscripts: ^{67}Ni
@@ -59,7 +59,7 @@ final class MathToolsTest extends TestBaseClass {
 
     public function testMathMLUnderOver(): void {
         // Test underover (sum notation): \sum_{0}^{n}
-        $text_mml = '<math><munderover><mo>Ã¢Ë†â€˜</mo><mn>0</mn><mi>n</mi></munderover></math>';
+        $text_mml = '<math><munderover><mo>ÃƒÂ¢Ã‹â€ Ã¢â‚¬Ëœ</mo><mn>0</mn><mi>n</mi></munderover></math>';
         $result = wikify_external_text($text_mml);
         $this->assertStringContainsString('_', $result);
         $this->assertStringContainsString('^', $result);
@@ -70,24 +70,24 @@ final class MathToolsTest extends TestBaseClass {
     public function testUnicodeGreekConversion(): void {
         // Simulate processing as in convert_mathml_to_latex
         // You can use the UNICODE_MATH_MAP directly, since it's available via constants/math.php
-        $input = '{\displaystyle ÃŽÂ³ + Ãâ‚¬ = ÃŽÂ±}';
+        $input = '{\displaystyle ÃƒÅ½Ã‚Â³ + ÃƒÂÃ¢â€šÂ¬ = ÃƒÅ½Ã‚Â±}';
         $expected = '{\displaystyle \gamma + \pi = \alpha}';
         $output = str_replace(array_keys(UNICODE_MATH_MAP), array_values(UNICODE_MATH_MAP), $input);
         $this->assertSame($expected, $output, "Unicode Greek letters should be converted to LaTeX macros.");
     }
 
     public function testArrowNotMergedWithFollowingLetter(): void {
-        // Regression test: bÃ¢â€ â€™sÃ¢â€žâ€œÃ¢â€žâ€œ was producing \rightarrows which is an unknown LaTeX command.
+        // Regression test: bÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢sÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“ÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“ was producing \rightarrows which is an unknown LaTeX command.
         // The {} after \rightarrow terminates the command name so it never merges with the next letter.
-        $text = '<math>bÃ¢â€ â€™sÃ¢â€žâ€œÃ¢â€žâ€œ</math>';
+        $text = '<math>bÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢sÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“ÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“</math>';
         $result = wikify_external_text($text);
         $this->assertStringNotContainsString('\rightarrows', $result, "\\rightarrows is not a valid LaTeX command");
         $this->assertSame('<math>b\rightarrow{}s\ell\ell</math>', $result);
     }
 
     public function testArrowBetweenParticleSymbols(): void {
-        // Regression test: B+Ã¢â€ â€™K+Ã¢â€žâ€œ+Ã¢â€žâ€œ- was producing \rightarrowK which is an unknown LaTeX command.
-        $text = '<math>B+Ã¢â€ â€™K+Ã¢â€žâ€œ+Ã¢â€žâ€œ-</math>';
+        // Regression test: B+ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢K+ÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“+ÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“- was producing \rightarrowK which is an unknown LaTeX command.
+        $text = '<math>B+ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢K+ÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“+ÃƒÂ¢Ã¢â‚¬Å¾Ã¢â‚¬Å“-</math>';
         $result = wikify_external_text($text);
         $this->assertStringNotContainsString('\rightarrowK', $result, "\\rightarrowK is not a valid LaTeX command");
         $this->assertSame('<math>B+\rightarrow{}K+\ell+\ell-</math>', $result);
