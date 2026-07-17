@@ -1955,6 +1955,42 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $this->assertNull($template->get2('doi-access'));
     }
 
+    public function testDoiTemplateFreePrefixDetected(): void {
+        $doi_t = new Template();
+        $doi_t->parse_text('{{doi|10.1186/s12915-020-00940-y}}');
+        $cite_t = new Template();
+        $cite_t->parse_text('{{cite journal|doi=# # # CITATION_BOT_PLACEHOLDER_TEMPLATE 0 # # #}}');
+        Template::$all_templates = [$doi_t];
+        $cite_t->tidy_parameter('doi');
+        $this->assertSame('10.1186/s12915-020-00940-y', $cite_t->get2('doi'));
+        $this->assertSame('free', $cite_t->get2('doi-access'));
+        Template::$all_templates = [];
+    }
+
+    public function testDoiInlineTemplateFreePrefixDetected(): void {
+        $doi_t = new Template();
+        $doi_t->parse_text('{{doi-inline|10.1186/s12915-020-00940-y|Title}}');
+        $cite_t = new Template();
+        $cite_t->parse_text('{{cite journal|doi=# # # CITATION_BOT_PLACEHOLDER_TEMPLATE 0 # # #}}');
+        Template::$all_templates = [$doi_t];
+        $cite_t->tidy_parameter('doi');
+        $this->assertSame('10.1186/s12915-020-00940-y', $cite_t->get2('doi'));
+        $this->assertSame('free', $cite_t->get2('doi-access'));
+        Template::$all_templates = [];
+    }
+
+    public function testDoiTemplateNonFreePrefixNotDetected(): void {
+        $doi_t = new Template();
+        $doi_t->parse_text('{{doi|10.1234/nonfree-example}}');
+        $cite_t = new Template();
+        $cite_t->parse_text('{{cite journal|doi=# # # CITATION_BOT_PLACEHOLDER_TEMPLATE 0 # # #}}');
+        Template::$all_templates = [$doi_t];
+        $cite_t->tidy_parameter('doi');
+        $this->assertSame('10.1234/nonfree-example', $cite_t->get2('doi'));
+        $this->assertNull($cite_t->get2('doi-access'));
+        Template::$all_templates = [];
+    }
+
     public function testOpenAccessRemoved(): void {
         $text = '{{cite journal|title=Test|doi=10.1234/example|open-access=yes}}';
         $template = $this->process_citation($text);

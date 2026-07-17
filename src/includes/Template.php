@@ -4096,6 +4096,16 @@ final class Template
                     if (!$doi) {
                         return;
                     }
+                    if (preg_match('~# # # CITATION_BOT_PLACEHOLDER_TEMPLATE (\d+) # # #~i', $doi, $m)) {
+                        $idx = (int) $m[1];
+                        if (isset(self::$all_templates[$idx]) && in_array(self::$all_templates[$idx]->wikiname(), ['doi', 'doi-inline'], true)) {
+                            $resolved = self::$all_templates[$idx]->param_value(0);
+                            if ($resolved !== '') {
+                                $doi = $resolved;
+                                $this->set('doi', $doi);
+                            }
+                        }
+                    }
                     if ($this->wikiname() === 'cite journal') {
                         if (mb_stripos($doi, '10.2307/j.') === 0 || preg_match('~^10\.\d+/\d+\.ch\d+$~', $doi)) {
                             $this->change_name_to('cite book');
