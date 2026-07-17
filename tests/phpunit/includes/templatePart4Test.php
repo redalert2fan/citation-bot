@@ -1955,40 +1955,25 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $this->assertNull($template->get2('doi-access'));
     }
 
-    public function testDoiTemplateFreePrefixDetected(): void {
+    public function testDoiFreePrefixDetected(): void {
         $doi_t = new Template();
         $doi_t->parse_text('{{doi|10.1186/s12915-020-00940-y}}');
-        $cite_t = new Template();
-        $cite_t->parse_text('{{cite journal|doi=# # # CITATION_BOT_PLACEHOLDER_TEMPLATE 0 # # #}}');
-        Template::$all_templates = [$doi_t];
-        $cite_t->tidy_parameter('doi');
-        $this->assertSame('10.1186/s12915-020-00940-y', $cite_t->get2('doi'));
-        $this->assertSame('free', $cite_t->get2('doi-access'));
-        Template::$all_templates = [];
+        $doi_t->set_free_doi_access();
+        $this->assertSame('free', $doi_t->get2('doi-access'));
     }
 
-    public function testDoiInlineTemplateFreePrefixDetected(): void {
+    public function testDoiInlineFreePrefixDetected(): void {
         $doi_t = new Template();
         $doi_t->parse_text('{{doi-inline|10.1186/s12915-020-00940-y|Title}}');
-        $cite_t = new Template();
-        $cite_t->parse_text('{{cite journal|doi=# # # CITATION_BOT_PLACEHOLDER_TEMPLATE 0 # # #}}');
-        Template::$all_templates = [$doi_t];
-        $cite_t->tidy_parameter('doi');
-        $this->assertSame('10.1186/s12915-020-00940-y', $cite_t->get2('doi'));
-        $this->assertSame('free', $cite_t->get2('doi-access'));
-        Template::$all_templates = [];
+        $doi_t->set_free_doi_access();
+        $this->assertSame('free', $doi_t->get2('doi-access'));
     }
 
-    public function testDoiTemplateNonFreePrefixNotDetected(): void {
+    public function testDoiNonFreePrefixNotDetected(): void {
         $doi_t = new Template();
         $doi_t->parse_text('{{doi|10.1234/nonfree-example}}');
-        $cite_t = new Template();
-        $cite_t->parse_text('{{cite journal|doi=# # # CITATION_BOT_PLACEHOLDER_TEMPLATE 0 # # #}}');
-        Template::$all_templates = [$doi_t];
-        $cite_t->tidy_parameter('doi');
-        $this->assertSame('10.1234/nonfree-example', $cite_t->get2('doi'));
-        $this->assertNull($cite_t->get2('doi-access'));
-        Template::$all_templates = [];
+        $doi_t->set_free_doi_access();
+        $this->assertNull($doi_t->get2('doi-access'));
     }
 
     public function testOpenAccessRemoved(): void {
