@@ -2029,4 +2029,32 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $template->handle_et_al();
         $this->assertSame('etal', $template->get2('display-authors'));
     }
+
+    public function testDoiPrefixFreeDetected(): void {
+        $text = '{{cite journal|doi=10.1186/s12915-020-00940-y}}';
+        $template = $this->make_citation($text);
+        $template->tidy_parameter('doi');
+        $this->assertSame('free', $template->get2('doi-access'));
+    }
+
+    public function testDoiPrefixFreeWithComment(): void {
+        $text = '{{cite journal|doi=<!-- comment -->10.1186/s12915-020-00940-y}}';
+        $template = $this->make_citation($text);
+        $template->tidy_parameter('doi');
+        $this->assertSame('free', $template->get2('doi-access'));
+    }
+
+    public function testDoiPrefixFreeWithTrailingNewline(): void {
+        $text = "{{cite journal|doi=10.1186/s12915-020-00940-y\n}}";
+        $template = $this->make_citation($text);
+        $template->tidy_parameter('doi');
+        $this->assertSame('free', $template->get2('doi-access'));
+    }
+
+    public function testDoiPrefixNonFreeNotDetected(): void {
+        $text = '{{cite journal|doi=10.1234/nonfree-example}}';
+        $template = $this->make_citation($text);
+        $template->tidy_parameter('doi');
+        $this->assertNull($template->get2('doi-access'));
+    }
 }
