@@ -7100,6 +7100,24 @@ final class Template
         return '';
     }
 
+    /** For {{doi}}/{{doi-inline}} templates: add doi-access=free if DOI matches a free prefix */
+    public function set_free_doi_access(): void {
+        $doi = $this->param_value(0);
+        if ($doi !== '') {
+            foreach (DOI_FREE_PREFIX as $prefix) {
+                if (mb_stripos($doi, $prefix) === 0) {
+                    $p = new Parameter();
+                    $p->parse_text(' |doi-access=free');
+                    $p->param = 'doi-access';
+                    $p->val = 'free';
+                    $this->param[] = $p;
+                    report_add('doi-access: free');
+                    break;
+                }
+            }
+        }
+    }
+
     public function get_without_comments_and_placeholders(string $name): string {
         $ret = $this->get($name);
         $ret = safe_preg_replace('~<!--.*?-->~su', '', $ret); // Comments
