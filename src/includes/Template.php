@@ -1415,7 +1415,9 @@ final class Template
                 } // non-journals that are probably same as agency or publisher that come from zotero
                 if ($this->get($param_name) === 'none' || $this->blank(["journal", "periodical", "encyclopedia", "encyclopaedia", "newspaper", "magazine", "contribution"])) {
                     if (in_array(mb_strtolower(sanitize_string($value)), HAS_NO_VOLUME, true)) {
-                        $this->forget('volume');
+                        if (!$this->is_ejt_nonzero_volume(mb_strtolower(sanitize_string($value)), $this->get('volume'))) {
+                            $this->forget('volume');
+                        }
                     } // No volumes, just issues.
                     if (in_array(mb_strtolower(sanitize_string($value)), HAS_NO_ISSUE, true)) {
                         $this->forget('issue');
@@ -1677,11 +1679,12 @@ final class Template
                         $temp_string = preg_replace('~^.+\|~', '', $temp_string); // Remove part before pipe, if it has one
                     }
                     if (in_array($temp_string, HAS_NO_VOLUME, true)) {
-                        // This journal has no volume. This is really the issue number
-                        return $this->add_if_new('issue', $value);
-                    } else {
-                        return $this->add($param_name, $value);
+                        if (!$this->is_ejt_nonzero_volume($temp_string, $value)) {
+                            // This journal has no volume. This is really the issue number
+                            return $this->add_if_new('issue', $value);
+                        }
                     }
+                    return $this->add($param_name, $value);
                 }
                 return false;
 
@@ -5724,11 +5727,13 @@ final class Template
                         $temp_string = preg_replace('~^.+\|~', '', $temp_string); // Remove part before pipe, if it has one
                     }
                     if (in_array($temp_string, HAS_NO_VOLUME, true)) {
-                        if ($this->blank(ISSUE_ALIASES)) {
-                            $this->rename('volume', 'issue');
-                        } else {
-                            $this->forget('volume');
-                            return;
+                        if (!$this->is_ejt_nonzero_volume($temp_string, $this->get($param))) {
+                            if ($this->blank(ISSUE_ALIASES)) {
+                                $this->rename('volume', 'issue');
+                            } else {
+                                $this->forget('volume');
+                                return;
+                            }
                         }
                     }
                     if (in_array($temp_string, PREFER_VOLUMES, true) && $this->has('volume')) {
@@ -7622,6 +7627,17 @@ final class Template
                 }
             }
         }
+    }
+
+    private function is_ejt_nonzero_volume(string $journal, string $volume): bool {
+        if ($journal !== 'european journal of taxonomy') {
+            return false;
+        }
+        $volume = preg_replace('~^(?i)(?:Vol(?:ume)?|no)\.?\s*~u', '', $volume);
+        if (preg_match('~^\d+$~', $volume) !== 1) {
+            return false;
+        }
+        return (int) $volume > 0;
     }
 
     private function volume_issue_demix(string $data, string $param): void {

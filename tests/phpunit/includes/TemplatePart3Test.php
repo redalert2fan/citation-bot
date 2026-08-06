@@ -1647,6 +1647,60 @@ EP - 999 }}';
         $this->assertNull($template->get2('volume'));
     }
 
+    public function testEjtNonzeroVolumeIsPreserved(): void {
+        $template = $this->make_citation('{{cite journal|journal=European Journal of Taxonomy|volume=720|issue=1}}');
+        $template->tidy_parameter('volume');
+        $this->assertSame('720', $template->get2('volume'));
+        $this->assertSame('1', $template->get2('issue'));
+    }
+
+    public function testEjtVolumeOnlyIsPreserved(): void {
+        $template = $this->make_citation('{{cite journal|journal=European Journal of Taxonomy|volume=1007}}');
+        $template->tidy_parameter('volume');
+        $this->assertSame('1007', $template->get2('volume'));
+        $this->assertNull($template->get2('issue'));
+    }
+
+    public function testEjtNonzeroVolumeAddedIsPreserved(): void {
+        $template = $this->make_citation('{{cite journal|journal=European Journal of Taxonomy}}');
+        $template->add_if_new('volume', '1007');
+        $this->assertSame('1007', $template->get2('volume'));
+        $this->assertNull($template->get2('issue'));
+    }
+
+    public function testEjtJournalAddedWithNonzeroVolumeIsPreserved(): void {
+        $template = $this->make_citation('{{cite journal|volume=720}}');
+        $template->add_if_new('journal', 'European Journal of Taxonomy');
+        $this->assertSame('720', $template->get2('volume'));
+        $this->assertSame('European Journal of Taxonomy', $template->get2('journal'));
+    }
+
+    public function testEjtFormattedVolumeWhenJournalAddedIsPreserved(): void {
+        $template = $this->make_citation('{{cite journal|volume=Vol. 720}}');
+        $template->add_if_new('journal', 'European Journal of Taxonomy');
+        $this->assertSame('Vol. 720', $template->get2('volume'));
+    }
+
+    public function testZooKeysVolumeWhenJournalAddedIsRemoved(): void {
+        $template = $this->make_citation('{{cite journal|volume=33}}');
+        $template->add_if_new('journal', 'ZooKeys');
+        $this->assertNull($template->get2('volume'));
+        $this->assertNull($template->get2('issue'));
+    }
+
+    public function testEjtZeroVolumeRemainsIssueOnly(): void {
+        $template = $this->make_citation('{{cite journal|journal=European Journal of Taxonomy|volume=0|issue=12}}');
+        $template->tidy_parameter('volume');
+        $this->assertNull($template->get2('volume'));
+        $this->assertSame('12', $template->get2('issue'));
+    }
+
+    public function testEjtZeroVolumeWhenJournalAddedRemainsIssueOnly(): void {
+        $template = $this->make_citation('{{cite journal|volume=0}}');
+        $template->add_if_new('journal', 'European Journal of Taxonomy');
+        $this->assertNull($template->get2('volume'));
+    }
+
     public function testDoiInline2(): void {
         $text = '{{citation | title = {{doi-inline|10.1038/nphys806|A transient semimetallic layer in detonating nitromethane}} | doi=10.1038/nphys806 }}';
         $expanded = $this->process_citation($text);
