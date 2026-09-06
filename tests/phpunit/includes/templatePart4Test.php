@@ -2118,6 +2118,14 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $this->assertStringContainsString('10.1186/s12915-020-00940-y|Title|doi-access=free', $doi_t->parsed_text());
     }
 
+    public function testDoiTemplateConditionalPrefixNotTagged(): void {
+        // Standalone {{doi}} carries no date, so conditional rules must not fire there
+        $doi_t = new Template();
+        $doi_t->parse_text('{{doi|10.1002/hbm.20131}}');
+        $doi_t->set_free_doi_access();
+        $this->assertNull($doi_t->get2('doi-access'));
+    }
+
     public function testDoiFreePrefixPreservesLeadingSpace(): void {
         $doi_t = new Template();
         $doi_t->parse_text('{{doi| 10.1186/s12915-020-00940-y}}');
