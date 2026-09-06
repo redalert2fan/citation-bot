@@ -5083,6 +5083,9 @@ final class Template
                     return;
 
                 case 'pmc-embargo-date':
+                    if ($this->blank('pmc') && $this->has($param)) {
+                        $this->forget($param);
+                    }
                     if ($this->blank($param)) {
                         return;
                     }
