@@ -2950,6 +2950,18 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertNull($template->get2('trans-contribution'));
     }
 
+    public function testPmcBeforeEmbargoKeepsBoth(): void {
+        // Documents the add order the PubMed path must use: pmc first, then
+        // the embargo date (the reverse order loses the date to the orphan
+        // drop inside add()).
+        $text = '{{Cite journal}}';
+        $template = $this->make_citation($text);
+        $this->assertTrue($template->add_if_new('pmc', 'PMC1234567', 'entrez'));
+        $this->assertTrue($template->add_if_new('pmc-embargo-date', 'November 15, 2090', 'entrez'));
+        $this->assertNotNull($template->get2('pmc'));
+        $this->assertSame('November 15, 2090', $template->get2('pmc-embargo-date'));
+    }
+
     public function testTidyRemovesOrphanedPmcEmbargoDate(): void {
         // A future pmc-embargo-date= without pmc= carries the CS1
         // "|pmc-embargo-date= requires |pmc=" error; tidy must drop the
