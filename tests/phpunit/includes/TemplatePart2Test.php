@@ -603,9 +603,11 @@ final class TemplatePart2Test extends testBaseClass {
     }
 
     public function testPMCEmbargo2(): void {
+        // A future embargo date without pmc= is an orphan (CS1 "|pmc-embargo-date=
+        // requires |pmc=") and must be dropped, like the past date in test 1.
         $text = '{{Cite journal|pmc-embargo-date=January 22, 2090}}';
         $template = $this->process_citation($text);
-        $this->assertSame('January 22, 2090', $template->get2('pmc-embargo-date'));
+        $this->assertNull($template->get2('pmc-embargo-date'));
     }
 
     public function testPMCEmbargo3(): void {
@@ -615,7 +617,9 @@ final class TemplatePart2Test extends testBaseClass {
     }
 
     public function testPMCEmbargo4(): void {
-        $text = '{{Cite journal}}';
+        // With pmc= present the future embargo date sticks, so the slot is
+        // taken and the duplicate add is refused.
+        $text = '{{Cite journal|pmc=PMC1234567}}';
         $template = $this->make_citation($text);
         $this->assertFalse($template->add_if_new('pmc-embargo-date', 'November 15, 1990'));
         $this->assertFalse($template->add_if_new('pmc-embargo-date', 'November 15, 2010'));
@@ -2944,6 +2948,24 @@ final class TemplatePart2Test extends testBaseClass {
         $template = $this->make_citation($text);
         $template->tidy();
         $this->assertNull($template->get2('trans-contribution'));
+    }
+
+    public function testTidyRemovesOrphanedPmcEmbargoDate(): void {
+        // A future pmc-embargo-date= without pmc= carries the CS1
+        // "|pmc-embargo-date= requires |pmc=" error; tidy must drop the
+        // orphan instead of leaving it in place.
+        $text = '{{cite journal |title=T |journal=J |date=2020 |pmc-embargo-date=2035-06-01}}';
+        $template = $this->make_citation($text);
+        $template->tidy();
+        $this->assertNull($template->get2('pmc-embargo-date'));
+    }
+
+    public function testTidyKeepsPmcEmbargoDateWhenPmcPresent(): void {
+        // A pmc-embargo-date= whose base pmc= is present must be kept.
+        $text = '{{cite journal |title=T |journal=J |date=2020 |pmc=PMC1234567 |pmc-embargo-date=2035-06-01}}';
+        $template = $this->make_citation($text);
+        $template->tidy();
+        $this->assertSame('2035-06-01', $template->get2('pmc-embargo-date'));
     }
 
     public function testTidyKeepsTransChapterWhenBasePresent(): void {

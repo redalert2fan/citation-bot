@@ -384,6 +384,7 @@ function build_matrix(): array {
         ['doi-broken-date removed without doi', '{{cite journal |title=X |journal=J |doi-broken-date=2020-01-01}}', 'pass'],
         ['format removed without url', '{{cite journal |title=X |journal=J |format=PDF}}', 'pass'],
         ['pmc-embargo-date removed without pmc', '{{cite journal |title=X |journal=J |pmc-embargo-date=2020-01-01}}', 'pass'],
+        ['future pmc-embargo-date removed without pmc', '{{cite journal |title=X |journal=J |pmc-embargo-date=2035-06-01}}', 'pass'],
 
         // --- clean citations across template families ---
         ['Clean cite journal', '{{cite journal |title=Some paper |journal=Nature |year=2020 |volume=1 |issue=2 |pages=3}}', 'pass'],
