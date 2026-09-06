@@ -149,7 +149,7 @@ function entrez_api(array $ids, array &$templates, string $db): void {    // Poi
                                 // Buffer the embargo date: add() tidies immediately, so adding
                                 // it before pmc= would drop it as an orphan.  Flushed below
                                 // once pmc= has had its chance.
-                                $embargo_date = '';
+                                $embargo_date = ''; // @codeCoverageIgnore
                                 foreach ($item->Item as $subItem) {
                                     switch ($subItem["Name"]) {
                                         case "pubmed":
@@ -168,7 +168,10 @@ function entrez_api(array $ids, array &$templates, string $db): void {    // Poi
                                                 $embargo_ts = mktime(0, 0, 0, (int) $match[2], (int) $match[3], (int) $match[1]); // @codeCoverageIgnore
                                                 if ($embargo_ts !== false) {                                                 // @codeCoverageIgnore
                                                     $date_emb = date("F j, Y", $embargo_ts);                                  // @codeCoverageIgnore
-                                                    if ($embargo_date === '') {                                               // @codeCoverageIgnore
+                                                    // Buffer first-wins like sequential adds, but only dates
+                                                    // the add gate would accept: a past date must not block
+                                                    // a later future one.
+                                                    if ($embargo_date === '' && $embargo_ts >= strtotime('now')) {            // @codeCoverageIgnore
                                                         $embargo_date = $date_emb;                                            // @codeCoverageIgnore
                                                     }                                                                         // @codeCoverageIgnore
                                                 }                                                                              // @codeCoverageIgnore
@@ -181,9 +184,9 @@ function entrez_api(array $ids, array &$templates, string $db): void {    // Poi
                                             }
                                     }
                                 }
-                                if ($embargo_date !== '') {
+                                if ($embargo_date !== '') { // @codeCoverageIgnore
                                     $this_template->add_if_new('pmc-embargo-date', $embargo_date, 'entrez'); // @codeCoverageIgnore
-                                }
+                                } // @codeCoverageIgnore
                                 break;
                         }
                     }

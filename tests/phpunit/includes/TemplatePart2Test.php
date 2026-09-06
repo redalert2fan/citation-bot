@@ -625,6 +625,7 @@ final class TemplatePart2Test extends testBaseClass {
         $this->assertFalse($template->add_if_new('pmc-embargo-date', 'November 15, 2010'));
         $this->assertFalse($template->add_if_new('pmc-embargo-date', 'November 15, 3010'));
         $this->assertTrue($template->add_if_new('pmc-embargo-date', 'November 15, 2090'));
+        $this->assertSame('November 15, 2090', $template->get2('pmc-embargo-date')); // Stuck, not dropped as orphan
         $this->assertFalse($template->add_if_new('pmc-embargo-date', 'November 15, 2080'));
     }
 
@@ -2958,8 +2959,14 @@ final class TemplatePart2Test extends testBaseClass {
         $template = $this->make_citation($text);
         $this->assertTrue($template->add_if_new('pmc', 'PMC1234567', 'entrez'));
         $this->assertTrue($template->add_if_new('pmc-embargo-date', 'November 15, 2090', 'entrez'));
-        $this->assertNotNull($template->get2('pmc'));
+        $this->assertSame('1234567', $template->get2('pmc')); // Normalized PMC1234567 to digits
         $this->assertSame('November 15, 2090', $template->get2('pmc-embargo-date'));
+        // Reverse order loses the date to the orphan drop inside add().
+        $reversed = $this->make_citation('{{Cite journal}}');
+        $this->assertTrue($reversed->add_if_new('pmc-embargo-date', 'November 15, 2090', 'entrez'));
+        $this->assertNull($reversed->get2('pmc-embargo-date'));
+        $this->assertTrue($reversed->add_if_new('pmc', 'PMC1234567', 'entrez'));
+        $this->assertNull($reversed->get2('pmc-embargo-date')); // Gone: nothing re-adds it
     }
 
     public function testTidyRemovesOrphanedPmcEmbargoDate(): void {
