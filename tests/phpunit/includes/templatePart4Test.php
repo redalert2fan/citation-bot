@@ -2025,11 +2025,11 @@ final class templatePart4Test extends testBaseClass { // Lower case "t" to run l
         $this->assertNull($template->get2('doi-access'));
     }
 
-    public function testDoiConditionalAfterDate_HbmYearOnly_NotFree(): void {
+    public function testDoiConditionalAfterDate_HbmYearOnlyFlipYear_Free(): void {
         $text = '{{cite journal|doi=10.1002/hbm.example|year=2020}}';
         $template = $this->make_citation($text);
         $template->tidy_parameter('doi');
-        $this->assertNull($template->get2('doi-access'));
+        $this->assertSame('free', $template->get2('doi-access'));
     }
 
     public function testDoiConditionalAfterDate_WeOnThreshold_Free(): void {

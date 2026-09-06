@@ -900,7 +900,7 @@ const DOI_FREE_PREFIX = [
 
 /**
  * Conditional free DOI rules: DOIs that are free only under certain publication-date conditions.
- * Rule types: AFTER_YEAR (year > value), AFTER_DATE (publication date >= value), EMBARGO_MONTHS (pub date + value months <= now; falls back to end of year when only year is known).
+ * Rule types: AFTER_YEAR (year > value), AFTER_DATE (publication date >= value; year-only dates tag only when the whole publication year is post-flip), EMBARGO_MONTHS (pub date + value months <= now; falls back to end of year when only year is known).
  * If no parseable date is present, no free tag is added.
  * @var array<array{prefix: string, type: string, value: string}>
  */
