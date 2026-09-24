@@ -76,29 +76,22 @@ The provisional results below came from replaying the linked or quoted citations
 |---:|---|---|---|---|
 | 1 | [URL removed](https://en.wikipedia.org/wiki/Special:Diff/1254239468) | **STILL REPRODUCES**: Amazon/Library Journal `cite web` becomes `cite book` and loses the URL. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 2 | [author/first → last/first](https://en.wikipedia.org/wiki/Special:Diff/1257568538) | **NOT REPRODUCED**: four exact book examples remained unchanged. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 3 | [web vs book](https://en.wikipedia.org/wiki/Special:Diff/1256314002), [follow-up](https://en.wikipedia.org/wiki/Special:Diff/1263375628) | **LIKELY FIXED**: ISBN/OCLC web examples stayed `cite web`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 4 | [Amazon link bug](https://en.wikipedia.org/wiki/Special:Diff/1263465110), [second example](https://en.wikipedia.org/wiki/Special:Diff/1265696226) | **STILL REPRODUCES**: both Amazon sources become book citations and lose the URL. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 5 | [conference → journal](https://en.wikipedia.org/wiki/Special:Diff/1268341479) | **NOT REPRODUCED** for the exact pre-bot citation. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 6 | [half-assed cite web → cite journal](https://en.wikipedia.org/wiki/Special:Diff/1271282424) | **DIFFERENT RESULT**: leaves `cite web` and adds DOI. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 7 | [IAU Circular / CBET fields](https://en.wikipedia.org/wiki/Special:Diff/1273942491) | **LIKELY FIXED**: tested `volume` becomes `issue`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 8 | [Current Topics series](https://en.wikipedia.org/wiki/Special:Diff/1275415131), [follow-up](https://en.wikipedia.org/wiki/Special:Diff/1276392179) | **STILL INCOMPLETE**: converts to book but incomplete chapter structure. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 9 | [book title/chapter swapped](https://en.wikipedia.org/wiki/Special:Diff/1289615016) | **NOT REPRODUCED**; original diff inaccessible. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 10 | [incorrect HDL](https://en.wikipedia.org/wiki/Special:Diff/1302363847) | **NOT REPRODUCED**: no unrelated HDL added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 11 | [Italic tags](https://en.wikipedia.org/wiki/Special:Diff/1306735547) and three linked examples | **NOT REPRODUCED**; no precise expected output given. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 12 | [volume changed to issue](https://en.wikipedia.org/wiki/Special:Diff/1307257118) | **STILL REPRODUCES RELATED DAMAGE**: removes volume, retains issue. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 13 | [Associated Press](https://en.wikipedia.org/wiki/Special:Diff/1307480172) | **STILL INCORRECT / DIFFERENT**: `agency` becomes `work=Associated Press News`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 14 | [IAU Circular cleanup](https://en.wikipedia.org/wiki/Special:Diff/1309130927) | **LIKELY FIXED**: loses inappropriate volume fields. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 15 | [url → chapter-url](https://en.wikipedia.org/wiki/Special:Diff/1309227702) | **STILL REPRODUCES**: whole-book IA URLs moved to `chapter-url`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 16 | [Advances in Enzymology](https://en.wikipedia.org/wiki/Special:Diff/1313478328) | **NOT REPRODUCED**; title added to not-a-journal list. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 17 | [wrong URL](https://en.wikipedia.org/wiki/Special:Diff/1309822714), [recurrence](https://en.wikipedia.org/wiki/Special:Diff/1368642122) | **NOT REPRODUCED**: Figshare URL not added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 18 | [incorrect ISBN](https://en.wikipedia.org/wiki/Special:Diff/1321722265) | **INSUFFICIENT EVIDENCE**: no ISBN added in replay, edition not verified. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 19 | [cite web → cite book mapping](https://en.wikipedia.org/wiki/Special:Diff/1323850993) and [PR 5920](https://github.com/ms609/citation-bot/pull/5920) | **STILL INCOMPLETE**: Erxleben maps work to series but leaves title wrong. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 20 | [existing cite book mapping](https://en.wikipedia.org/wiki/Special:Diff/1324718002) | **NOT REPRODUCED / INSUFFICIENT**. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 21 | [ISBN/date incompatibility](https://en.wikipedia.org/wiki/Special:Diff/1313444244) | **STILL REPRODUCES**: `orig-year` becomes `year`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 22 | [CABI inconsistency](https://en.wikipedia.org/wiki/Special:Diff/1326275105) | **NOT REPRODUCED IN ISOLATION**. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 23 | [fake issue and identifiers](https://en.wikipedia.org/wiki/Special:Diff/1326425964) | **INSUFFICIENT EVIDENCE**: exact citation not quoted. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 24 | [redundant encyclopedia title](https://en.wikipedia.org/wiki/Special:Diff/1327973638) | **LIKELY FIXED**: no redundant title added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 25 | [bogus series](https://en.wikipedia.org/wiki/Special:Diff/1334297429) | **LIKELY FIXED**: no series added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 26 | [conference/journal contamination](https://en.wikipedia.org/wiki/Special:Diff/1335696299) | **NOT REPRODUCED**: only `doi-access` added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 27 | [url should be contribution-url](https://en.wikipedia.org/wiki/Special:Diff/1335896006) | **NOT REPRODUCED**: no URL added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 28 | [math formatting removed](https://en.wikipedia.org/wiki/Special:Diff/1335903462) | **LIKELY FIXED**: `<math>` preserved. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
