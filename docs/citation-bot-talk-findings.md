@@ -12,6 +12,43 @@ Working worksheet for manually verifying the non-capitalization reports currentl
 
 **Important:** “Not reproduced” is not automatically “fixed”. It can mean that the report was incorrect, the linked revision is not the reported edit, upstream metadata changed, or the test input could not be reconstructed exactly.
 
+## Assessment Decisions
+
+Recorded after manual review of the DOCX (leading document). The DOCX manual notes override the provisional results in the worksheet.
+
+**Work on it**
+
+- #7 — IAU Circular/CBET fields (article number handling; volume→issue when volume is present)
+- #10 — incorrect HDL added
+- #13 — Associated Press → Associated Press News
+- #14 — IAU Circular cleanup (with #7)
+- #27 — `url` should be `contribution-url`
+- #31 — unrelated thesis URL added from DOI
+- #33 — `cookieAbsent` cleanup (feature request)
+- #34 — DOI shortened/truncated
+
+**Investigate only**
+
+- #17 — wrong URL / same-title collision
+- #22 — CABI inconsistency (identify behaviour)
+- #28 — math formatting removed from title
+- #29 — issue added equal to volume
+- #32 — spurious Annual Reviews issue
+- #37 — garbled math formula in title
+
+**Hold**
+
+- #19 — awaiting reply on bug report
+- #38 — on-wiki discussion unresolved
+- #40 — awaiting reply; diff page deleted, new examples needed
+
+**Not now**
+
+- Reports: #1, #2, #4, #5, #6, #8, #11, #12, #15, #18, #21, #26, #30, #35, #36, #39
+- Feature requests: DOI → Who's Who; cite web → BioRef/GBIF; Crossref Retraction Watch; and/& equivalence; scholar.archive.org links
+
+**Conflict review:** #1, #2, #4 were re-reviewed and remain skipped.
+
 ## Manual Procedure
 
 1. Start from a clean disposable checkout. Do not run the investigation against a dirty working tree.
