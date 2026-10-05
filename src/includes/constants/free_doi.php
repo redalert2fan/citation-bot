@@ -1005,3 +1005,34 @@ const DOI_FREE_CONDITIONAL = [
         'value'  => '2026-01-01',
     ],
 ];
+
+/**
+ * Annual Reviews volumes published open access under Subscribe to Open.
+ * The five-title pilot began in 2020; Virology, Genomics and Human Genetics,
+ * and Biomedical Engineering joined in 2021.  The complete portfolio was
+ * published open access from 2023 through 2025.  These are permanent OA
+ * volume rules, not the separate rolling nine-volume reading window.
+ * Sources: https://www.annualreviews.org/S2O and the 2020 pilot announcements
+ * at https://www.annualreviews.org/pb-assets/assets/documents/press-release/
+ * arcb-s2o-press-release-all.pdf and
+ * https://www.annualreviews.org/pb-assets/assets/documents/press-release/
+ * aren-arns-s2o-announcement.pdf
+ *
+ * @var array<string, array{from_year: int, to_year: int}>
+ */
+const DOI_FREE_ANNUAL_REVIEWS = [
+    // 2020 pilot titles, continued through the confirmed 2025 portfolio.
+    'cancerbio' => ['from_year' => 2020, 'to_year' => 2025],
+    'environ'   => ['from_year' => 2020, 'to_year' => 2025],
+    'nucl'      => ['from_year' => 2020, 'to_year' => 2025],
+    'polisci'   => ['from_year' => 2020, 'to_year' => 2025],
+    'publhealth' => ['from_year' => 2020, 'to_year' => 2025],
+
+    // Titles added to the S2O program in 2021.
+    'bioeng'    => ['from_year' => 2021, 'to_year' => 2025],
+    'genom'     => ['from_year' => 2021, 'to_year' => 2025],
+    'virology'  => ['from_year' => 2021, 'to_year' => 2025],
+
+    // All other Annual Reviews journal DOI codes from the complete-portfolio years.
+    '*'         => ['from_year' => 2023, 'to_year' => 2025],
+];

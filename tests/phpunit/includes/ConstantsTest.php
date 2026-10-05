@@ -800,4 +800,18 @@ final class ConstantsTest extends testBaseClass {
             }
         }
     }
+
+    public function testAnnualReviewsPermanentOaStructure(): void {
+        new TestPage();
+        foreach (DOI_FREE_ANNUAL_REVIEWS as $journal_code => $rule) {
+            $label = 'DOI_FREE_ANNUAL_REVIEWS[' . $journal_code . ']';
+            $this->assertIsArray($rule, $label);
+            $this->assertArrayHasKey('from_year', $rule, $label);
+            $this->assertArrayHasKey('to_year', $rule, $label);
+            $this->assertIsInt($rule['from_year'], $label . ' from_year');
+            $this->assertIsInt($rule['to_year'], $label . ' to_year');
+            $this->assertGreaterThanOrEqual(2020, $rule['from_year'], $label . ' from_year');
+            $this->assertGreaterThanOrEqual($rule['from_year'], $rule['to_year'], $label . ' range');
+        }
+    }
 }
