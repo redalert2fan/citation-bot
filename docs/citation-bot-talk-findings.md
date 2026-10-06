@@ -18,14 +18,14 @@ Recorded after manual review of the DOCX (leading document). The DOCX manual not
 
 **Work on it**
 
-- #7 — IAU Circular/CBET fields (article number handling; volume→issue when volume is present)
-- #10 — incorrect HDL added
-- #13 — Associated Press → Associated Press News
-- #14 — IAU Circular cleanup (with #7)
-- #27 — `url` should be `contribution-url`
-- #31 — unrelated thesis URL added from DOI
-- #33 — `cookieAbsent` cleanup (feature request)
-- #34 — DOI shortened/truncated
+- #7 — IAU Circular/CBET fields (article number handling; volume→issue when volume is present) — completed (merged)
+- #10 — incorrect HDL added — completed (merged)
+- #13 — Associated Press → Associated Press News — completed (merged)
+- #14 — IAU Circular cleanup (with #7) — completed (merged)
+- #27 — `url` should be `contribution-url` — completed (merged)
+- #31 — unrelated thesis URL added from DOI — completed (merged)
+- #33 — `cookieAbsent` cleanup (feature request) — completed (fix proposed, PR open)
+- #34 — DOI shortened/truncated — completed (fix proposed, PR open)
 
 **Investigate only**
 
@@ -116,13 +116,13 @@ The provisional results below came from replaying the linked or quoted citations
 | 4 | [Amazon link bug](https://en.wikipedia.org/wiki/Special:Diff/1263465110), [second example](https://en.wikipedia.org/wiki/Special:Diff/1265696226) | **STILL REPRODUCES**: both Amazon sources become book citations and lose the URL. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 5 | [conference → journal](https://en.wikipedia.org/wiki/Special:Diff/1268341479) | **NOT REPRODUCED** for the exact pre-bot citation. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 6 | [half-assed cite web → cite journal](https://en.wikipedia.org/wiki/Special:Diff/1271282424) | **DIFFERENT RESULT**: leaves `cite web` and adds DOI. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 7 | [IAU Circular / CBET fields](https://en.wikipedia.org/wiki/Special:Diff/1273942491) | **LIKELY FIXED**: tested `volume` becomes `issue`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 7 | [IAU Circular / CBET fields](https://en.wikipedia.org/wiki/Special:Diff/1273942491) | **FIXED (merged PR #6062)**: `volume` becomes `issue`. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 8 | [Current Topics series](https://en.wikipedia.org/wiki/Special:Diff/1275415131), [follow-up](https://en.wikipedia.org/wiki/Special:Diff/1276392179) | **STILL INCOMPLETE**: converts to book but incomplete chapter structure. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 10 | [incorrect HDL](https://en.wikipedia.org/wiki/Special:Diff/1302363847) | **NOT REPRODUCED**: no unrelated HDL added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 10 | [incorrect HDL](https://en.wikipedia.org/wiki/Special:Diff/1302363847) | **FIXED (merged)**: unrelated repository HDL rejected via blocklist. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 11 | [Italic tags](https://en.wikipedia.org/wiki/Special:Diff/1306735547) and three linked examples | **NOT REPRODUCED**; no precise expected output given. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 12 | [volume changed to issue](https://en.wikipedia.org/wiki/Special:Diff/1307257118) | **STILL REPRODUCES RELATED DAMAGE**: removes volume, retains issue. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 13 | [Associated Press](https://en.wikipedia.org/wiki/Special:Diff/1307480172) | **STILL INCORRECT / DIFFERENT**: `agency` becomes `work=Associated Press News`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 14 | [IAU Circular cleanup](https://en.wikipedia.org/wiki/Special:Diff/1309130927) | **LIKELY FIXED**: loses inappropriate volume fields. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 13 | [Associated Press](https://en.wikipedia.org/wiki/Special:Diff/1307480172) | **FIXED (merged)**: agency/work normalized to AP News. | [x] Confirmed [ ] Changed [ ] Invalid |  |
+| 14 | [IAU Circular cleanup](https://en.wikipedia.org/wiki/Special:Diff/1309130927) | **FIXED (merged PR #6062)**: loses inappropriate volume fields. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 15 | [url → chapter-url](https://en.wikipedia.org/wiki/Special:Diff/1309227702) | **STILL REPRODUCES**: whole-book IA URLs moved to `chapter-url`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 17 | [wrong URL](https://en.wikipedia.org/wiki/Special:Diff/1309822714), [recurrence](https://en.wikipedia.org/wiki/Special:Diff/1368642122) | **NOT REPRODUCED**: Figshare URL not added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 18 | [incorrect ISBN](https://en.wikipedia.org/wiki/Special:Diff/1321722265) | **INSUFFICIENT EVIDENCE**: no ISBN added in replay, edition not verified. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
@@ -130,13 +130,13 @@ The provisional results below came from replaying the linked or quoted citations
 | 21 | [ISBN/date incompatibility](https://en.wikipedia.org/wiki/Special:Diff/1313444244) | **STILL REPRODUCES**: `orig-year` becomes `year`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 22 | [CABI inconsistency](https://en.wikipedia.org/wiki/Special:Diff/1326275105) | **NOT REPRODUCED IN ISOLATION**. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 26 | [conference/journal contamination](https://en.wikipedia.org/wiki/Special:Diff/1335696299) | **NOT REPRODUCED**: only `doi-access` added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 27 | [url should be contribution-url](https://en.wikipedia.org/wiki/Special:Diff/1335896006) | **NOT REPRODUCED**: no URL added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 27 | [url should be contribution-url](https://en.wikipedia.org/wiki/Special:Diff/1335896006) | **FIXED (merged PR #6070)**: OA URL added as `contribution-url`. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 28 | [math formatting removed](https://en.wikipedia.org/wiki/Special:Diff/1335903462) | **LIKELY FIXED**: `<math>` preserved. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 29 | [same value volume and issue](https://en.wikipedia.org/wiki/Special:Diff/1329009885) | **LIKELY FIXED**: `volume=163` unchanged. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 30 | [malformed vauthors](https://en.wikipedia.org/wiki/Special:Diff/1347354919) | **LIKELY FIXED**: malformed vauthors not added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 31 | [unrelated thesis URL](https://en.wikipedia.org/wiki/Special:Diff/1350864862) | **LIKELY FIXED**: no thesis URL added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 31 | [unrelated thesis URL](https://en.wikipedia.org/wiki/Special:Diff/1350864862) | **FIXED (merged PR #6072)**: unrelated thesis URL rejected via blocklist. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 32 | [spurious Annual Reviews issue](https://en.wikipedia.org/wiki/Special:Diff/1351794869) | **NOT REPRODUCED**: no issue added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 33 | [`cookieAbsent`](https://en.wikipedia.org/wiki/Special:Diff/1351798135), [second example](https://en.wikipedia.org/wiki/Special:Diff/1351799610) | **UNRESOLVED CLEANUP**: citations untouched. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 33 | [`cookieAbsent`](https://en.wikipedia.org/wiki/Special:Diff/1351798135), [second example](https://en.wikipedia.org/wiki/Special:Diff/1351799610) | **FIX PROPOSED (PR #6090 open)**: cookieAbsent citations rebuilt from DOI. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 34 | [shortened DOI](https://en.wikipedia.org/wiki/Special:Diff/1354485720) | **CONFIRMED BUG, FIX PROPOSED**: bot truncated Ovid `~slug`-suffixed DOI to a bare prefix (`extract_doi()` salvage loop lacked `~` delimiter); fix + regression test on `fix/shortened-doi`. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 35 | [duplicate chapter/title](https://en.wikipedia.org/wiki/Special:Diff/1365841755) | **DIFFERENT / AMBIGUOUS**. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 36 | [page P# range](https://en.wikipedia.org/wiki/Special:Diff/1368649553), [second](https://en.wikipedia.org/wiki/Special:Diff/1368661324) | **STILL REPRODUCES**: `P12:3-P12:9` becomes `12:3-P12:9`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
