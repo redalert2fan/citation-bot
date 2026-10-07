@@ -24,7 +24,7 @@ Recorded after manual review of the DOCX (leading document). The DOCX manual not
 - #14 — IAU Circular cleanup (with #7) — completed (merged)
 - #27 — `url` should be `contribution-url` — completed (merged)
 - #31 — unrelated thesis URL added from DOI — completed (merged)
-- #33 — `cookieAbsent` cleanup (feature request) — completed (fix proposed, PR open)
+- #33 — `cookieAbsent` cleanup (feature request) — completed (merged)
 - #34 — DOI shortened/truncated — completed (fix proposed, PR open)
 
 **Investigate only**
@@ -136,7 +136,7 @@ The provisional results below came from replaying the linked or quoted citations
 | 30 | [malformed vauthors](https://en.wikipedia.org/wiki/Special:Diff/1347354919) | **LIKELY FIXED**: malformed vauthors not added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 31 | [unrelated thesis URL](https://en.wikipedia.org/wiki/Special:Diff/1350864862) | **FIXED (merged PR #6072)**: unrelated thesis URL rejected via blocklist. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 32 | [spurious Annual Reviews issue](https://en.wikipedia.org/wiki/Special:Diff/1351794869) | **NOT REPRODUCED**: no issue added. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 33 | [`cookieAbsent`](https://en.wikipedia.org/wiki/Special:Diff/1351798135), [second example](https://en.wikipedia.org/wiki/Special:Diff/1351799610) | **FIX PROPOSED (PR #6090 open)**: cookieAbsent citations rebuilt from DOI. | [x] Confirmed [ ] Changed [ ] Invalid |  |
+| 33 | [`cookieAbsent`](https://en.wikipedia.org/wiki/Special:Diff/1351798135), [second example](https://en.wikipedia.org/wiki/Special:Diff/1351799610) | **FIXED (merged PR #6090)**: cookieAbsent citations rebuilt from DOI. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 34 | [shortened DOI](https://en.wikipedia.org/wiki/Special:Diff/1354485720) | **CONFIRMED BUG, FIX PROPOSED**: bot truncated Ovid `~slug`-suffixed DOI to a bare prefix (`extract_doi()` salvage loop lacked `~` delimiter); fix + regression test on `fix/shortened-doi`. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 35 | [duplicate chapter/title](https://en.wikipedia.org/wiki/Special:Diff/1365841755) | **DIFFERENT / AMBIGUOUS**. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 36 | [page P# range](https://en.wikipedia.org/wiki/Special:Diff/1368649553), [second](https://en.wikipedia.org/wiki/Special:Diff/1368661324) | **STILL REPRODUCES**: `P12:3-P12:9` becomes `12:3-P12:9`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
