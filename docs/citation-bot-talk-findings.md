@@ -156,6 +156,8 @@ The provisional results below came from replaying the linked or quoted citations
 | Crossref Retraction Watch | No implementation found. | [ ] Confirmed [ ] Changed [ ] Invalid |
 | Treat and and & as equivalent | Partial normalization in TextTools.php; example needs replay. | [ ] Confirmed [ ] Changed [ ] Invalid |
 | Add free scholar.archive.org links | No dedicated feature found. | [ ] Confirmed [ ] Changed [ ] Invalid |
+| Tag 10.1146 DOIs as free from 2023+ | Date-gated free-DOI tagging exists for 10.1155 (from 2007+); same treatment requested for 10.1146 (Headbomb, 1 Oct 2026). Needs improved code over the recent implementation. | [ ] Confirmed [ ] Changed [ ] Invalid |
+| Abort edit if it would introduce CS1 errors | Requested after a diff introduced four periodical-ignored errors (Eppstein, 9 Oct 2026). Declined on talk: bot cannot see post-edit parser output without reproducing it per edit; impractical with current resources. | [ ] Confirmed [ ] Changed [x] Invalid |
 
 ## Final Manual Notes
 
