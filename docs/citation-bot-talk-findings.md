@@ -121,7 +121,7 @@ The provisional results below came from replaying the linked or quoted citations
 | 8 | [Current Topics series](https://en.wikipedia.org/wiki/Special:Diff/1275415131), [follow-up](https://en.wikipedia.org/wiki/Special:Diff/1276392179) | **STILL INCOMPLETE**: converts to book but incomplete chapter structure. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 10 | [incorrect HDL](https://en.wikipedia.org/wiki/Special:Diff/1302363847) | **FIXED (merged)**: unrelated repository HDL rejected via blocklist. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 11 | [Italic tags](https://en.wikipedia.org/wiki/Special:Diff/1306735547) and three linked examples | **NOT REPRODUCED**; no precise expected output given. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
-| 12 | [volume changed to issue](https://en.wikipedia.org/wiki/Special:Diff/1307257118) | **STILL REPRODUCES RELATED DAMAGE**: removes volume, retains issue. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 12 | [volume changed to issue](https://en.wikipedia.org/wiki/Special:Diff/1307257118) | **STILL REPRODUCES RELATED DAMAGE**: removes volume, retains issue. Patch in the works. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 13 | [Associated Press](https://en.wikipedia.org/wiki/Special:Diff/1307480172) | **FIXED (merged)**: agency/work normalized to AP News. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 14 | [IAU Circular cleanup](https://en.wikipedia.org/wiki/Special:Diff/1309130927) | **FIXED (merged PR #6062)**: loses inappropriate volume fields. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 | 15 | [url → chapter-url](https://en.wikipedia.org/wiki/Special:Diff/1309227702) | **STILL REPRODUCES**: whole-book IA URLs moved to `chapter-url`. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
