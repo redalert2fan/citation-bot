@@ -2,11 +2,11 @@
 
 Working worksheet for manually verifying the non-capitalization reports currently visible on [User talk:Citation bot](https://en.wikipedia.org/wiki/User_talk:Citation_bot).
 
-**Snapshot:** 22 September 2026
+**Snapshot:** 13 October 2026
 
 **Scope:** Current unarchived talk page only. Archives were excluded. The three capitalization-only reports were excluded: `Caps: de La Plata`, `Caps: И → и`, and `Caps: у`.
 
-**Code under test:** Official `upstream/master`, commit `f5125dc75a10bd0774805daf470fb3249a5cc9bf`, `Dedupe at=Note into article-number (#6051)`.
+**Code under test:** Official `upstream/master`, commit `38d6b4206`, `Fix European Journal of Taxonomy volume handling (#6153)`.
 
 **Word version:** [citation-bot-talk-findings.docx](citation-bot-talk-findings.docx)
 
@@ -26,6 +26,7 @@ Recorded after manual review of the DOCX (leading document). The DOCX manual not
 - #31 — unrelated thesis URL added from DOI — completed (merged)
 - #33 — `cookieAbsent` cleanup (feature request) — completed (merged)
 - #34 — DOI shortened/truncated — completed (merged)
+- #41 — duplicate authors added from Citoid — completed (fixed, #6152)
 
 **Investigate only**
 
@@ -144,6 +145,7 @@ The provisional results below came from replaying the linked or quoted citations
 | 38 | [same journal and series](https://en.wikipedia.org/wiki/Special:Diff/1368642122) | **NOT REPRODUCED**. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 39 | [TBA volume/issue/pages](https://en.wikipedia.org/wiki/Special:Diff/1370511618) | **FEATURE UNIMPLEMENTED**: TBA left unchanged. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
 | 40 | [cleanup article](https://en.wikipedia.org/wiki/Special:Diff/1375460136), [second](https://en.wikipedia.org/wiki/Special:Diff/1375462328) | **NOT REPRODUCIBLE**: placeholder not in linked revisions. | [ ] Confirmed [ ] Changed [ ] Invalid |  |
+| 41 | [duplicate authors](https://en.wikipedia.org/w/index.php?title=King_Khalid_International_Airport&diff=1379934556&oldid=1379921499) | **FIXED (PR #6152, marked fixed on talk 13 Oct 2026)**: Citoid returned an exactly-duplicated author list on a Reuters citation and the bot added the dupes; guard against exact-duplicate authors shipped. | [x] Confirmed [ ] Changed [ ] Invalid |  |
 
 ## Feature Requests
 
